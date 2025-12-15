@@ -1,0 +1,428 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated CLABS Premium Color Palette */
+  --background: #f8fbff;
+  --foreground: #0a1b2a;
+  --card: #ffffff;
+  --card-foreground: #0a1b2a;
+  --popover: #ffffff;
+  --popover-foreground: #0a1b2a;
+  --primary: #276ef1;
+  --primary-foreground: #ffffff;
+  --secondary: #37d2c5;
+  --secondary-foreground: #0a1b2a;
+  --muted: #eaf6ff;
+  --muted-foreground: #4a6382;
+  --accent: #ffc947;
+  --accent-foreground: #0a1b2a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #ffffff;
+  --border: rgba(39, 110, 241, 0.1);
+  --input: rgba(39, 110, 241, 0.1);
+  --ring: #276ef1;
+  --chart-1: #276ef1;
+  --chart-2: #37d2c5;
+  --chart-3: #ffc947;
+  --chart-4: #5b8def;
+  --chart-5: #6edcd2;
+  --radius: 1.5rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a1b2a;
+  --sidebar-primary: #276ef1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaf6ff;
+  --sidebar-accent-foreground: #0a1b2a;
+  --sidebar-border: rgba(39, 110, 241, 0.1);
+  --sidebar-ring: #276ef1;
+
+  /* Custom CLABS Premium colors */
+  --clabs-blue: #276ef1;
+  --clabs-aqua: #37d2c5;
+  --clabs-gold: #ffc947;
+  --clabs-gradient-start: #f0f7ff;
+  --clabs-gradient-end: #e8f4ff;
+  --clabs-dark: #0a1b2a;
+  --clabs-shadow: rgba(39, 110, 241, 0.08);
+}
+
+.dark {
+  --background: #0a1b2a;
+  --foreground: #f8fbff;
+  --card: #122236;
+  --card-foreground: #f8fbff;
+  --popover: #122236;
+  --popover-foreground: #f8fbff;
+  --primary: #5b8def;
+  --primary-foreground: #0a1b2a;
+  --secondary: #6edcd2;
+  --secondary-foreground: #0a1b2a;
+  --muted: #1a3049;
+  --muted-foreground: #8fa8c7;
+  --accent: #ffc947;
+  --accent-foreground: #0a1b2a;
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: #f8fbff;
+  --border: rgba(91, 141, 239, 0.2);
+  --input: rgba(91, 141, 239, 0.2);
+  --ring: #5b8def;
+  --chart-1: #5b8def;
+  --chart-2: #6edcd2;
+  --chart-3: #ffc947;
+  --chart-4: #276ef1;
+  --chart-5: #37d2c5;
+  --sidebar: #122236;
+  --sidebar-foreground: #f8fbff;
+  --sidebar-primary: #5b8def;
+  --sidebar-primary-foreground: #f8fbff;
+  --sidebar-accent: #1a3049;
+  --sidebar-accent-foreground: #f8fbff;
+  --sidebar-border: rgba(91, 141, 239, 0.2);
+  --sidebar-ring: #5b8def;
+
+  --clabs-blue: #5b8def;
+  --clabs-aqua: #6edcd2;
+  --clabs-gold: #ffc947;
+  --clabs-gradient-start: #0f2338;
+  --clabs-gradient-end: #0a1b2a;
+  --clabs-dark: #f8fbff;
+  --clabs-shadow: rgba(91, 141, 239, 0.1);
+}
+
+@theme inline {
+  --font-sans: "Poppins", "Poppins Fallback", sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 8px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-clabs-blue: var(--clabs-blue);
+  --color-clabs-aqua: var(--clabs-aqua);
+  --color-clabs-gold: var(--clabs-gold);
+  --color-clabs-gradient-start: var(--clabs-gradient-start);
+  --color-clabs-gradient-end: var(--clabs-gradient-end);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Premium smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clabs-blue);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clabs-aqua);
+}
+
+/* Premium animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Staggered animation delays */
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+.animate-delay-400 {
+  animation-delay: 0.4s;
+}
+.animate-delay-500 {
+  animation-delay: 0.5s;
+}
+
+/* Premium card hover effects */
+.premium-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px var(--clabs-shadow);
+}
+
+/* Premium button shimmer effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-shimmer:hover::after {
+  left: 100%;
+}
+
+/* Premium gradient border */
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--clabs-blue), var(--clabs-aqua));
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+/* Premium glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Section wave divider */
+.wave-divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wave-divider svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 60px;
+}
+
+/* Premium dot pattern background */
+.dot-pattern {
+  background-image: radial-gradient(rgba(39, 110, 241, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Added mobile-specific utilities and optimizations */
+
+/* Hide scrollbar utility for horizontal scroll areas */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile touch-friendly tap targets */
+@media (max-width: 640px) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+  }
+
+  /* Reduce animations on mobile for performance */
+  .premium-card:hover {
+    transform: none;
+  }
+
+  /* Smaller dot pattern on mobile */
+  .dot-pattern {
+    background-size: 16px 16px;
+  }
+
+  /* Adjust floating animation for mobile */
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-float,
+  .animate-fade-in-up,
+  .animate-shimmer {
+    animation: none;
+  }
+
+  .btn-shimmer::after {
+    display: none;
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* Better text rendering on mobile */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Focus visible styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--clabs-blue);
+  outline-offset: 2px;
+}
+
+/* Active state for touch devices */
+@media (hover: none) {
+  .premium-card:active {
+    transform: scale(0.98);
+  }
+
+  .btn-shimmer:active {
+    opacity: 0.9;
+  }
+}
