@@ -1,23 +1,27 @@
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
 
 export async function GET() {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
     const { data, error } = await supabase
-      .from("schools")
-      .select("*")
-      .order("created_at", { ascending: false })
+      .from('schools')
+      .select('id, name, logo_url, banner_url')
+      .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching schools:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error('Supabase error:', error)
+      return NextResponse.json([])
     }
 
-    console.log('Fetched schools:', data)
     return NextResponse.json(data || [])
   } catch (error) {
-    console.error('Exception fetching schools:', error)
-    return NextResponse.json({ error: 'Failed to fetch schools' }, { status: 500 })
+    console.error('Error fetching schools:', error)
+    return NextResponse.json([])
   }
 }
 

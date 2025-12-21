@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/navigation"
 import { Hero } from "@/components/home/hero"
+import { TrustedSchools } from "@/components/home/trusted-schools"
 import { FeaturesSection } from "@/components/home/features-section"
 import { ProgramsPreview } from "@/components/home/programs-preview"
 import { TestimonialsSection } from "@/components/home/testimonials-section"
@@ -11,6 +12,7 @@ export default function HomePage() {
     <main className="min-h-screen">
       <Navigation />
       <Hero />
+      <TrustedSchools />
       <FeaturesSection />
       <ProgramsPreview />
       <TestimonialsSection />

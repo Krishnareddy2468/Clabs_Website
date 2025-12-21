@@ -1,62 +1,41 @@
 "use client"
 
-import { GraduationCap } from "lucide-react"
 import { useEffect, useState } from "react"
+import { Building2 } from "lucide-react"
 
 interface School {
   id: string
   name: string
   logo_url: string | null
+  banner_url: string | null
 }
 
 export function TrustedSchools() {
   const [schools, setSchools] = useState<School[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetchSchools()
+    // Fetch schools directly from Supabase
+    fetch("/api/schools")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setSchools(data)
+        }
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.error("Failed to load schools:", err)
+        setIsLoading(false)
+      })
   }, [])
 
-  const fetchSchools = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch("/api/schools")
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      
-      const data = await response.json()
-      console.log('Loaded schools:', data)
-      setSchools(data || [])
-      setError(null)
-    } catch (err) {
-      console.error('Failed to load schools:', err)
-      setError('Failed to load schools')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <section className="bg-[#f5f8fc] py-12 sm:py-16 md:py-20 lg:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 bg-white border-y">
+        <div className="container mx-auto px-4">
           <div className="text-center">
-            <p className="text-[#4A6382]">Loading schools...</p>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  if (error) {
-    return (
-      <section className="bg-[#f5f8fc] py-12 sm:py-16 md:py-20 lg:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-red-600">{error}</p>
+            <div className="w-8 h-8 border-4 border-[#276EF1] border-t-transparent rounded-full animate-spin mx-auto"></div>
           </div>
         </div>
       </section>
@@ -64,55 +43,60 @@ export function TrustedSchools() {
   }
 
   if (schools.length === 0) {
-    return (
-      <section className="bg-[#f5f8fc] py-12 sm:py-16 md:py-20 lg:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-10 md:mb-12">
-            <h2 className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-[#0A1B2A] mb-2 sm:mb-3">
-              Trusted by Schools
-            </h2>
-            <p className="text-base sm:text-lg text-[#4A6382]">
-              Add schools from the admin panel to display them here
-            </p>
-          </div>
-        </div>
-      </section>
-    )
+    return null
   }
 
   return (
-    <section className="bg-[#f5f8fc] py-12 sm:py-16 md:py-20 lg:py-24">
+    <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-gray-50 border-y">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-[#0A1B2A] mb-2 sm:mb-3">
-            Trusted by Schools
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#0A1B2A] mb-2">
+            Trusted by Leading Schools
           </h2>
-          <p className="text-base sm:text-lg text-[#4A6382]">
-            Partnering with leading educational institutions across India
+          <p className="text-gray-600 text-sm sm:text-base">
+            Partnering with {schools.length}+ schools across India
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
-          {schools.map((school) => (
-            <div
-              key={school.id}
-              className="flex items-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl bg-white px-3 sm:px-4 md:px-6 py-3 sm:py-4 shadow-sm border border-border/50"
-              title={school.name}
-            >
-              {school.logo_url ? (
-                <img 
-                  src={school.logo_url} 
-                  alt={school.name}
-                  className="h-8 w-8 sm:h-10 sm:w-10 object-contain shrink-0"
-                />
-              ) : (
-                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-[#276EF1]/10 text-[#276EF1] shrink-0">
-                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={1.5} />
-                </div>
-              )}
-              <span className="text-xs sm:text-sm font-medium text-[#0A1B2A] line-clamp-2">{school.name}</span>
-            </div>
-          ))}
+        {/* Scrolling logos */}
+        <div className="relative overflow-hidden">
+          <div className="flex items-center gap-8 sm:gap-12 animate-scroll-logos">
+            {[...schools, ...schools, ...schools].map((school, index) => (
+              <div
+                key={`${school.id}-${index}`}
+                className="flex-shrink-0 flex flex-col items-center justify-center bg-white rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 min-w-[120px] sm:min-w-[150px] h-[140px] sm:h-[160px]"
+              >
+                {school.logo_url ? (
+                  <img
+                    src={school.logo_url}
+                    alt={school.name}
+                    className="h-16 sm:h-20 w-auto object-contain mb-2"
+                  />
+                ) : (
+                  <Building2 className="h-16 sm:h-20 w-16 sm:w-20 text-gray-300 mb-2" />
+                )}
+                <p className="text-xs sm:text-sm text-gray-600 text-center font-medium line-clamp-2">
+                  {school.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto">
+          <div className="text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-[#276EF1]">{schools.length}+</p>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Partner Schools</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-[#37D2C5]">10,000+</p>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Students Enrolled</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-[#FFC947]">98%</p>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Satisfaction Rate</p>
+          </div>
         </div>
       </div>
     </section>
