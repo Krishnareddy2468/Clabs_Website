@@ -69,21 +69,28 @@ function SchoolsPageContent() {
   }
 
   const uploadFile = async (file: File, folder: string): Promise<string> => {
-    const fileExt = file.name.split(".").pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-    const filePath = `${folder}/${fileName}`
+    try {
+      const fileExt = file.name.split(".").pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      
+      // Use school-logos bucket for both logos and banners
+      const { error: uploadError } = await supabase.storage
+        .from("school-logos")  // Changed from "images" to "school-logos"
+        .upload(fileName, file)
 
-    const { error: uploadError } = await supabase.storage
-      .from("images")
-      .upload(filePath, file)
+      if (uploadError) {
+        console.error("Upload error:", uploadError)
+        throw new Error(`Upload failed: ${uploadError.message}`)
+      }
 
-    if (uploadError) throw uploadError
+      const { data: { publicUrl } } = supabase.storage
+        .from("school-logos")  // Changed from "images" to "school-logos"
+        .getPublicUrl(fileName)
 
-    const { data: { publicUrl } } = supabase.storage
-      .from("images")
-      .getPublicUrl(filePath)
-
-    return publicUrl
+      return publicUrl
+    } catch (error: any) {
+      throw new Error(error.message || "Failed to upload file")
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

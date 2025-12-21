@@ -79,21 +79,28 @@ function EventsPageContent() {
   };
 
   const uploadFile = async (file: File): Promise<string> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    const filePath = `events/${fileName}`;
+    try {
+      const fileExt = file.name.split(".").pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = fileName
 
-    const { error: uploadError } = await supabase.storage
-      .from("images")
-      .upload(filePath, file);
+      const { error: uploadError } = await supabase.storage
+        .from("event-images")  // Changed from "images" to "event-images"
+        .upload(filePath, file)
 
-    if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Upload error:", uploadError)
+        throw new Error(`Upload failed: ${uploadError.message}`)
+      }
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("images").getPublicUrl(filePath);
+      const { data: { publicUrl } } = supabase.storage
+        .from("event-images")  // Changed from "images" to "event-images"
+        .getPublicUrl(filePath)
 
-    return publicUrl;
+      return publicUrl
+    } catch (error: any) {
+      throw new Error(error.message || "Failed to upload file")
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
