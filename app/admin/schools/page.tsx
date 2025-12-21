@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Upload, Trash2, Loader2, Plus, Building2, Search } from "lucide-react"
@@ -16,7 +16,7 @@ interface School {
   created_at: string
 }
 
-export default function ManageSchoolsPage() {
+function SchoolsPageContent() {
   const searchParams = useSearchParams()
   const [schools, setSchools] = useState<School[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -277,5 +277,17 @@ export default function ManageSchoolsPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function ManageSchoolsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-[#276EF1] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <SchoolsPageContent />
+    </Suspense>
   )
 }

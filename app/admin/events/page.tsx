@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Plus, Trash2, Loader2, Calendar, Search, Edit } from "lucide-react";
@@ -20,7 +20,7 @@ interface Event {
   created_at: string;
 }
 
-export default function ManageEventsPage() {
+function EventsPageContent() {
   const searchParams = useSearchParams();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -376,5 +376,17 @@ export default function ManageEventsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ManageEventsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-[#276EF1] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <EventsPageContent />
+    </Suspense>
   );
 }
