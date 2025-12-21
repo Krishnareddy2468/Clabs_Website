@@ -34,31 +34,27 @@ export function Hero() {
     fetch("/api/events")
       .then(res => res.json())
       .then(data => {
-        console.log('Events loaded in hero:', data)
-        setEvents(data || [])
+        setEvents(Array.isArray(data) ? data : [])
       })
       .catch(err => console.error('Failed to load events:', err))
 
     setIsLoading(true)
     fetch("/api/banners")
-      .then(res => {
-        console.log('Banner response status:', res.status)
-        return res.json()
-      })
+      .then(res => res.json())
       .then(data => {
-        console.log('Banners loaded:', data)
-        console.log('Number of banners:', data?.length || 0)
-        if (data && data.length > 0) {
-          console.log('First banner:', data[0])
-          setBanners(data)
+        if (Array.isArray(data) && data.length > 0) {
+          const validBanners = data.filter(banner => 
+            banner && banner.image_url && banner.image_url.trim() !== ''
+          )
+          setBanners(validBanners)
         } else {
-          console.warn('No banners found in response')
           setBanners([])
         }
         setIsLoading(false)
       })
       .catch(err => {
         console.error('Failed to load banners:', err)
+        setBanners([])
         setIsLoading(false)
       })
   }, [])
@@ -67,7 +63,7 @@ export function Hero() {
     if (banners.length > 1) {
       const interval = setInterval(() => {
         setCurrentBannerIndex((prev) => (prev + 1) % banners.length)
-      }, 5000) // Change this value to adjust rotation speed (in milliseconds)
+      }, 5000)
       return () => clearInterval(interval)
     }
   }, [banners.length])
@@ -85,36 +81,41 @@ export function Hero() {
     setCurrentBannerIndex((prev) => (prev - 1 + banners.length) % banners.length)
   }
 
+  const goToBanner = (index: number) => {
+    setCurrentBannerIndex(index)
+  }
+
   return (
     <>
-      {/* Scrolling Event Banner */}
+      {/* Scrolling Event Banner - Improved */}
       {showBanner && events.length > 0 && (
-        <div className="relative bg-gradient-to-r from-[#276EF1] to-[#37D2C5] text-white overflow-hidden">
-          <div className="container mx-auto px-4">
-            <div className="relative h-16 flex items-center">
-              {/* Scrolling content */}
+        <div className="relative bg-gradient-to-r from-[#276EF1] via-[#1E88E5] to-[#37D2C5] text-white overflow-hidden shadow-lg">
+          <div className="container mx-auto px-4 relative">
+            <div className="relative h-14 sm:h-16 flex items-center">
+              {/* Scrolling content with improved animation */}
               <div className="absolute inset-0 flex items-center overflow-hidden">
-                <div className="flex items-center gap-8 animate-scroll-left whitespace-nowrap">
-                  {[...events, ...events, ...events].map((event, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
-                        Upcoming Event
+                <div className="flex items-center gap-12 sm:gap-16 animate-marquee whitespace-nowrap">
+                  {[...events, ...events, ...events, ...events].map((event, index) => (
+                    <div key={index} className="flex items-center gap-3 sm:gap-4">
+                      <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs sm:text-sm font-semibold border border-white/30">
+                         Upcoming
                       </span>
-                      <span className="font-semibold">{event.title}</span>
-                      <span className="flex items-center gap-1 text-sm">
+                      <span className="font-bold text-sm sm:text-base">{event.title}</span>
+                      <span className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-2 py-1 rounded-full">
                         <Calendar className="w-3 h-3" />
                         {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </span>
-                      <span className="flex items-center gap-1 text-sm">
+                      <span className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-2 py-1 rounded-full">
                         <MapPin className="w-3 h-3" />
                         {event.location}
                       </span>
                       <button
                         onClick={() => handleRegister(event)}
-                        className="bg-white text-[#276EF1] px-4 py-1 rounded-full text-sm font-medium hover:bg-white/90 transition-colors"
+                        className="bg-white text-[#276EF1] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold hover:bg-yellow-300 hover:text-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                       >
-                        Register Now
+                        Register Now →
                       </button>
+                      <span className="text-white/30 text-2xl">•</span>
                     </div>
                   ))}
                 </div>
@@ -123,9 +124,9 @@ export function Hero() {
               {/* Close button */}
               <button
                 onClick={() => setShowBanner(false)}
-                className="absolute right-4 z-10 p-1 hover:bg-white/20 rounded-full transition-colors"
+                className="absolute right-2 sm:right-4 z-10 p-1.5 hover:bg-white/20 rounded-full transition-colors bg-white/10 backdrop-blur-sm"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
@@ -134,15 +135,15 @@ export function Hero() {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 md:py-16 lg:py-20">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
             {/* Left Content */}
-            <div className="flex-1 text-center lg:text-left space-y-6 sm:space-y-8">
+            <div className="flex-1 text-center lg:text-left space-y-5 sm:space-y-6 lg:max-w-md">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white shadow-sm border border-border/50">
-                <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-[#276EF1]/10">
+              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-white shadow-sm border border-border/50">
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#276EF1]/10">
                   <svg
-                    className="h-3 w-3 sm:h-4 sm:w-4 text-[#276EF1]"
+                    className="h-3 w-3 text-[#276EF1]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -161,17 +162,17 @@ export function Hero() {
               </div>
 
               {/* Title */}
-              <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight text-[#0A1B2A]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-[#0A1B2A]">
                 Year-Long STEM Academic Excellence
               </h1>
 
               {/* Description */}
-              <p className="text-base sm:text-lg text-[#4A6382] max-w-[600px] mx-auto lg:mx-0">
-                Comprehensive year-long academic course with specially designed academic books for each standard from Class 3 to Class 9. Build strong STEM foundations with C LABS innovative curriculum.
+              <p className="text-sm sm:text-base lg:text-lg text-[#4A6382]">
+                Comprehensive year-long academic course with specially designed academic books for each standard from Class 3 to Class 9.
               </p>
 
               {/* Call to Action */}
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
                 <Button 
                   variant="default" 
                   size="lg" 
@@ -193,74 +194,88 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Right Content - School Banner Slideshow */}
-            <div className="flex-1 w-full relative">
+            {/* Right Content - School Banner Slideshow (Exact Banner Size) */}
+            <div className="flex-[1.5] w-full">
               {isLoading ? (
-                <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#276EF1]/10 to-[#37D2C5]/10 flex items-center justify-center">
+                <div className="rounded-2xl bg-gradient-to-br from-[#276EF1]/10 to-[#37D2C5]/10 flex items-center justify-center h-[400px] sm:h-[500px] lg:h-[550px]">
                   <div className="text-center p-6">
-                    <p className="text-gray-500">Loading banners...</p>
+                    <div className="w-10 h-10 border-4 border-[#276EF1] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                    <p className="text-gray-500">Loading...</p>
                   </div>
                 </div>
               ) : banners.length > 0 ? (
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-                  {/* Banner Image */}
-                  <img
-                    src={banners[currentBannerIndex]?.image_url || ''}
-                    alt={banners[currentBannerIndex]?.title || 'School banner'}
-                    className="w-full h-full object-cover transition-opacity duration-500"
-                    onError={(e) => {
-                      console.error('Image failed to load:', banners[currentBannerIndex]?.image_url)
-                      const img = e.target as HTMLImageElement
-                      img.style.display = 'none'
-                    }}
-                  />
-
-                  {/* School Name Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-                    <p className="text-white font-semibold text-lg">
-                      {banners[currentBannerIndex]?.title}
-                    </p>
-                  </div>
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-b from-gray-50 to-gray-100 h-[400px] sm:h-[500px] lg:h-[550px]">
+                  {/* Banner Images - Exact size, no cropping */}
+                  {banners.map((banner, index) => (
+                    <div
+                      key={banner.id}
+                      className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                        index === currentBannerIndex 
+                          ? 'opacity-100 z-10 scale-100' 
+                          : 'opacity-0 z-0 scale-105'
+                      }`}
+                    >
+                      <img
+                        src={banner.image_url}
+                        alt={banner.title}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  ))}
 
                   {/* Navigation Arrows */}
                   {banners.length > 1 && (
                     <>
                       <button
                         onClick={prevBanner}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 transition-all shadow-lg"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white rounded-full p-2.5 transition-all shadow-xl hover:scale-110 active:scale-95 border border-gray-200"
+                        aria-label="Previous banner"
                       >
-                        <ChevronLeft className="w-6 h-6 text-gray-800" />
+                        <ChevronLeft className="w-5 h-5 text-gray-800" />
                       </button>
                       <button
                         onClick={nextBanner}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 transition-all shadow-lg"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white rounded-full p-2.5 transition-all shadow-xl hover:scale-110 active:scale-95 border border-gray-200"
+                        aria-label="Next banner"
                       >
-                        <ChevronRight className="w-6 h-6 text-gray-800" />
+                        <ChevronRight className="w-5 h-5 text-gray-800" />
                       </button>
 
                       {/* Dots Indicator */}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
                         {banners.map((_, index) => (
                           <button
                             key={index}
-                            onClick={() => setCurrentBannerIndex(index)}
-                            className={`h-2 rounded-full transition-all ${
+                            onClick={() => goToBanner(index)}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
                               index === currentBannerIndex
-                                ? 'w-8 bg-white'
-                                : 'w-2 bg-white/50'
+                                ? 'w-6 bg-[#276EF1]'
+                                : 'w-1.5 bg-gray-400 hover:bg-gray-600'
                             }`}
+                            aria-label={`Go to banner ${index + 1}`}
                           />
                         ))}
                       </div>
                     </>
                   )}
+
+                  {/* Banner Counter */}
+                  {banners.length > 1 && (
+                    <div className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-sm text-gray-800 text-xs px-3 py-1 rounded-full font-semibold shadow-lg border border-gray-200">
+                      {currentBannerIndex + 1} / {banners.length}
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#276EF1]/10 to-[#37D2C5]/10 flex items-center justify-center border-2 border-dashed border-[#276EF1]/20">
-                  <div className="text-center p-6">
-                    <p className="text-gray-500 mb-2">No banners uploaded yet</p>
-                    <p className="text-sm text-gray-400">Upload school banners from the admin panel</p>
-                    <p className="text-xs text-gray-300 mt-2">Check browser console for details</p>
+                <div className="rounded-2xl bg-gradient-to-br from-[#276EF1]/10 to-[#37D2C5]/10 flex items-center justify-center border-2 border-dashed border-[#276EF1]/20 h-[400px] sm:h-[500px] lg:h-[550px]">
+                  <div className="text-center p-8">
+                    <div className="w-20 h-20 bg-[#276EF1]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-[#276EF1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-600 font-semibold text-lg mb-2">No school banners yet</p>
+                    <p className="text-sm text-gray-400">Add banners from admin panel</p>
                   </div>
                 </div>
               )}

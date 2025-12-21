@@ -211,13 +211,22 @@ html {
   }
 }
 
-@keyframes scroll-left {
+/* Improved Marquee Animation for Event Banner */
+@keyframes marquee {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-33.333%);
+    transform: translateX(-50%);
   }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 .animate-fade-in-up {

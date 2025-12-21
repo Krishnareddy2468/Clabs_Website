@@ -1,29 +1,21 @@
 import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { HeroSection } from "@/components/home/hero-section"
-import { StatsSection } from "@/components/home/stats-section"
+import { Hero } from "@/components/home/hero"
 import { FeaturesSection } from "@/components/home/features-section"
 import { ProgramsPreview } from "@/components/home/programs-preview"
-import { TrustedSchools } from "@/components/home/trusted-schools"
 import { TestimonialsSection } from "@/components/home/testimonials-section"
 import { CTASection } from "@/components/home/cta-section"
-import { EventsBanner } from "@/components/events-banner"
+import { Footer } from "@/components/footer"
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <main className="min-h-screen">
       <Navigation />
-      <EventsBanner />
-      <main className="flex-1">
-        <HeroSection />
-        <StatsSection />
-        <FeaturesSection />
-        <ProgramsPreview />
-        <TrustedSchools />
-        <TestimonialsSection />
-        <CTASection />
-      </main>
+      <Hero />
+      <FeaturesSection />
+      <ProgramsPreview />
+      <TestimonialsSection />
+      <CTASection />
       <Footer />
-    </div>
+    </main>
   )
 }

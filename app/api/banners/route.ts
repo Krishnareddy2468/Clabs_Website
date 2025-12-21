@@ -1,43 +1,35 @@
-import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { createClient } from '@supabase/supabase-js'
+import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    // Fetch schools that have banner images
     const { data, error } = await supabase
-      .from("banners")
-      .select("*")
-      .order("created_at", { ascending: false })
+      .from('schools')
+      .select('id, name, banner_url, logo_url')
+      .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching banners:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error('Supabase error:', error)
+      return NextResponse.json([])
     }
 
-    return NextResponse.json(data || [])
+    // Transform to match Banner interface - use banner_url or logo_url
+    const banners = (data || [])
+      .filter(school => school.banner_url || school.logo_url)
+      .map(school => ({
+        id: school.id,
+        title: school.name,
+        image_url: school.banner_url || school.logo_url
+      }))
+
+    return NextResponse.json(banners)
   } catch (error) {
-    console.error('Exception fetching banners:', error)
-    return NextResponse.json({ error: 'Failed to fetch banners' }, { status: 500 })
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const { title, image_url } = await request.json()
-
-    const { data, error } = await supabase
-      .from("banners")
-      .insert([{ title, image_url }])
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error creating banner:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
-
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error('Exception creating banner:', error)
-    return NextResponse.json({ error: 'Failed to create banner' }, { status: 500 })
+    console.error('Error fetching banners:', error)
+    return NextResponse.json([])
   }
 }

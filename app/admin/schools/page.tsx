@@ -1,259 +1,281 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Pencil, Trash2, Upload, Loader2 } from "lucide-react"
-import { compressImage, uploadToSupabase } from "@/lib/image-compression"
+import { useSearchParams } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
+import { Upload, Trash2, Loader2, Plus, Building2, Search } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface School {
   id: string
   name: string
   logo_url: string | null
   banner_url: string | null
+  created_at: string
 }
 
-export default function AdminSchoolsPage() {
+export default function ManageSchoolsPage() {
+  const searchParams = useSearchParams()
   const [schools, setSchools] = useState<School[]>([])
-  const [isEditing, setIsEditing] = useState(false)
-  const [currentSchool, setCurrentSchool] = useState<School | null>(null)
-  const [formData, setFormData] = useState({ name: "", logo_url: "", banner_url: "" })
-  const [uploading, setUploading] = useState(false)
-  const [uploadingBanner, setUploadingBanner] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isUploading, setIsUploading] = useState(false)
+  const [showForm, setShowForm] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [name, setName] = useState("")
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [bannerFile, setBannerFile] = useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null)
+  const supabase = createClient()
+
+  // Check if action=add is in the URL
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setShowForm(true)
+    }
+  }, [searchParams])
 
   useEffect(() => {
-    fetchSchools()
+    loadSchools()
   }, [])
 
-  const fetchSchools = async () => {
-    const res = await fetch("/api/schools")
-    const data = await res.json()
-    setSchools(data)
+  useEffect(() => {
+    if (bannerFile) {
+      const url = URL.createObjectURL(bannerFile)
+      setBannerPreview(url)
+      return () => URL.revokeObjectURL(url)
+    } else {
+      setBannerPreview(null)
+    }
+  }, [bannerFile])
+
+  const loadSchools = async () => {
+    try {
+      setIsLoading(true)
+      const { data, error } = await supabase
+        .from("schools")
+        .select("*")
+        .order("created_at", { ascending: false })
+
+      if (error) throw error
+      setSchools(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error("Failed to load schools:", err)
+      setSchools([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const uploadFile = async (file: File, folder: string): Promise<string> => {
+    const fileExt = file.name.split(".").pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+    const filePath = `${folder}/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from("images")
+      .upload(filePath, file)
+
+    if (uploadError) throw uploadError
+
+    const { data: { publicUrl } } = supabase.storage
+      .from("images")
+      .getPublicUrl(filePath)
+
+    return publicUrl
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    
+    if (!name.trim() || !bannerFile) {
+      alert("Please provide school name and banner image")
+      return
+    }
+
     try {
-      const method = currentSchool ? "PUT" : "POST"
-      const url = currentSchool ? `/api/schools/${currentSchool.id}` : "/api/schools"
+      setIsUploading(true)
 
-      console.log('Submitting school:', { method, url, data: formData })
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to save school')
+      let logoUrl = null
+      if (logoFile) {
+        logoUrl = await uploadFile(logoFile, "logos")
       }
 
-      const result = await response.json()
-      console.log('School saved:', result)
+      const bannerUrl = await uploadFile(bannerFile, "banners")
 
-      alert(currentSchool ? 'School updated successfully!' : 'School added successfully!')
+      const { error } = await supabase
+        .from("schools")
+        .insert([{ name: name.trim(), logo_url: logoUrl, banner_url: bannerUrl }])
+
+      if (error) throw error
+
+      // Reset form
+      setName("")
+      setLogoFile(null)
+      setBannerFile(null)
+      setBannerPreview(null)
+      setShowForm(false)
       
-      setFormData({ name: "", logo_url: "", banner_url: "" })
-      setCurrentSchool(null)
-      setIsEditing(false)
-      await fetchSchools()
-    } catch (error) {
-      console.error('Error saving school:', error)
-      alert(`Failed to save school: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      // Clear URL params
+      window.history.replaceState({}, '', '/admin/schools')
+      
+      await loadSchools()
+      alert("School added successfully!")
+    } catch (error: any) {
+      alert(`Failed: ${error.message}`)
     } finally {
-      setLoading(false)
+      setIsUploading(false)
     }
-  }
-
-  const handleEdit = (school: School) => {
-    setCurrentSchool(school)
-    setFormData({ name: school.name, logo_url: school.logo_url || "", banner_url: school.banner_url || "" })
-    setIsEditing(true)
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this school?")) {
-      await fetch(`/api/schools/${id}`, { method: "DELETE" })
-      fetchSchools()
-    }
-  }
+    if (!confirm("Delete this school?")) return
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setUploading(true)
     try {
-      const compressed = await compressImage(file)
-      const url = await uploadToSupabase(compressed, "school-logos")
-      setFormData(prev => ({ ...prev, logo_url: url }))
-      alert('Logo uploaded successfully!')
+      const { error } = await supabase.from("schools").delete().eq("id", id)
+      if (error) throw error
+      await loadSchools()
     } catch (error) {
-      console.error("Upload error:", error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      alert(`Failed to upload image: ${errorMessage}\n\nPlease make sure:\n1. Supabase credentials are set in .env.local\n2. Storage bucket "school-logos" exists in Supabase\n3. Bucket is set to public`)
-    } finally {
-      setUploading(false)
+      alert("Failed to delete")
     }
   }
 
-  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setUploadingBanner(true)
-    try {
-      const compressed = await compressImage(file)
-      const url = await uploadToSupabase(compressed, "school-logos", "banners")
-      setFormData(prev => ({ ...prev, banner_url: url }))
-      alert('Banner uploaded successfully!')
-    } catch (error) {
-      console.error("Upload error:", error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      alert(`Failed to upload banner: ${errorMessage}`)
-    } finally {
-      setUploadingBanner(false)
-    }
+  const handleCancel = () => {
+    setShowForm(false)
+    setName("")
+    setLogoFile(null)
+    setBannerFile(null)
+    setBannerPreview(null)
+    window.history.replaceState({}, '', '/admin/schools')
   }
+
+  const filteredSchools = schools.filter(school =>
+    school.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Manage Schools</h1>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Schools</h1>
+          <p className="text-gray-500 mt-1">Manage school banners for the homepage slideshow</p>
+        </div>
+        <Button onClick={() => setShowForm(!showForm)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Add School
+        </Button>
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            {isEditing ? "Edit School" : "Add New School"}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">School Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg"
+      {/* Add Form */}
+      {showForm && (
+        <div className="bg-white rounded-xl border p-6">
+          <h2 className="text-lg font-semibold mb-6">Add New School</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name">School Name *</Label>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter school name"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="logo">Logo (Optional)</Label>
+                <Input
+                  id="logo"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="banner">Banner Image (Required) *</Label>
+              <Input
+                id="banner"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setBannerFile(e.target.files?.[0] || null)}
                 required
               />
+              <p className="text-xs text-gray-500">This will appear in the homepage slideshow</p>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">School Logo</label>
-              <label className="w-full px-4 py-2 bg-gray-100 border rounded-lg cursor-pointer hover:bg-gray-200 flex items-center justify-center gap-2">
-                {uploading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4" />
-                    Upload Logo
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className="hidden"
-                  disabled={uploading}
-                />
-              </label>
-              {formData.logo_url && (
-                <img src={formData.logo_url} alt="Preview" className="mt-2 h-16 object-contain border rounded p-2" />
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">School Banner (for slideshow)</label>
-              <label className="w-full px-4 py-2 bg-gray-100 border rounded-lg cursor-pointer hover:bg-gray-200 flex items-center justify-center gap-2">
-                {uploadingBanner ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4" />
-                    Upload Banner
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBannerUpload}
-                  className="hidden"
-                  disabled={uploadingBanner}
-                />
-              </label>
-              {formData.banner_url && (
-                <img src={formData.banner_url} alt="Banner Preview" className="mt-2 h-32 w-full object-cover border rounded" />
-              )}
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                disabled={loading || uploading || uploadingBanner}
-                className="flex-1 bg-[#276EF1] text-white px-4 py-2 rounded-lg hover:bg-[#1e5acc] disabled:opacity-50"
-              >
-                {loading ? "Saving..." : isEditing ? "Update School" : "Add School"}
-              </button>
-              {isEditing && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false)
-                    setCurrentSchool(null)
-                    setFormData({ name: "", logo_url: "", banner_url: "" })
-                  }}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              )}
+            {bannerPreview && (
+              <img src={bannerPreview} alt="Preview" className="w-full max-w-md h-40 object-cover rounded-lg" />
+            )}
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={isUploading}>
+                {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                {isUploading ? "Uploading..." : "Add School"}
+              </Button>
+              <Button type="button" variant="outline" onClick={handleCancel}>
+                Cancel
+              </Button>
             </div>
           </form>
         </div>
+      )}
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Schools List ({schools.length})</h2>
-          <div className="space-y-2 max-h-[600px] overflow-y-auto">
-            {schools.map((school) => (
-              <div key={school.id} className="border rounded-lg p-3 hover:bg-gray-50">
-                {school.banner_url && (
-                  <img src={school.banner_url} alt={school.name} className="w-full h-24 object-cover rounded mb-2" />
+      {/* Search */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Input
+          placeholder="Search schools..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Schools Grid */}
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        </div>
+      ) : filteredSchools.length > 0 ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredSchools.map((school) => (
+            <div key={school.id} className="bg-white rounded-xl border overflow-hidden group">
+              <div className="relative aspect-video bg-gray-100">
+                {school.banner_url ? (
+                  <img src={school.banner_url} alt={school.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Building2 className="w-12 h-12 text-gray-300" />
+                  </div>
                 )}
-                <div className="flex items-center gap-3">
-                  {school.logo_url ? (
-                    <img src={school.logo_url} alt={school.name} className="h-10 w-10 object-contain" />
-                  ) : (
-                    <div className="h-10 w-10 bg-gray-100 rounded flex items-center justify-center text-xs">
-                      No Logo
-                    </div>
-                  )}
-                  <span className="flex-1 font-medium">{school.name}</span>
-                  <button
-                    onClick={() => handleEdit(school)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
                   <button
                     onClick={() => handleDelete(school.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded"
+                    className="opacity-0 group-hover:opacity-100 bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition-all"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="p-4 flex items-center gap-3">
+                {school.logo_url && (
+                  <img src={school.logo_url} alt="" className="w-10 h-10 object-contain rounded" />
+                )}
+                <div>
+                  <p className="font-medium">{school.name}</p>
+                  <p className="text-xs text-gray-500">{new Date(school.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="text-center py-12 bg-white rounded-xl border">
+          <Building2 className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <p className="font-medium text-gray-900">No schools found</p>
+          <p className="text-sm text-gray-500 mt-1">Add your first school to get started</p>
+        </div>
+      )}
     </div>
   )
 }

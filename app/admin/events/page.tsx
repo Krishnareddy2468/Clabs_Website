@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Pencil, Trash2, Upload, Loader2, IndianRupee } from "lucide-react";
-import { compressImage, uploadToSupabase } from "@/lib/image-compression";
+import { useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Plus, Trash2, Loader2, Calendar, Search, Edit } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Event {
   id: string;
@@ -12,275 +17,364 @@ interface Event {
   location: string;
   image_url: string | null;
   amount: number;
+  created_at: string;
 }
 
-export default function AdminEventsPage() {
+export default function ManageEventsPage() {
+  const searchParams = useSearchParams();
   const [events, setEvents] = useState<Event[]>([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    date: "",
-    location: "",
-    image_url: "",
-    amount: 0,
-  });
-  const [uploading, setUploading] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Form fields
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [location, setLocation] = useState("");
+  const [amount, setAmount] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const supabase = createClient();
+
+  // Check if action=create is in the URL
+  useEffect(() => {
+    if (searchParams.get("action") === "create") {
+      setShowForm(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
-    fetchEvents();
+    loadEvents();
   }, []);
 
-  const fetchEvents = async () => {
-    const res = await fetch("/api/events");
-    const data = await res.json();
-    setEvents(data);
+  useEffect(() => {
+    if (imageFile) {
+      const url = URL.createObjectURL(imageFile);
+      setImagePreview(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setImagePreview(null);
+    }
+  }, [imageFile]);
+
+  const loadEvents = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .order("date", { ascending: true });
+
+      if (error) throw error;
+      setEvents(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to load events:", err);
+      setEvents([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `events/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("images")
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("images").getPublicUrl(filePath);
+
+    return publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (!title.trim() || !date || !location.trim()) {
+      alert("Please fill in all required fields");
+      return;
+    }
 
     try {
-      const method = currentEvent ? "PUT" : "POST";
-      const url = currentEvent ? `/api/events/${currentEvent.id}` : "/api/events";
+      setIsSubmitting(true);
 
-      console.log('Submitting event:', { method, url, data: formData });
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save event');
+      let imageUrl = null;
+      if (imageFile) {
+        imageUrl = await uploadFile(imageFile);
       }
 
-      const result = await response.json();
-      console.log('Event saved:', result);
+      const { error } = await supabase
+        .from("events")
+        .insert([
+          {
+            title: title.trim(),
+            description: description.trim(),
+            date,
+            location: location.trim(),
+            amount: parseFloat(amount) || 0,
+            image_url: imageUrl,
+          },
+        ]);
 
-      alert(currentEvent ? 'Event updated successfully!' : 'Event created successfully!');
+      if (error) throw error;
 
-      setFormData({ title: "", description: "", date: "", location: "", image_url: "", amount: 0 });
-      setCurrentEvent(null);
-      setIsEditing(false);
-      await fetchEvents();
-    } catch (error) {
-      console.error('Error saving event:', error);
-      alert(`Failed to save event: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      // Reset form
+      resetForm();
+      await loadEvents();
+      alert("Event created successfully!");
+    } catch (error: any) {
+      alert(`Failed: ${error.message}`);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleEdit = (event: Event) => {
-    setCurrentEvent(event);
-    setFormData({
-      title: event.title,
-      description: event.description,
-      date: event.date.split("T")[0],
-      location: event.location,
-      image_url: event.image_url || "",
-      amount: event.amount || 0,
-    });
-    setIsEditing(true);
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setLocation("");
+    setAmount("");
+    setImageFile(null);
+    setImagePreview(null);
+    setShowForm(false);
+    window.history.replaceState({}, "", "/admin/events");
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this event?")) {
-      await fetch(`/api/events/${id}`, { method: "DELETE" });
-      fetchEvents();
+    if (!confirm("Delete this event?")) return;
+
+    try {
+      const { error } = await supabase.from("events").delete().eq("id", id);
+      if (error) throw error;
+      await loadEvents();
+    } catch (error) {
+      alert("Failed to delete");
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const filteredEvents = events.filter((event) =>
+    event.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    setUploading(true);
-    try {
-      const compressed = await compressImage(file);
-      const url = await uploadToSupabase(compressed, "event-images");
-      setFormData((prev) => ({ ...prev, image_url: url }));
-      alert('Image uploaded successfully!');
-    } catch (error) {
-      console.error("Upload error:", error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      alert(`Failed to upload image: ${errorMessage}\n\nPlease make sure:\n1. Supabase credentials are set in .env.local\n2. Storage bucket "event-images" exists in Supabase\n3. Bucket is set to public`);
-    } finally {
-      setUploading(false);
-    }
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Manage Events</h1>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+          <p className="text-gray-500 mt-1">
+            Manage upcoming events and registrations
+          </p>
+        </div>
+        <Button onClick={() => setShowForm(!showForm)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Create Event
+        </Button>
+      </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">{isEditing ? "Edit Event" : "Create New Event"}</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Event Title</label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Description</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg"
-                rows={4}
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Date</label>
-                <input
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+      {/* Create Form */}
+      {showForm && (
+        <div className="bg-white rounded-xl border p-6">
+          <h2 className="text-lg font-semibold mb-6">Create New Event</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="title">Event Title *</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter event title"
                   required
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Location</label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+              <div className="space-y-2">
+                <Label htmlFor="date">Event Date *</Label>
+                <Input
+                  id="date"
+                  type="datetime-local"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
                   required
                 />
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Event Amount (₹)</label>
-              <div className="relative">
-                <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
+            
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="location">Location *</Label>
+                <Input
+                  id="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Enter event location"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="amount">Registration Fee (₹)</Label>
+                <Input
+                  id="amount"
                   type="number"
                   min="0"
-                  step="0.01"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
-                  className="w-full pl-10 pr-3 py-2 border rounded-lg"
-                  placeholder="0.00"
-                  required
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="0 for free events"
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">Enter 0 for free events</p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Event Image</label>
-              <label className="w-full px-4 py-2 bg-gray-100 border rounded-lg cursor-pointer hover:bg-gray-200 flex items-center justify-center gap-2">
-                {uploading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4" />
-                    Upload Image
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  disabled={uploading}
-                />
-              </label>
-              {formData.image_url && (
-                <img src={formData.image_url} alt="Preview" className="mt-2 h-32 object-cover w-full rounded border" />
-              )}
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Enter event description"
+                rows={3}
+              />
             </div>
 
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                disabled={loading || uploading}
-                className="flex-1 bg-[#276EF1] text-white px-4 py-2 rounded-lg hover:bg-[#1e5acc] disabled:opacity-50"
-              >
-                {loading ? "Saving..." : isEditing ? "Update Event" : "Create Event"}
-              </button>
-              {isEditing && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setCurrentEvent(null);
-                    setFormData({ title: "", description: "", date: "", location: "", image_url: "", amount: 0 });
-                  }}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              )}
+            <div className="space-y-2">
+              <Label htmlFor="image">Event Image (Optional)</Label>
+              <Input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+              />
+            </div>
+
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className="w-full max-w-md h-40 object-cover rounded-lg" />
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
+                {isSubmitting ? "Creating..." : "Create Event"}
+              </Button>
+              <Button type="button" variant="outline" onClick={resetForm}>
+                Cancel
+              </Button>
             </div>
           </form>
         </div>
+      )}
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Events List ({events.length})</h2>
-          <div className="space-y-3 max-h-[700px] overflow-y-auto">
-            {events.map((event) => (
-              <div key={event.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                {event.image_url && (
-                  <img src={event.image_url} alt={event.title} className="w-full h-32 object-cover rounded mb-3" />
-                )}
-                <h3 className="font-semibold text-lg mb-1">{event.title}</h3>
-                <p className="text-sm text-gray-600 mb-2 line-clamp-2">{event.description}</p>
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-                  <span>{new Date(event.date).toLocaleDateString()}</span>
-                  <span>{event.location}</span>
-                </div>
-                <div className="flex items-center gap-2 mb-3">
-                  <IndianRupee className="w-4 h-4 text-green-600" />
-                  <span className="font-semibold text-green-600">
-                    {event.amount === 0 ? "Free" : `₹${event.amount.toFixed(2)}`}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(event)}
-                    className="flex-1 px-3 py-2 text-blue-600 bg-blue-50 rounded hover:bg-blue-100 flex items-center justify-center gap-2"
-                  >
-                    <Pencil className="w-4 h-4" />
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(event.id)}
-                    className="flex-1 px-3 py-2 text-red-600 bg-red-50 rounded hover:bg-red-100 flex items-center justify-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
+      {/* Search */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Input
+          placeholder="Search events..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Events List */}
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        </div>
+      ) : filteredEvents.length > 0 ? (
+        <div className="bg-white rounded-xl border overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    Event
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    Date
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    Location
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    Fee
+                  </th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {filteredEvents.map((event) => (
+                  <tr key={event.id} className="hover:bg-gray-50">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-3">
+                        {event.image_url ? (
+                          <img
+                            src={event.image_url}
+                            alt=""
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-gray-400" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium text-gray-900">{event.title}</p>
+                          <p className="text-sm text-gray-500 line-clamp-1">
+                            {event.description}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-600">
+                      {formatDate(event.date)}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-600">
+                      {event.location}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-600">
+                      {event.amount > 0 ? `₹${event.amount}` : "Free"}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <button
+                        onClick={() => handleDelete(event.id)}
+                        className="text-red-500 hover:text-red-700 p-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="text-center py-12 bg-white rounded-xl border">
+          <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <p className="font-medium text-gray-900">No events found</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Create your first event to get started
+          </p>
+        </div>
+      )}
     </div>
   );
 }
