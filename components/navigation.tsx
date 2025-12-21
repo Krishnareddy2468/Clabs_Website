@@ -45,7 +45,7 @@ export function Navigation() {
           <div className="flex h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-[#276EF1] to-[#37D2C5] shadow-lg shadow-primary/20">
             <Cpu className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
           </div>
-          <span className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground tracking-tight">CLABS</span>
+          <span className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground tracking-tight">C-LABS</span>
         </Link>
 
         {/* Desktop Navigation */}

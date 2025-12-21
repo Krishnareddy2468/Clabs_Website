@@ -23,10 +23,10 @@ export function CTASection() {
 
           <div className="relative">
             <h2 className="mb-4 sm:mb-5 text-xl sm:text-2xl md:text-3xl lg:text-[2.75rem] font-bold text-white leading-tight">
-              Ready to Begin Your Tech Journey?
+              Ready to Excel in STEM Academics?
             </h2>
             <p className="mx-auto mb-6 sm:mb-8 md:mb-10 max-w-xl text-sm sm:text-base md:text-lg text-white/80">
-              Give your child the gift of future-ready skills. Join thousands of students already learning with CLABS.
+              Enroll your child in our year-long STEM academic program for Classes 3-9. Comprehensive curriculum with specially designed academic books for each standard.
             </p>
 
             <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 sm:flex-row">
@@ -35,8 +35,8 @@ export function CTASection() {
                 className="w-full sm:w-auto rounded-full bg-white px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-base font-semibold text-[#276EF1] shadow-lg hover:bg-white/90 btn-shimmer"
                 asChild
               >
-                <Link href="/programs">
-                  View Programs
+                <Link href="/contact">
+                  Enroll Now
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

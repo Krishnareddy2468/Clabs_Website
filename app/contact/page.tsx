@@ -16,8 +16,8 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    value: "hello@clabs.edu",
-    href: "mailto:hello@clabs.edu",
+    value: "support@clabs.life",
+    href: "mailto:support@clabs.life",
   },
   {
     icon: Phone,
@@ -41,34 +41,34 @@ const contactInfo = [
 
 const faqs = [
   {
-    question: "What age groups do you serve?",
+    question: "What classes do you offer programs for?",
     answer:
-      "CLABS offers programs for students from Grade 1 through Grade 12. Our curriculum is carefully designed with age-appropriate content and teaching methods for each grade level.",
+      "C LABS STEM ACADEMICS offers year-long academic programs specifically designed for students in Classes 3 through 9. Each class has its own specially designed academic book and curriculum.",
   },
   {
-    question: "Do students need any prior experience?",
+    question: "What is included in the year-long program?",
     answer:
-      "No prior experience is needed! Our programs start from the basics and progress gradually. We have beginner, intermediate, and advanced levels to accommodate all skill levels.",
+      "The program includes a specially designed academic book for your child's class, year-long structured curriculum, hands-on activities, regular assessments, and comprehensive coverage of all STEM subjects aligned with educational standards.",
   },
   {
-    question: "What equipment do students need?",
+    question: "Are the academic books different for each class?",
     answer:
-      "For in-person classes, all equipment is provided at our centers. For online classes, students need a computer with internet access. Specific hardware kits can be purchased or rented for home-based projects.",
+      "Yes, we have specially designed academic books for each standard from Class 3 to Class 9. Each book is age-appropriate and tailored to the specific learning outcomes for that class level.",
   },
   {
-    question: "How are the classes conducted?",
+    question: "How is the curriculum delivered?",
     answer:
-      "We offer both in-person classes at our innovation labs and online virtual classes. Classes are typically 1-2 hours long, held weekly, with additional project work assignments.",
+      "The year-long curriculum is delivered through a combination of classroom instruction, hands-on activities, experiments, and projects. Students receive their class-specific academic book and follow the structured program throughout the academic year.",
   },
   {
-    question: "Can schools partner with CLABS?",
+    question: "Can schools partner with C LABS for their STEM curriculum?",
     answer:
-      "We have partnership programs for schools including curriculum integration, teacher training, and on-site STEM labs. Contact us to discuss partnership opportunities.",
+      "Yes! We offer comprehensive school partnership programs where we provide the academic books, curriculum, and teacher training for Classes 3-9. Contact us to discuss how we can integrate our STEM academics into your school.",
   },
   {
-    question: "What is your refund policy?",
+    question: "What subjects are covered in the academic books?",
     answer:
-      "We offer a full refund within the first two weeks of enrollment if you're not satisfied. After that, prorated refunds are available based on the remaining course duration.",
+      "Our academic books cover all core STEM subjects including Science, Technology, Engineering, and Mathematics. The content is progressive, building upon concepts learned in previous classes, ensuring a strong foundation for higher education.",
   },
 ]
 
@@ -216,7 +216,7 @@ export default function ContactPage() {
                 <div className="relative h-64 sm:h-80 lg:h-full lg:min-h-[450px]">
                   <img
                     src="/modern-office-location-map.jpg"
-                    alt="CLABS Location Map"
+                    alt="C-LABS Location Map"
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-[#0A1B2A]/5">

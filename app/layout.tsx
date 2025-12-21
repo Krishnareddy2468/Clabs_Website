@@ -1,7 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Poppins } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
+// import { Analytics } from "@vercel/analytics/next"  // Comment this out if not using Vercel
 import "./globals.css"
 
 const poppins = Poppins({
@@ -11,7 +11,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "CLABS - Future-Ready STEM Education",
+  title: "C-LABS - Future-Ready STEM Education",
   description:
     "Empowering children with hands-on learning in Robotics, Coding, AI, IoT & Cybersecurity. Grade 1-12 STEM education programs.",
   keywords: [
@@ -40,7 +40,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.className} font-sans antialiased`}>
         {children}
-        <Analytics />
+        {/* <Analytics /> */}  {/* Comment this out if not using Vercel */}
       </body>
     </html>
   )

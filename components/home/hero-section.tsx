@@ -63,7 +63,7 @@ export function HeroSection() {
             <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] border border-white/50 bg-white shadow-2xl shadow-primary/10">
               <img
                 src="/children-learning-robotics-coding-in-modern-classr.jpg"
-                alt="Students learning robotics and coding at CLABS"
+                alt="Students learning robotics and coding at C-LABS"
                 className="h-auto w-full object-cover"
               />
             </div>

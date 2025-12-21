@@ -50,7 +50,7 @@ export default function TermsOfServicePage() {
                 </div>
                 <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-[#0A1B2A]/70">
                   <p>
-                    By accessing or using CLABS services, you acknowledge that you have read, understood, and agree to
+                    By accessing or using C-LABS services, you acknowledge that you have read, understood, and agree to
                     be bound by these Terms. If you are enrolling a minor, you represent that you are the parent or
                     legal guardian and accept these Terms on their behalf.
                   </p>
@@ -177,11 +177,11 @@ export default function TermsOfServicePage() {
                 </div>
                 <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-[#0A1B2A]/70">
                   <p>
-                    CLABS provides educational services on an "as is" basis. We do not guarantee specific educational
+                    C-LABS provides educational services on an "as is" basis. We do not guarantee specific educational
                     outcomes or career results.
                   </p>
                   <p>
-                    To the maximum extent permitted by law, CLABS shall not be liable for any indirect, incidental,
+                    To the maximum extent permitted by law, C-LABS shall not be liable for any indirect, incidental,
                     special, or consequential damages arising from your participation in our programs.
                   </p>
                   <p>

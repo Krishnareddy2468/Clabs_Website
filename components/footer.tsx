@@ -86,7 +86,7 @@ export function Footer() {
               <div className="flex h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#276EF1] to-[#37D2C5]">
                 <Cpu className="h-5 w-5 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
               </div>
-              <span className="text-xl sm:text-xl lg:text-2xl font-bold tracking-tight">CLABS</span>
+              <span className="text-xl sm:text-xl lg:text-2xl font-bold tracking-tight">C-LABS</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm sm:text-[15px] leading-relaxed text-white/60">
               Empowering the next generation with future-ready skills through hands-on learning in Robotics, Coding, AI,
@@ -148,11 +148,11 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="mailto:hello@clabs.edu"
+                  href="mailto:info@clabs.life"
                   className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-[#37D2C5] active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
                 >
                   <Mail className="h-4 w-4 shrink-0 text-[#37D2C5]" />
-                  <span className="break-all">hello@clabs.edu</span>
+                  <span className="break-all">info@clabs.life</span>
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto sm:hidden text-white/30" />
                 </a>
               </li>
@@ -200,7 +200,7 @@ export function Footer() {
             </div>
 
             <p className="order-2 md:order-1 text-xs sm:text-sm text-white/40 text-center md:text-left pb-[env(safe-area-inset-bottom)]">
-              &copy; {new Date().getFullYear()} CLABS. All rights reserved.
+              &copy; {new Date().getFullYear()} C-LABS. All rights reserved.
             </p>
           </div>
         </div>
