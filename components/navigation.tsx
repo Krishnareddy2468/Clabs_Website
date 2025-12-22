@@ -105,7 +105,7 @@ export function Navigation() {
         {/* Backdrop */}
         <div
           className={cn(
-            "absolute inset-0 bg-background/98 backdrop-blur-xl transition-opacity duration-300",
+            "absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300",
             isOpen ? "opacity-100" : "opacity-0",
           )}
           onClick={() => setIsOpen(false)}
@@ -114,7 +114,7 @@ export function Navigation() {
         {/* Menu Content */}
         <nav
           className={cn(
-            "relative h-full flex flex-col bg-background/98 transition-transform duration-300 ease-out",
+            "relative h-full flex flex-col bg-white transition-transform duration-300 ease-out",
             isOpen ? "translate-y-0" : "-translate-y-4",
           )}
         >
@@ -138,7 +138,7 @@ export function Navigation() {
             </div>
           </div>
 
-          <div className="shrink-0 border-t border-border/50 bg-background/95 p-4 sm:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <div className="shrink-0 border-t border-border/50 bg-white p-4 sm:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
             <Button
               className="w-full rounded-2xl bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-4 sm:py-5 text-base sm:text-lg font-semibold text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform touch-manipulation"
               asChild
@@ -148,13 +148,13 @@ export function Navigation() {
               </Link>
             </Button>
 
-            <div className="mt-4 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-              <a href="mailto:hello@clabs.edu" className="hover:text-primary transition-colors">
-                hello@clabs.edu
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-sm text-muted-foreground">
+              <a href="mailto:support@clabs.life" className="hover:text-primary transition-colors">
+                support@clabs.life
               </a>
-              <span className="text-border">|</span>
-              <a href="tel:+1234567890" className="hover:text-primary transition-colors">
-                +1 (234) 567-890
+              <span className="hidden sm:inline text-border">|</span>
+              <a href="tel:+919502335257" className="hover:text-primary transition-colors">
+                +91 9502335257
               </a>
             </div>
           </div>
