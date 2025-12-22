@@ -218,7 +218,7 @@ export function Hero() {
                       <img
                         src={banner.image_url}
                         alt={banner.title}
-                        className="w-full h-full object-cover sm:object-contain"
+                        className="w-full h-full object-cover sm:object-contain banner-image-mobile"
                       />
                     </div>
                   ))}

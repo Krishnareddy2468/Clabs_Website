@@ -479,3 +479,10 @@ body {
     opacity: 0.9;
   }
 }
+
+/* Mobile banner image cropping to hide bottom branding */
+@media (max-width: 640px) {
+  .banner-image-mobile {
+    object-position: center 20% !important;
+  }
+}
