@@ -4,6 +4,13 @@ import { useState } from "react"
 import { X, User, Users, GraduationCap, BookOpen, Phone, CreditCard, MapPin, Map, Calendar, IndianRupee } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+// Razorpay type declaration
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 interface Event {
   id: string
   title: string
@@ -11,6 +18,8 @@ interface Event {
   date: string
   location: string
   amount: number
+  total_seats: number
+  available_seats: number
 }
 
 interface EventRegistrationModalProps {
@@ -38,6 +47,147 @@ export function EventRegistrationModal({ event, isOpen, onClose }: EventRegistra
     setLoading(true)
 
     try {
+      // If event is free, skip payment
+      if (event.amount === 0) {
+        await handleFreeRegistration()
+        return
+      }
+
+      // Check if Razorpay is loaded
+      if (typeof window.Razorpay === 'undefined') {
+        throw new Error("Razorpay SDK not loaded. Please refresh the page and try again.")
+      }
+
+      // Create Razorpay order
+      // Generate a short receipt ID (max 40 chars)
+      const shortReceipt = `evt_${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 5)}`
+      
+      const orderResponse = await fetch("/api/razorpay/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: event.amount,
+          currency: "INR",
+          receipt: shortReceipt,
+          notes: {
+            eventId: event.id,
+            eventTitle: event.title,
+            studentName: formData.name,
+            mobile: formData.mobileNumber,
+          },
+        }),
+      })
+
+      if (!orderResponse.ok) {
+        const errorData = await orderResponse.json()
+        console.error("Order creation failed:", errorData)
+        throw new Error(errorData.error || "Failed to create order")
+      }
+
+      const orderData = await orderResponse.json()
+      console.log("Order created successfully:", orderData.orderId)
+
+      // Get Razorpay key from environment
+      const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+      if (!razorpayKey) {
+        throw new Error("Razorpay configuration is missing. Please contact support.")
+      }
+
+      // Initialize Razorpay
+      const options = {
+        key: razorpayKey,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "C-LABS",
+        description: event.title,
+        order_id: orderData.orderId,
+        prefill: {
+          name: formData.name,
+          contact: formData.mobileNumber,
+          email: `${formData.mobileNumber}@registration.event`,
+        },
+        theme: {
+          color: "#276EF1",
+        },
+        handler: async function (response: any) {
+          await verifyPayment(response)
+        },
+        modal: {
+          ondismiss: function () {
+            console.log("Payment modal closed by user")
+            setLoading(false)
+          },
+        },
+      }
+
+      const razorpay = new window.Razorpay(options)
+      razorpay.open()
+    } catch (error: any) {
+      console.error("Registration failed:", error)
+      alert(error.message || "Failed to initiate payment. Please try again.")
+      setLoading(false)
+    }
+  }
+
+  const verifyPayment = async (paymentResponse: any) => {
+    try {
+      const verifyResponse = await fetch("/api/razorpay/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          razorpay_order_id: paymentResponse.razorpay_order_id,
+          razorpay_payment_id: paymentResponse.razorpay_payment_id,
+          razorpay_signature: paymentResponse.razorpay_signature,
+          formData: formData,
+          eventDetails: event,
+        }),
+      })
+
+      if (verifyResponse.ok) {
+        setSuccess(true)
+        setTimeout(() => {
+          onClose()
+          setSuccess(false)
+          resetForm()
+        }, 3000)
+      } else {
+        throw new Error("Payment verification failed")
+      }
+    } catch (error) {
+      console.error("Payment verification failed:", error)
+      alert("Payment verification failed. Please contact support with your payment details.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleFreeRegistration = async () => {
+    try {
+      // Save registration to database first
+      const registrationResponse = await fetch("/api/events/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId: event.id,
+          studentName: formData.name,
+          fatherName: formData.fatherName,
+          schoolCollege: formData.schoolOrCollege,
+          class: formData.class,
+          mobileNumber: formData.mobileNumber,
+          aadhaarNumber: formData.aadhaarNumber,
+          city: formData.city,
+          state: formData.state,
+          amountPaid: 0,
+          paymentStatus: "completed",
+        }),
+      });
+
+      if (!registrationResponse.ok) {
+        const errorData = await registrationResponse.json();
+        throw new Error(errorData.error || "Failed to save registration");
+      }
+
+      // Also save to contacts as backup
       const message = `Event Registration: ${event.title}\n\n` +
         `Name: ${formData.name}\n` +
         `Father's Name: ${formData.fatherName}\n` +
@@ -46,9 +196,10 @@ export function EventRegistrationModal({ event, isOpen, onClose }: EventRegistra
         `Mobile: ${formData.mobileNumber}\n` +
         `Aadhaar: ${formData.aadhaarNumber}\n` +
         `City: ${formData.city}\n` +
-        `State: ${formData.state}`
+        `State: ${formData.state}\n` +
+        `Amount: Free Event`
 
-      const response = await fetch("/api/contacts", {
+      await fetch("/api/contacts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,31 +208,35 @@ export function EventRegistrationModal({ event, isOpen, onClose }: EventRegistra
           phone: formData.mobileNumber,
           message: message,
         }),
-      })
+      });
 
-      if (response.ok) {
-        setSuccess(true)
-        setTimeout(() => {
-          onClose()
-          setSuccess(false)
-          setFormData({
-            name: "",
-            fatherName: "",
-            schoolOrCollege: "",
-            class: "",
-            mobileNumber: "",
-            aadhaarNumber: "",
-            city: "",
-            state: "",
-          })
-        }, 2000)
-      }
-    } catch (error) {
-      console.error("Registration failed:", error)
-      alert("Failed to submit registration. Please try again.")
+      setSuccess(true);
+      setTimeout(() => {
+        onClose();
+        setSuccess(false);
+        resetForm();
+        // Refresh the page to update seat count
+        window.location.reload();
+      }, 2000);
+    } catch (error: any) {
+      console.error("Registration failed:", error);
+      alert(error.message || "Failed to submit registration. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      fatherName: "",
+      schoolOrCollege: "",
+      class: "",
+      mobileNumber: "",
+      aadhaarNumber: "",
+      city: "",
+      state: "",
+    })
   }
 
   if (!isOpen) return null
@@ -125,6 +280,21 @@ export function EventRegistrationModal({ event, isOpen, onClose }: EventRegistra
                 {event.amount === 0 ? 'Free Event' : `₹${event.amount.toFixed(2)}`}
               </span>
             </div>
+          </div>
+          <div className="mt-3 flex items-center gap-2">
+            <Users className="w-4 h-4 text-blue-600" />
+            <span className={`text-sm font-medium ${
+              event.available_seats === 0 ? 'text-red-600' :
+              event.available_seats < 10 ? 'text-orange-600' :
+              'text-green-600'
+            }`}>
+              {event.available_seats === 0 
+                ? 'Seats Full - Registration Closed' 
+                : event.available_seats < 10 
+                  ? `⚠️ Only ${event.available_seats} seats remaining!` 
+                  : `${event.available_seats} of ${event.total_seats} seats available`
+              }
+            </span>
           </div>
         </div>
 
@@ -304,7 +474,11 @@ export function EventRegistrationModal({ event, isOpen, onClose }: EventRegistra
                   className="flex-1 bg-gradient-to-r from-[#276EF1] to-[#37D2C5]"
                   disabled={loading}
                 >
-                  {loading ? "Submitting..." : "Complete Registration"}
+                  {loading 
+                    ? "Processing..." 
+                    : event.amount === 0 
+                      ? "Complete Registration" 
+                      : "Proceed to Payment"}
                 </Button>
               </div>
             </>

@@ -86,11 +86,11 @@ export function TrustedSchools() {
         {/* Stats */}
         <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto">
           <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-[#276EF1]">{schools.length}+</p>
+            <p className="text-2xl sm:text-3xl font-bold text-[#276EF1]">22+</p>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">Partner Schools</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-[#37D2C5]">10,000+</p>
+            <p className="text-2xl sm:text-3xl font-bold text-[#37D2C5]">5,000+</p>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">Students Enrolled</p>
           </div>
           <div className="text-center">

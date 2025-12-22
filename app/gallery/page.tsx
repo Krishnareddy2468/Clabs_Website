@@ -1,207 +1,154 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { X } from "lucide-react"
+import { X, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const categories = ["All", "Robotics", "AI", "IoT", "Cybersecurity", "Events"]
 
-const galleryItems = [
+interface GalleryImage {
+  id: string
+  title: string
+  image_url: string
+  category: string | null
+  created_at: string
+}
+
+// Static placeholder images from Gallery folder (will be replaced by admin uploads)
+const staticPlaceholderImages = [
   {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.18.49.jpeg",
-    alt: "STEM Workshop Activity",
-    category: "Robotics",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.18.50.jpeg",
-    alt: "Students Learning",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.18.51.jpeg",
-    alt: "Hands-on Learning",
-    category: "IoT",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.12.jpeg",
-    alt: "C-LABS Workshop",
-    category: "Robotics",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.13.jpeg",
-    alt: "Coding Session",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/fsdnsdov 2025-12-16 at 04.19.13.jpeg",
-    alt: "Group Activity",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.15.jpeg",
-    alt: "Technology Exploration",
-    category: "IoT",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.16.jpeg",
-    alt: "Student Project",
-    category: "Robotics",
-  },
-  {
-    src: "/Gallery/WhatsApp ge 2025-12-16 at 04.19.16.jpeg",
-    alt: "Team Collaboration",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.17.jpeg",
-    alt: "Innovation Lab",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Image -12-16 at 04.19.18.jpeg",
-    alt: "STEM Learning",
+    id: "static-1",
+    image_url: "/Gallery/WhatsApp Image 2025-12-16t 04.19.22.jpeg",
+    title: "Collaborative Work",
     category: "Cybersecurity",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image 2025-12- at 04.19.19.jpeg",
-    alt: "Workshop Session",
+    id: "static-2",
+    image_url: "/Gallery/WhatsApp Image 202-16 at 04.19.23.jpeg",
+    title: "STEM Education",
     category: "Robotics",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp025-12-16 at 04.19.19.jpeg",
-    alt: "Creative Thinking",
+    id: "static-3",
+    image_url: "/Gallery/WhatsApp Image 20256 at 04.19.23.jpeg",
+    title: "Innovation Session",
     category: "AI",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp  2025-12-16 at 04.19.20.jpeg",
-    alt: "Building Projects",
+    id: "static-4",
+    image_url: "/Gallery/WhatsApp Image12-16 at 04.19.24.jpeg",
+    title: "Coding Workshop",
+    category: "AI",
+    created_at: "",
+  },
+  {
+    id: "static-5",
+    image_url: "/Gallery/WhatsApp Im5-12-16 at 04.19.25.jpeg",
+    title: "Tech Exploration",
     category: "IoT",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.20.jpeg",
-    alt: "Student Engagement",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image -12-16 at 04.19.21.jpeg",
-    alt: "Technology Workshop",
+    id: "static-7",
+    image_url: "/Gallery/WhatsApp Image 6 at 04.19.27.jpeg",
+    title: "Learning Experience",
     category: "Robotics",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image 2025-12-16 at 04.19.21.jpeg",
-    alt: "Interactive Learning",
+    id: "static-8",
+    image_url: "/Gallery/WhatsApp Image 6 at 04.19.28.jpeg",
+    title: "Creative Solutions",
     category: "AI",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image 2025-12-16 04.19.22.jpeg",
-    alt: "Project Development",
+    id: "static-10",
+    image_url: "/Gallery/WhatsApp Image 2025-104.19.29.jpeg",
+    title: "Problem Solving",
     category: "IoT",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image 2025-12-16t 04.19.22.jpeg",
-    alt: "Collaborative Work",
+    id: "static-11",
+    image_url: "/Gallery/WhatsApp Imag12-16 at 04.19.30.jpeg",
+    title: "Innovation Workshop",
+    category: "Robotics",
+    created_at: "",
+  },
+  {
+    id: "static-12",
+    image_url: "/Gallery/WhatsApp Image 216 at 04.19.30.jpeg",
+    title: "STEM Activities",
+    category: "AI",
+    created_at: "",
+  },
+  {
+    id: "static-13",
+    image_url: "/Gallery/WhatsApp Image 2004.19.31.jpeg",
+    title: "Technology Projects",
     category: "Cybersecurity",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image -16 at 04.19.23.jpeg",
-    alt: "Practical Learning",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 202-16 at 04.19.23.jpeg",
-    alt: "STEM Education",
-    category: "Robotics",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 20256 at 04.19.23.jpeg",
-    alt: "Innovation Session",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Image12-16 at 04.19.24.jpeg",
-    alt: "Coding Workshop",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Im5-12-16 at 04.19.25.jpeg",
-    alt: "Tech Exploration",
+    id: "static-14",
+    image_url: "/Gallery/WhatsApp Image 2025-124.19.32.jpeg",
+    title: "Learning Lab",
     category: "IoT",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image -12-16 at 04.19.25.jpeg",
-    alt: "Student Success",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 6 at 04.19.27.jpeg",
-    alt: "Learning Experience",
+    id: "static-16",
+    image_url: "/Gallery/WhatsApp Image 2025t 04.19.34.jpeg",
+    title: "Hands-on Experience",
     category: "Robotics",
+    created_at: "",
   },
   {
-    src: "/Gallery/WhatsApp Image 6 at 04.19.28.jpeg",
-    alt: "Creative Solutions",
+    id: "static-17",
+    image_url: "/Gallery/WhatsApp Image 2025-12-4.19.35.jpeg",
+    title: "Group Learning",
     category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Image at 04.19.28.jpeg",
-    alt: "Teamwork",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-104.19.29.jpeg",
-    alt: "Problem Solving",
-    category: "IoT",
-  },
-  {
-    src: "/Gallery/WhatsApp Imag12-16 at 04.19.30.jpeg",
-    alt: "Innovation Workshop",
-    category: "Robotics",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 216 at 04.19.30.jpeg",
-    alt: "STEM Activities",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2004.19.31.jpeg",
-    alt: "Technology Projects",
-    category: "Cybersecurity",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-124.19.32.jpeg",
-    alt: "Learning Lab",
-    category: "IoT",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025at 04.19.32.jpeg",
-    alt: "Student Innovation",
-    category: "Events",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025t 04.19.34.jpeg",
-    alt: "Hands-on Experience",
-    category: "Robotics",
-  },
-  {
-    src: "/Gallery/WhatsApp Image 2025-12-4.19.35.jpeg",
-    alt: "Group Learning",
-    category: "AI",
-  },
-  {
-    src: "/Gallery/WhatsApp Image-16 at 04.19.36.jpeg",
-    alt: "C-LABS Program",
-    category: "Events",
+    created_at: "",
   },
 ]
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [images, setImages] = useState<GalleryImage[]>([])
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    fetchImages()
+  }, [])
+
+  const fetchImages = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch("/api/gallery")
+      const data = await response.json()
+      setImages(Array.isArray(data) ? data : [])
+    } catch (error) {
+      console.error("Failed to fetch images:", error)
+      setImages([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Combine database images with static placeholders
+  const allImages = [...images, ...staticPlaceholderImages]
+  
   const filteredItems =
-    activeCategory === "All" ? galleryItems : galleryItems.filter((item) => item.category === activeCategory)
+    activeCategory === "All" 
+      ? allImages 
+      : allImages.filter((item) => item.category === activeCategory)
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -244,30 +191,43 @@ export default function GalleryPage() {
         {/* Gallery Grid */}
         <section className="py-10 sm:py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 lg:grid-cols-3">
-              {filteredItems.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(item.src)}
-                  className="premium-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white"
-                >
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={item.src || "/placeholder.svg"}
-                      alt={item.alt}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A1B2A]/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 text-left opacity-0 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
-                    <span className="inline-block rounded-full bg-[#37D2C5] px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium text-white">
-                      {item.category}
-                    </span>
-                    <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium text-white line-clamp-2">{item.alt}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
+            {loading ? (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-[#4A6382]">Loading gallery...</div>
+              </div>
+            ) : filteredItems.length === 0 ? (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-center">
+                  <p className="text-[#4A6382] text-lg">No images found in this category.</p>
+                  <p className="text-sm text-[#4A6382]/70 mt-2">Images uploaded by admin will appear here.</p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 lg:grid-cols-3">
+                {filteredItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedImage(item.image_url)}
+                    className="premium-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img
+                        src={item.image_url || "/placeholder.svg"}
+                        alt={item.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1B2A]/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 text-left opacity-0 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
+                      <span className="inline-block rounded-full bg-[#37D2C5] px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium text-white">
+                        {item.category}
+                      </span>
+                      <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium text-white line-clamp-2">{item.title}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

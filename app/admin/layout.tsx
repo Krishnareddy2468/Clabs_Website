@@ -16,7 +16,9 @@ import {
   Image,
   FileText,
   Bell,
-  Cpu
+  Cpu,
+  Video,
+  Mail
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -49,17 +51,23 @@ const navItems: NavItem[] = [
     children: [
       { title: "All Events", href: "/admin/events" },
       { title: "Create Event", href: "/admin/events?action=create" },
+      { title: "Registrations", href: "/admin/registrations" },
     ],
-  },
-  {
-    title: "Registrations",
-    href: "/admin/registrations",
-    icon: Users,
   },
   {
     title: "Gallery",
     href: "/admin/gallery",
     icon: Image,
+  },
+  {
+    title: "Videos",
+    href: "/admin/videos",
+    icon: Video,
+  },
+  {
+    title: "Contacts",
+    href: "/admin/contacts",
+    icon: Mail,
   },
   {
     title: "Content",

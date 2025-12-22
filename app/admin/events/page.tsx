@@ -17,6 +17,8 @@ interface Event {
   location: string;
   image_url: string | null;
   amount: number;
+  total_seats: number;
+  available_seats: number;
   created_at: string;
 }
 
@@ -26,6 +28,7 @@ function EventsPageContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Form fields
@@ -34,6 +37,7 @@ function EventsPageContent() {
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [amount, setAmount] = useState("");
+  const [totalSeats, setTotalSeats] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -113,30 +117,45 @@ function EventsPageContent() {
     try {
       setIsSubmitting(true);
 
-      let imageUrl = null;
+      let imageUrl = editingEvent?.image_url || null;
       if (imageFile) {
         imageUrl = await uploadFile(imageFile);
       }
 
-      const { error } = await supabase
-        .from("events")
-        .insert([
-          {
-            title: title.trim(),
-            description: description.trim(),
-            date,
-            location: location.trim(),
-            amount: parseFloat(amount) || 0,
-            image_url: imageUrl,
-          },
-        ]);
+      const seats = parseInt(totalSeats) || 100;
+      const eventData = {
+        title: title.trim(),
+        description: description.trim(),
+        date,
+        location: location.trim(),
+        amount: parseFloat(amount) || 0,
+        total_seats: seats,
+        available_seats: editingEvent ? editingEvent.available_seats : seats,
+        image_url: imageUrl,
+      };
 
-      if (error) throw error;
+      if (editingEvent) {
+        // Update existing event
+        const { error } = await supabase
+          .from("events")
+          .update(eventData)
+          .eq("id", editingEvent.id);
+
+        if (error) throw error;
+        alert("Event updated successfully!");
+      } else {
+        // Create new event
+        const { error } = await supabase
+          .from("events")
+          .insert([eventData]);
+
+        if (error) throw error;
+        alert("Event created successfully!");
+      }
 
       // Reset form
       resetForm();
       await loadEvents();
-      alert("Event created successfully!");
     } catch (error: any) {
       alert(`Failed: ${error.message}`);
     } finally {
@@ -150,10 +169,25 @@ function EventsPageContent() {
     setDate("");
     setLocation("");
     setAmount("");
+    setTotalSeats("");
     setImageFile(null);
     setImagePreview(null);
     setShowForm(false);
+    setEditingEvent(null);
     window.history.replaceState({}, "", "/admin/events");
+  };
+
+  const handleEdit = (event: Event) => {
+    setEditingEvent(event);
+    setTitle(event.title);
+    setDescription(event.description);
+    setDate(event.date.slice(0, 16)); // Format for datetime-local input
+    setLocation(event.location);
+    setAmount(event.amount.toString());
+    setTotalSeats(event.total_seats.toString());
+    setImagePreview(event.image_url);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: string) => {
@@ -200,7 +234,9 @@ function EventsPageContent() {
       {/* Create Form */}
       {showForm && (
         <div className="bg-white rounded-xl border p-6">
-          <h2 className="text-lg font-semibold mb-6">Create New Event</h2>
+          <h2 className="text-lg font-semibold mb-6">
+            {editingEvent ? "Edit Event" : "Create New Event"}
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="space-y-2">
@@ -247,6 +283,18 @@ function EventsPageContent() {
                   placeholder="0 for free events"
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="totalSeats">Total Seats *</Label>
+                <Input
+                  id="totalSeats"
+                  type="number"
+                  min="1"
+                  value={totalSeats}
+                  onChange={(e) => setTotalSeats(e.target.value)}
+                  placeholder="100"
+                  required
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -277,7 +325,7 @@ function EventsPageContent() {
             <div className="flex gap-3 pt-2">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
-                {isSubmitting ? "Creating..." : "Create Event"}
+                {isSubmitting ? (editingEvent ? "Updating..." : "Creating...") : (editingEvent ? "Update Event" : "Create Event")}
               </Button>
               <Button type="button" variant="outline" onClick={resetForm}>
                 Cancel
@@ -321,6 +369,9 @@ function EventsPageContent() {
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
                     Fee
                   </th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    Seats
+                  </th>
                   <th className="text-right py-3 px-4 text-sm font-medium text-gray-500">
                     Actions
                   </th>
@@ -359,13 +410,32 @@ function EventsPageContent() {
                     <td className="py-3 px-4 text-sm text-gray-600">
                       {event.amount > 0 ? `₹${event.amount}` : "Free"}
                     </td>
+                    <td className="py-3 px-4 text-sm">
+                      <span className={`font-medium ${
+                        event.available_seats === 0 ? "text-red-600" : 
+                        event.available_seats < 10 ? "text-orange-600" : 
+                        "text-green-600"
+                      }`}>
+                        {event.available_seats}/{event.total_seats}
+                      </span>
+                    </td>
                     <td className="py-3 px-4 text-right">
-                      <button
-                        onClick={() => handleDelete(event.id)}
-                        className="text-red-500 hover:text-red-700 p-2"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleEdit(event)}
+                          className="text-blue-500 hover:text-blue-700 p-2"
+                          title="Edit event"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(event.id)}
+                          className="text-red-500 hover:text-red-700 p-2"
+                          title="Delete event"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

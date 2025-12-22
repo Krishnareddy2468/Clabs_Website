@@ -22,20 +22,20 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Call Us",
-    value: "+1 (234) 567-890",
-    href: "tel:+1234567890",
+    value: "+91 9502335257",
+    href: "tel:+919502335257",
   },
   {
     icon: MapPin,
-    title: "Visit Us",
-    value: "123 Innovation Drive, Tech City, TC 12345",
-    href: "#",
+    title: "Bhainsa Office",
+    value: "Above Honda Showroom, Nirmal Road, Bhainsa - 504103",
+    href: "https://maps.google.com/?q=Above+Honda+Showroom+Nirmal+Road+Bhainsa+504103",
   },
   {
-    icon: Clock,
-    title: "Office Hours",
-    value: "Mon-Sat: 9:00 AM - 6:00 PM",
-    href: "#",
+    icon: MapPin,
+    title: "Hyderabad Office",
+    value: "16-11-740/9/1, Rudra Towers, Opp: Ravindra Bharathi School, Dilsukhnagar - 500060",
+    href: "https://maps.google.com/?q=16-11-740/9/1+Rudra+Towers+Dilsukhnagar+Hyderabad+500060",
   },
 ]
 
@@ -75,13 +75,38 @@ const faqs = [
 export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    setIsSubmitted(true)
+
+    try {
+      const response = await fetch("/api/contacts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || "Failed to send message")
+      }
+
+      setIsSubmitted(true)
+      setFormData({ name: "", email: "", phone: "", message: "" })
+    } catch (error: any) {
+      alert(`Failed to send message: ${error.message}`)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -103,18 +128,20 @@ export default function ContactPage() {
         {/* Contact Info Cards */}
         <section className="py-10 sm:py-16 md:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
               {contactInfo.map((info, index) => (
                 <a
                   key={index}
                   href={info.href}
-                  className="premium-card flex flex-col items-center rounded-xl sm:rounded-2xl border border-border/50 bg-white p-4 sm:p-6 md:p-8 text-center"
+                  target={info.icon === MapPin ? "_blank" : undefined}
+                  rel={info.icon === MapPin ? "noopener noreferrer" : undefined}
+                  className="premium-card flex flex-col items-center rounded-xl sm:rounded-2xl border border-border/50 bg-white p-4 sm:p-6 md:p-8 text-center hover:shadow-lg transition-shadow"
                 >
                   <div className="mb-3 sm:mb-5 flex h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl sm:rounded-2xl bg-[#276EF1]/10 text-[#276EF1] transition-transform group-hover:scale-110">
                     <info.icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" strokeWidth={1.5} />
                   </div>
                   <h3 className="mb-1 sm:mb-2 text-sm sm:text-base font-semibold text-[#0A1B2A]">{info.title}</h3>
-                  <p className="text-xs sm:text-sm text-[#4A6382] break-all">{info.value}</p>
+                  <p className="text-xs sm:text-sm text-[#4A6382]">{info.value}</p>
                 </a>
               ))}
             </div>
@@ -151,6 +178,8 @@ export default function ContactPage() {
                         </Label>
                         <Input
                           id="name"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           placeholder="John Doe"
                           required
                           className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
@@ -163,6 +192,8 @@ export default function ContactPage() {
                         <Input
                           id="email"
                           type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder="john@example.com"
                           required
                           className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
@@ -176,6 +207,8 @@ export default function ContactPage() {
                       <Input
                         id="phone"
                         type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="+1 (234) 567-890"
                         className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
                       />
@@ -186,6 +219,8 @@ export default function ContactPage() {
                       </Label>
                       <Textarea
                         id="message"
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         placeholder="Tell us about your inquiry..."
                         rows={4}
                         required
@@ -195,7 +230,7 @@ export default function ContactPage() {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full rounded-full bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-5 sm:py-6 font-semibold text-white shadow-lg shadow-primary/20 btn-shimmer"
+                      className="w-full rounded-full bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-5 sm:py-6 font-semibold text-white shadow-lg shadow-primary/20 btn-shimmer disabled:opacity-50"
                       disabled={isLoading}
                     >
                       {isLoading ? (

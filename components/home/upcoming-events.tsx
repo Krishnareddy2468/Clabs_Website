@@ -13,6 +13,8 @@ interface Event {
   location: string
   image_url: string | null
   amount: number
+  total_seats: number
+  available_seats: number
 }
 
 export function UpcomingEvents() {
@@ -156,13 +158,38 @@ export function UpcomingEvents() {
                             {event.amount === 0 ? 'Free Event' : `₹${event.amount.toFixed(2)}`}
                           </span>
                         </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                            event.available_seats === 0 ? 'bg-red-500' :
+                            event.available_seats < 10 ? 'bg-orange-500' :
+                            'bg-green-500'
+                          }`}>
+                            <span className="text-white text-xs font-bold">
+                              {event.available_seats}
+                            </span>
+                          </div>
+                          <span className={`text-sm font-medium ${
+                            event.available_seats === 0 ? 'text-red-600' :
+                            event.available_seats < 10 ? 'text-orange-600' :
+                            'text-green-600'
+                          }`}>
+                            {event.available_seats === 0 
+                              ? 'Seats Full' 
+                              : event.available_seats < 10 
+                                ? `Only ${event.available_seats} seats left!` 
+                                : `${event.available_seats} seats available`
+                            }
+                          </span>
+                        </div>
                       </div>
 
                       <Button
                         onClick={() => handleRegister(event)}
-                        className="w-full md:w-auto bg-gradient-to-r from-[#276EF1] to-[#37D2C5] text-white px-8 py-6 text-lg group"
+                        disabled={event.available_seats === 0}
+                        className="w-full md:w-auto bg-gradient-to-r from-[#276EF1] to-[#37D2C5] text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Register for Event
+                        {event.available_seats === 0 ? 'Event Full' : 'Register for Event'}
                         <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Button>
                     </div>

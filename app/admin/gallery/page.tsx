@@ -173,21 +173,29 @@ export default function AdminGalleryPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredImages.map((image) => (
-            <div key={image.id} className="relative group">
-              <img
-                src={image.image_url}
-                alt={image.title}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all rounded-lg flex items-center justify-center">
-                <button
-                  onClick={() => handleDelete(image.id)}
-                  className="opacity-0 group-hover:opacity-100 bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition-all"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+            <div key={image.id} className="bg-white rounded-xl border overflow-hidden group">
+              <div className="relative aspect-video bg-gray-100">
+                {image.image_url ? (
+                  <img 
+                    src={image.image_url} 
+                    alt={image.title} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Upload className="w-12 h-12 text-gray-300" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                  <button
+                    onClick={() => handleDelete(image.id)}
+                    className="opacity-0 group-hover:opacity-100 bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition-all"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-              <div className="mt-2">
+              <div className="p-4">
                 <p className="font-medium text-sm truncate">{image.title}</p>
                 {image.category && (
                   <p className="text-xs text-gray-500 bg-gray-100 inline-block px-2 py-1 rounded-full mt-1">
