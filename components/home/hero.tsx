@@ -242,15 +242,15 @@ export function Hero() {
                       </button>
 
                       {/* Dots Indicator */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+                      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-1 sm:gap-1.5 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
                         {banners.map((_, index) => (
                           <button
                             key={index}
                             onClick={() => goToBanner(index)}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                            className={`h-1 sm:h-1.5 rounded-full transition-all duration-300 ${
                               index === currentBannerIndex
-                                ? 'w-6 bg-[#276EF1]'
-                                : 'w-1.5 bg-gray-400 hover:bg-gray-600'
+                                ? 'w-4 sm:w-6 bg-[#276EF1]'
+                                : 'w-1 sm:w-1.5 bg-gray-400 hover:bg-gray-600'
                             }`}
                             aria-label={`Go to banner ${index + 1}`}
                           />

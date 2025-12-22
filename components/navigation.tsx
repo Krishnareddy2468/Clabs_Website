@@ -98,29 +98,27 @@ export function Navigation() {
 
       <div
         className={cn(
-          "fixed inset-x-0 top-16 bottom-0 z-[999] lg:hidden",
+          "fixed inset-0 top-16 z-[9999] lg:hidden",
           isOpen ? "block" : "hidden",
         )}
       >
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-black/50"
+          className="absolute inset-0 bg-black/60"
           onClick={() => setIsOpen(false)}
         />
 
         {/* Menu Content */}
-        <nav className="relative h-full flex flex-col bg-white shadow-xl">
-          <div className="flex-1 px-4 py-4 sm:px-6 overflow-visible">
-            <div className="space-y-1">
+        <nav className="absolute inset-x-0 top-0 bottom-0 flex flex-col bg-white shadow-2xl">
+          <div className="flex-1 px-4 py-4 sm:px-6 bg-white">
+            <div className="space-y-1 bg-white">
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium text-gray-900 transition-all active:scale-[0.98] hover:bg-gray-50 active:bg-gray-100 touch-manipulation",
-                    "animate-in fade-in slide-in-from-bottom-2",
+                    "flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium text-gray-900 bg-white transition-all active:scale-[0.98] hover:bg-gray-100 active:bg-gray-200 touch-manipulation",
                   )}
-                  style={{ animationDelay: `${index * 50}ms` }}
                   onClick={() => setIsOpen(false)}
                 >
                   <span>{link.label}</span>
