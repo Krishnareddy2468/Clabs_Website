@@ -114,18 +114,18 @@ export function Navigation() {
         {/* Menu Content */}
         <nav
           className={cn(
-            "relative h-full flex flex-col bg-white transition-transform duration-300 ease-out",
+            "relative h-full flex flex-col bg-white transition-transform duration-300 ease-out overflow-hidden",
             isOpen ? "translate-y-0" : "-translate-y-4",
           )}
         >
-          <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-6">
-            <div className="space-y-1">
+          <div className="flex-1 px-4 py-6 sm:px-6 overflow-visible">
+            <div className="space-y-2">
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "flex items-center justify-between rounded-2xl px-4 py-4 text-base sm:text-lg font-medium text-foreground transition-all active:scale-[0.98] hover:bg-muted/80 active:bg-muted touch-manipulation",
+                    "flex items-center justify-between rounded-xl px-5 py-3.5 text-lg font-medium text-foreground transition-all active:scale-[0.98] hover:bg-gray-50 active:bg-gray-100 touch-manipulation",
                     "animate-in fade-in slide-in-from-bottom-2",
                   )}
                   style={{ animationDelay: `${index * 50}ms` }}
@@ -138,9 +138,9 @@ export function Navigation() {
             </div>
           </div>
 
-          <div className="shrink-0 border-t border-border/50 bg-white p-4 sm:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-5 sm:px-6 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
             <Button
-              className="w-full rounded-2xl bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-4 sm:py-5 text-base sm:text-lg font-semibold text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform touch-manipulation"
+              className="w-full rounded-xl bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-3.5 text-base font-semibold text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform touch-manipulation"
               asChild
             >
               <Link href="/programs" onClick={() => setIsOpen(false)}>
@@ -148,12 +148,11 @@ export function Navigation() {
               </Link>
             </Button>
 
-            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-sm text-muted-foreground">
-              <a href="mailto:support@clabs.life" className="hover:text-primary transition-colors">
+            <div className="mt-3 flex flex-col items-center gap-2 text-sm text-muted-foreground">
+              <a href="mailto:support@clabs.life" className="hover:text-primary transition-colors touch-manipulation py-1">
                 support@clabs.life
               </a>
-              <span className="hidden sm:inline text-border">|</span>
-              <a href="tel:+919502335257" className="hover:text-primary transition-colors">
+              <a href="tel:+919502335257" className="hover:text-primary transition-colors touch-manipulation py-1">
                 +91 9502335257
               </a>
             </div>
