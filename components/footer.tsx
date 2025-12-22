@@ -145,30 +145,36 @@ export function Footer() {
 
           <div className="sm:col-span-2 lg:col-span-1">
             <h3 className="mb-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white/40">Contact</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:info@clabs.life"
+                  href="mailto:support@clabs.life"
                   className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-[#37D2C5] active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
                 >
                   <Mail className="h-4 w-4 shrink-0 text-[#37D2C5]" />
-                  <span className="break-all">info@clabs.life</span>
+                  <span className="break-all">support@clabs.life</span>
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto sm:hidden text-white/30" />
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+1234567890"
+                  href="tel:+919502335257"
                   className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-[#37D2C5] active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
                 >
                   <Phone className="h-4 w-4 shrink-0 text-[#37D2C5]" />
-                  <span>+1 (234) 567-890</span>
+                  <span>+91 9502335257</span>
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto sm:hidden text-white/30" />
                 </a>
               </li>
-              <li className="flex items-start gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60">
-                <MapPin className="h-4 w-4 shrink-0 text-[#37D2C5] mt-0.5" />
-                <span>123 Innovation Drive, Tech City, TC 12345</span>
+              <li className="space-y-2">
+                <div className="flex items-start gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60">
+                  <MapPin className="h-4 w-4 shrink-0 text-[#37D2C5] mt-0.5" />
+                  <span className="leading-relaxed">Above Honda Showroom, Nirmal Road, Bhainsa - 504103</span>
+                </div>
+                <div className="flex items-start gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60">
+                  <MapPin className="h-4 w-4 shrink-0 text-[#37D2C5] mt-0.5" />
+                  <span className="leading-relaxed">16-11-740/9/1, Rudra Towers, Dilsukhnagar - 500060</span>
+                </div>
               </li>
             </ul>
           </div>

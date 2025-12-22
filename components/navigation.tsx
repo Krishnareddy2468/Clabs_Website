@@ -40,8 +40,8 @@ export function Navigation() {
   }, [isOpen])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
-      <div className="container mx-auto flex h-14 sm:h-16 lg:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/95 backdrop-blur-xl shadow-sm">
+      <div className="container mx-auto flex h-16 sm:h-16 lg:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-[#276EF1] to-[#37D2C5] shadow-lg shadow-primary/20">
             <Cpu className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
@@ -98,7 +98,7 @@ export function Navigation() {
 
       <div
         className={cn(
-          "fixed inset-x-0 top-14 sm:top-16 bottom-0 z-50 lg:hidden transition-all duration-300 ease-out",
+          "fixed inset-x-0 top-16 sm:top-16 bottom-0 z-[100] lg:hidden transition-all duration-300 ease-out",
           isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none",
         )}
       >
