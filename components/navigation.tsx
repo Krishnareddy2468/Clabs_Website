@@ -98,26 +98,18 @@ export function Navigation() {
 
       <div
         className={cn(
-          "fixed inset-x-0 top-16 sm:top-16 bottom-0 z-[100] lg:hidden transition-all duration-300 ease-out",
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none",
+          "fixed inset-x-0 top-16 bottom-0 z-[999] lg:hidden",
+          isOpen ? "block" : "hidden",
         )}
       >
         {/* Backdrop */}
         <div
-          className={cn(
-            "absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300",
-            isOpen ? "opacity-100" : "opacity-0",
-          )}
+          className="absolute inset-0 bg-black/50"
           onClick={() => setIsOpen(false)}
         />
 
         {/* Menu Content */}
-        <nav
-          className={cn(
-            "relative h-full flex flex-col bg-white transition-transform duration-300 ease-out overflow-hidden",
-            isOpen ? "translate-y-0" : "-translate-y-4",
-          )}
-        >
+        <nav className="relative h-full flex flex-col bg-white shadow-xl">
           <div className="flex-1 px-4 py-6 sm:px-6 overflow-visible">
             <div className="space-y-2">
               {navLinks.map((link, index) => (

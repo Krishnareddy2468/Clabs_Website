@@ -205,7 +205,7 @@ export function Hero() {
                 </div>
               ) : banners.length > 0 ? (
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-b from-gray-50 to-gray-100 h-[400px] sm:h-[500px] lg:h-[550px]">
-                  {/* Banner Images - Exact size, no cropping */}
+                  {/* Banner Images - Responsive sizing */}
                   {banners.map((banner, index) => (
                     <div
                       key={banner.id}
@@ -218,7 +218,7 @@ export function Hero() {
                       <img
                         src={banner.image_url}
                         alt={banner.title}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover sm:object-contain"
                       />
                     </div>
                   ))}
