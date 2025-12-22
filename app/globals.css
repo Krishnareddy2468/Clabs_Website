@@ -221,13 +221,13 @@ html {
   }
 }
 
-/* Scrolling logos animation */
+/* Scrolling logos animation - smooth infinite marquee */
 @keyframes scroll-logos {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-33.333%);
+    transform: translateX(-66.666%);
   }
 }
 
@@ -262,7 +262,8 @@ html {
 }
 
 .animate-scroll-logos {
-  animation: scroll-logos 5s linear infinite;
+  animation: scroll-logos 30s linear infinite;
+  will-change: transform;
 }
 
 .animate-scroll-logos:hover {
@@ -396,6 +397,10 @@ html {
   /* Adjust floating animation for mobile */
   .animate-float {
     animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-scroll-logos {
+    animation-duration: 40s;
   }
 }
 

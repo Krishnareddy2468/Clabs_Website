@@ -54,17 +54,17 @@ export function TrustedSchools() {
             Trusted by Leading Schools
           </h2>
           <p className="text-gray-600 text-sm sm:text-base">
-            Partnering with {schools.length}+ schools across India
+            Partnering with 22+ schools across India
           </p>
         </div>
 
-        {/* Scrolling logos */}
-        <div className="relative overflow-hidden">
-          <div className="flex items-center gap-8 sm:gap-12 animate-scroll-logos">
-            {[...schools, ...schools, ...schools].map((school, index) => (
+        {/* School logos - static grid */}
+        <div className="relative">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-10">
+            {schools.map((school, index) => (
               <div
-                key={`${school.id}-${index}`}
-                className="flex-shrink-0 flex flex-col items-center justify-center bg-white rounded-lg p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 min-w-[120px] sm:min-w-[150px] h-[140px] sm:h-[160px]"
+                key={school.id}
+                className="flex flex-col items-center justify-center bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 min-w-[130px] sm:min-w-[190px] h-[150px] sm:h-[170px] hover:scale-105"
               >
                 {school.logo_url ? (
                   <img
@@ -75,7 +75,7 @@ export function TrustedSchools() {
                 ) : (
                   <Building2 className="h-16 sm:h-20 w-16 sm:w-20 text-gray-300 mb-2" />
                 )}
-                <p className="text-xs sm:text-sm text-gray-600 text-center font-medium line-clamp-2">
+                <p className="text-xs sm:text-sm text-gray-600 text-center font-medium">
                   {school.name}
                 </p>
               </div>
