@@ -180,7 +180,7 @@ export default function ContactPage() {
                           id="name"
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="John Doe"
+                    
                           required
                           className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
                         />
@@ -194,7 +194,7 @@ export default function ContactPage() {
                           type="email"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          placeholder="john@example.com"
+                          
                           required
                           className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
                         />
@@ -208,8 +208,7 @@ export default function ContactPage() {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="+1 (234) 567-890"
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
                       />
                     </div>
@@ -246,24 +245,22 @@ export default function ContactPage() {
                 )}
               </div>
 
-              {/* Map Placeholder */}
+              {/* Map */}
               <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white shadow-sm">
                 <div className="relative h-64 sm:h-80 lg:h-full lg:min-h-[450px]">
-                  <img
-                    src="/modern-office-location-map.jpg"
-                    alt="C-LABS Location Map"
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#0A1B2A]/5">
-                    <div className="rounded-xl sm:rounded-2xl bg-white/95 p-4 sm:p-6 text-center shadow-xl backdrop-blur-sm mx-4">
-                      <div className="mx-auto mb-2 sm:mb-3 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#276EF1]/10 text-[#276EF1]">
-                        <MapPin className="h-5 w-5 sm:h-6 sm:w-6" />
-                      </div>
-                      <p className="text-sm sm:text-base font-semibold text-[#0A1B2A]">CLABS Innovation Center</p>
-                      <p className="text-xs sm:text-sm text-[#4A6382]">123 Innovation Drive</p>
-                      <p className="text-xs sm:text-sm text-[#4A6382]">Tech City, TC 12345</p>
-                    </div>
-                  </div>
+                  <h3 className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md text-sm sm:text-base font-semibold text-[#0A1B2A]">
+                    C-LABS Location Map
+                  </h3>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d235.63396105576206!2d77.96669900284122!3d19.101365030805223!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s%20clabs%20Above%20honda%20showroom%2C%20Nirmal%20road%20Bhainsa%20%2C504103!5e0!3m2!1sen!2sin!4v1766389641172!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="absolute inset-0"
+                  ></iframe>
                 </div>
               </div>
             </div>
