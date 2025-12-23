@@ -77,6 +77,7 @@ const navItems: NavItem[] = [
       { title: "Programs", href: "/admin/content/programs" },
       { title: "Testimonials", href: "/admin/content/testimonials" },
       { title: "FAQs", href: "/admin/content/faqs" },
+      { title: "Team", href: "/admin/team" },
     ],
   },
   {

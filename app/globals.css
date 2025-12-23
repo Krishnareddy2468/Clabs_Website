@@ -295,7 +295,7 @@ html {
 }
 
 .animate-scroll-logos {
-  animation: scroll-logos-horizontal 25s linear infinite;
+  animation: scroll-logos-horizontal 15s linear infinite;
 }
 
 .animate-scroll-logos:hover,

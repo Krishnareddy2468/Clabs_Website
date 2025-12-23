@@ -77,12 +77,12 @@ export default function ProgramsPage() {
 			<Navigation />
 			<main className="flex-1">
 				{/* Hero Banner */}
-				<section className="relative overflow-hidden bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] py-16 sm:py-20 md:py-24 lg:py-32">
+				<section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 to-white py-16 sm:py-20 md:py-24 lg:py-32">
 					<div className="container mx-auto px-4 sm:px-6 text-center lg:px-8">
-						<h1 className="mb-4 sm:mb-6 text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] font-bold text-[#0A1B2A]">
+						<h1 className="mb-4 sm:mb-6 text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] font-bold text-slate-900">
 							C LABS STEM ACADEMICS
 						</h1>
-						<p className="mx-auto max-w-2xl text-base sm:text-lg text-[#4A6382]">
+						<p className="mx-auto max-w-2xl text-base sm:text-lg text-slate-600">
 							Year-long academic program for Classes 3-9 with specially designed academic books for each standard
 						</p>
 					</div>
@@ -96,11 +96,11 @@ export default function ProgramsPage() {
 								<div
 									key={program.id}
 									id={program.id}
-									className="premium-card overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white"
-								>
-									<div className="grid grid-cols-1 md:grid-cols-5">
-										{/* Program Header */}
-										<div className="bg-gradient-to-br from-[#276EF1] to-[#37D2C5] p-6 sm:p-8 md:col-span-2 md:p-10 relative">
+								className="overflow-hidden rounded-xl sm:rounded-2xl border border-indigo-100 bg-white hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300"
+							>
+								<div className="grid grid-cols-1 md:grid-cols-5">
+									{/* Program Header */}
+									<div className="bg-gradient-to-br from-indigo-600 to-indigo-500 p-6 sm:p-8 md:col-span-2 md:p-10 relative">
 											{index === 0 && (
 												<span className="absolute top-4 sm:top-6 right-4 sm:right-6 rounded-full bg-white/20 px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-medium text-white">
 													Most Popular
@@ -118,24 +118,24 @@ export default function ProgramsPage() {
 
 										{/* Program Details */}
 										<div className="p-6 sm:p-8 md:col-span-3 md:p-10">
-											<p className="mb-5 sm:mb-6 text-sm sm:text-base text-[#4A6382] leading-relaxed">
-												{program.description}
-											</p>
-											<h3 className="mb-3 sm:mb-4 text-sm sm:text-base font-semibold text-[#0A1B2A]">
-												What You&apos;ll Learn:
-											</h3>
-											<ul className="mb-6 sm:mb-8 grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2">
-												{program.features.map((feature, i) => (
-													<li key={i} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-[#4A6382]">
-														<div className="flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full bg-[#37D2C5]/10">
-															<Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-[#37D2C5]" />
+										<p className="mb-5 sm:mb-6 text-sm sm:text-base text-slate-600 leading-relaxed">
+											{program.description}
+										</p>
+										<h3 className="mb-3 sm:mb-4 text-sm sm:text-base font-semibold text-slate-900">
+											What You&apos;ll Learn:
+										</h3>
+										<ul className="mb-6 sm:mb-8 grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2">
+											{program.features.map((feature, i) => (
+												<li key={i} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-slate-600">
+													<div className="flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full bg-indigo-50">
+														<Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-indigo-600" />
 														</div>
 														{feature}
 													</li>
 												))}
 											</ul>
 											<Button
-												className="w-full sm:w-auto rounded-full bg-gradient-to-r from-[#276EF1] to-[#37D2C5] px-6 text-white shadow-lg shadow-primary/20 btn-shimmer"
+											className="w-full sm:w-auto rounded-full bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 text-white shadow-lg hover:shadow-xl hover:shadow-indigo-500/30 transition-all"
 												asChild
 											>
 												<Link href="/contact">
@@ -152,18 +152,18 @@ export default function ProgramsPage() {
 				</section>
 
 				{/* CTA Section */}
-				<section className="bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] py-16 sm:py-20 md:py-24 lg:py-32">
+				<section className="bg-indigo-50/50 py-16 sm:py-20 md:py-24 lg:py-32">
 					<div className="container mx-auto px-4 sm:px-6 text-center lg:px-8">
-						<h2 className="mb-4 sm:mb-5 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-[#0A1B2A]">
+						<h2 className="mb-4 sm:mb-5 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-900">
 							Ready to Enroll Your Child?
 						</h2>
-						<p className="mx-auto mb-8 sm:mb-10 max-w-xl text-base sm:text-lg text-[#4A6382]">
+						<p className="mx-auto mb-8 sm:mb-10 max-w-xl text-base sm:text-lg text-slate-600">
 							Get your child enrolled in our comprehensive year-long STEM academic program. Contact us to learn more
 							about our class-specific curriculum.
 						</p>
 						<Button
 							size="lg"
-							className="w-full sm:w-auto rounded-full bg-gradient-to-r from-[#276EF1] to-[#37D2C5] px-8 sm:px-10 py-5 sm:py-6 text-base font-semibold text-white shadow-xl shadow-primary/25 btn-shimmer"
+							className="w-full sm:w-auto rounded-full bg-gradient-to-r from-indigo-600 to-indigo-500 px-8 sm:px-10 py-5 sm:py-6 text-base font-semibold text-white shadow-xl hover:shadow-2xl hover:shadow-indigo-500/30 transition-all hover:scale-105"
 							asChild
 						>
 							<Link href="/contact">Enroll Now - Contact Us</Link>

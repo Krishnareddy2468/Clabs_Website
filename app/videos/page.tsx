@@ -57,7 +57,7 @@ export default function FeaturedVideosPage() {
       <Navigation />
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-20 text-white">
+        <section className="bg-gradient-to-r from-indigo-600 to-indigo-500 py-20 text-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6 backdrop-blur-sm">
@@ -78,7 +78,7 @@ export default function FeaturedVideosPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {isLoading ? (
               <div className="flex justify-center py-20">
-                <Loader2 className="w-10 h-10 animate-spin text-[#276EF1]" />
+                <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
               </div>
           ) : videos.length > 0 ? (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -87,7 +87,7 @@ export default function FeaturedVideosPage() {
                 return (
                   <div
                     key={video.id}
-                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1"
                   >
                     <div className="aspect-video bg-gray-900 relative group">
                       {videoId ? (
@@ -103,7 +103,7 @@ export default function FeaturedVideosPage() {
                           />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
-                              <Play className="w-8 h-8 text-[#276EF1] ml-1" />
+                              <Play className="w-8 h-8 text-indigo-600 ml-1" />
                             </div>
                           </div>
                         </>
@@ -127,7 +127,7 @@ export default function FeaturedVideosPage() {
                           href={`https://www.youtube.com/watch?v=${videoId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-[#276EF1] hover:text-[#1e5dd9] font-medium text-sm transition-colors"
+                          className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium text-sm transition-colors"
                         >
                           <Play className="w-4 h-4" />
                           Watch on YouTube

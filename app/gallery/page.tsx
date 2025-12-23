@@ -155,19 +155,19 @@ export default function GalleryPage() {
       <Navigation />
       <main className="flex-1">
         {/* Hero Banner */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] py-16 sm:py-20 md:py-24 lg:py-32">
+        <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 to-white py-16 sm:py-20 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 sm:px-6 text-center lg:px-8">
-            <h1 className="mb-4 sm:mb-6 text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] font-bold text-[#0A1B2A]">
+            <h1 className="mb-4 sm:mb-6 text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] font-bold text-slate-900">
               Our Gallery
             </h1>
-            <p className="mx-auto max-w-2xl text-base sm:text-lg text-[#4A6382]">
+            <p className="mx-auto max-w-2xl text-base sm:text-lg text-slate-600">
               Explore moments of innovation, creativity, and learning from our STEM programs
             </p>
           </div>
         </section>
 
         {/* Filter Tabs */}
-        <section className="border-b border-border/50 bg-white py-4 sm:py-6">
+        <section className="border-b border-indigo-100 bg-white py-4 sm:py-6">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 sm:pb-0 sm:flex-wrap sm:justify-center scrollbar-hide">
               {categories.map((category) => (
@@ -177,8 +177,8 @@ export default function GalleryPage() {
                   className={cn(
                     "shrink-0 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-medium transition-all",
                     activeCategory === category
-                      ? "bg-gradient-to-r from-[#276EF1] to-[#37D2C5] text-white shadow-lg shadow-primary/20"
-                      : "bg-[#f0f7ff] text-[#4A6382] hover:bg-[#e8f4ff] hover:text-[#276EF1]",
+                      ? "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg hover:shadow-xl hover:shadow-indigo-500/30"
+                      : "bg-indigo-50/50 text-slate-600 hover:bg-indigo-100 hover:text-indigo-600",
                   )}
                 >
                   {category}
@@ -193,13 +193,13 @@ export default function GalleryPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {loading ? (
               <div className="flex justify-center items-center min-h-[400px]">
-                <div className="text-[#4A6382]">Loading gallery...</div>
+                <div className="text-slate-600">Loading gallery...</div>
               </div>
             ) : filteredItems.length === 0 ? (
               <div className="flex justify-center items-center min-h-[400px]">
                 <div className="text-center">
-                  <p className="text-[#4A6382] text-lg">No images found in this category.</p>
-                  <p className="text-sm text-[#4A6382]/70 mt-2">Images uploaded by admin will appear here.</p>
+                  <p className="text-slate-600 text-lg">No images found in this category.</p>
+                  <p className="text-sm text-slate-500 mt-2">Images uploaded by admin will appear here.</p>
                 </div>
               </div>
             ) : (
@@ -208,7 +208,7 @@ export default function GalleryPage() {
                   <button
                     key={item.id}
                     onClick={() => setSelectedImage(item.image_url)}
-                    className="premium-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white"
+                    className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-indigo-100 bg-white hover:shadow-xl hover:shadow-indigo-500/10 transition-all"
                   >
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
@@ -217,9 +217,9 @@ export default function GalleryPage() {
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1B2A]/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 text-left opacity-0 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
-                      <span className="inline-block rounded-full bg-[#37D2C5] px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium text-white">
+                      <span className="inline-block rounded-full bg-indigo-500 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium text-white">
                         {item.category}
                       </span>
                       <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium text-white line-clamp-2">{item.title}</p>
@@ -234,7 +234,7 @@ export default function GalleryPage() {
         {/* Lightbox */}
         {selectedImage && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A1B2A]/90 p-2 sm:p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 p-2 sm:p-4 backdrop-blur-sm"
             onClick={() => setSelectedImage(null)}
           >
             <div className="relative max-h-[90vh] max-w-5xl overflow-hidden rounded-xl sm:rounded-2xl">
@@ -245,7 +245,7 @@ export default function GalleryPage() {
               />
               <button
                 onClick={() => setSelectedImage(null)}
-                className="absolute right-2 sm:right-4 top-2 sm:top-4 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/90 text-[#0A1B2A] backdrop-blur-sm transition-colors hover:bg-white"
+                className="absolute right-2 sm:right-4 top-2 sm:top-4 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/90 text-slate-900 backdrop-blur-sm transition-colors hover:bg-white"
               >
                 <X className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>

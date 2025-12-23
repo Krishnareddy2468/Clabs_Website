@@ -104,9 +104,9 @@ export function Hero() {
                       </span>
                       <button 
                         onClick={() => handleRegister(event)}
-                        className="font-bold text-sm sm:text-base px-4 py-2 rounded-xl border-2 border-white hover:bg-white/20 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer hover:scale-105 animate-float-shine hover:border-yellow-300"
+                        className="font-bold text-sm sm:text-base px-4 py-2 rounded-xl border-2 border-white hover:bg-white/20 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer hover:scale-105 animate-float"
                       >
-                        <span className="text-white drop-shadow-[0_0_8px_rgba(255,255,0,0.5)] animate-pulse-glow">
+                        <span className="text-white">
                           {event.title}
                         </span>
                         <ArrowRight className="w-4 h-4 text-white" />
@@ -187,18 +187,18 @@ export function Hero() {
                   variant="default" 
                   size="lg" 
                   className="flex items-center gap-2"
-                  onClick={() => window.open("/contact", "_self")}
+                  onClick={() => window.open("/gallery", "_self")}
                 >
-                  <span>Enroll Now</span>
+                  <span>Explore Gallery</span>
                   <ArrowRight className="w-4 h-4" />
                 </Button>
                 <Button 
                   variant="outline" 
                   size="lg" 
                   className="flex items-center gap-2"
-                  onClick={() => window.open("/contact", "_self")}
+                  onClick={() => window.open("/videos", "_self")}
                 >
-                  <span>Contact Us</span>
+                  <span>Watch Videos</span>
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>

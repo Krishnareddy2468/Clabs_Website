@@ -114,12 +114,12 @@ export default function ContactPage() {
       <Navigation />
       <main className="flex-1">
         {/* Hero Banner */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] py-16 sm:py-20 md:py-24 lg:py-32">
+        <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 to-white py-16 sm:py-20 md:py-24 lg:py-32">
           <div className="container mx-auto px-4 sm:px-6 text-center lg:px-8">
-            <h1 className="mb-4 sm:mb-6 text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] font-bold text-[#0A1B2A]">
+            <h1 className="mb-4 sm:mb-6 text-[2rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem] font-bold text-slate-900">
               Contact Us
             </h1>
-            <p className="mx-auto max-w-2xl text-base sm:text-lg text-[#4A6382]">
+            <p className="mx-auto max-w-2xl text-base sm:text-lg text-slate-600">
               Have questions? We'd love to hear from you. Get in touch with our team.
             </p>
           </div>
@@ -135,13 +135,13 @@ export default function ContactPage() {
                   href={info.href}
                   target={info.icon === MapPin ? "_blank" : undefined}
                   rel={info.icon === MapPin ? "noopener noreferrer" : undefined}
-                  className="premium-card flex flex-col items-center rounded-xl sm:rounded-2xl border border-border/50 bg-white p-4 sm:p-6 md:p-8 text-center hover:shadow-lg transition-shadow"
+                  className="flex flex-col items-center rounded-xl sm:rounded-2xl border border-indigo-100 bg-white p-4 sm:p-6 md:p-8 text-center hover:shadow-xl hover:shadow-indigo-500/10 transition-all"
                 >
-                  <div className="mb-3 sm:mb-5 flex h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl sm:rounded-2xl bg-[#276EF1]/10 text-[#276EF1] transition-transform group-hover:scale-110">
+                  <div className="mb-3 sm:mb-5 flex h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl sm:rounded-2xl bg-indigo-600/10 text-indigo-600 transition-transform group-hover:scale-110">
                     <info.icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" strokeWidth={1.5} />
                   </div>
-                  <h3 className="mb-1 sm:mb-2 text-sm sm:text-base font-semibold text-[#0A1B2A]">{info.title}</h3>
-                  <p className="text-xs sm:text-sm text-[#4A6382]">{info.value}</p>
+                  <h3 className="mb-1 sm:mb-2 text-sm sm:text-base font-semibold text-slate-900">{info.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-600">{info.value}</p>
                 </a>
               ))}
             </div>
@@ -149,23 +149,23 @@ export default function ContactPage() {
         </section>
 
         {/* Contact Form & Map */}
-        <section className="bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] py-10 sm:py-16 md:py-24">
+        <section className="bg-slate-800 py-10 sm:py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-2">
               {/* Contact Form */}
-              <div className="rounded-xl sm:rounded-2xl border border-border/50 bg-white p-5 sm:p-8 md:p-10 shadow-sm">
-                <h2 className="mb-2 text-xl sm:text-2xl font-semibold text-[#0A1B2A]">Send us a Message</h2>
-                <p className="mb-6 sm:mb-8 text-sm sm:text-base text-[#4A6382]">
+              <div className="rounded-xl sm:rounded-2xl bg-slate-700/50 border border-slate-600 p-5 sm:p-8 md:p-10">
+                <h2 className="mb-2 text-xl sm:text-2xl font-semibold text-white">Send us a Message</h2>
+                <p className="mb-6 sm:mb-8 text-sm sm:text-base text-slate-300">
                   Fill out the form below and we'll get back to you within 24 hours.
                 </p>
 
                 {isSubmitted ? (
                   <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center">
-                    <div className="mb-4 sm:mb-5 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-[#37D2C5]/10 text-[#37D2C5]">
+                    <div className="mb-4 sm:mb-5 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-400">
                       <CheckCircle className="h-7 w-7 sm:h-8 sm:w-8" />
                     </div>
-                    <h3 className="mb-2 text-lg sm:text-xl font-semibold text-[#0A1B2A]">Message Sent!</h3>
-                    <p className="text-sm sm:text-base text-[#4A6382]">
+                    <h3 className="mb-2 text-lg sm:text-xl font-semibold text-white">Message Sent!</h3>
+                    <p className="text-sm sm:text-base text-slate-300">
                       Thank you for contacting us. We'll get back to you soon.
                     </p>
                   </div>
@@ -173,7 +173,7 @@ export default function ContactPage() {
                   <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                     <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="name" className="text-sm text-[#0A1B2A]">
+                        <Label htmlFor="name" className="text-sm text-slate-200">
                           Full Name
                         </Label>
                         <Input
@@ -182,11 +182,11 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     
                           required
-                          className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
+                          className="rounded-lg sm:rounded-xl border-slate-600 bg-slate-800 text-white placeholder:text-slate-400 focus:border-indigo-500 focus:ring-indigo-500/20"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm text-[#0A1B2A]">
+                        <Label htmlFor="email" className="text-sm text-slate-200">
                           Email Address
                         </Label>
                         <Input
@@ -196,12 +196,12 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           
                           required
-                          className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
+                          className="rounded-lg sm:rounded-xl border-slate-600 bg-slate-800 text-white placeholder:text-slate-400 focus:border-indigo-500 focus:ring-indigo-500/20"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm text-[#0A1B2A]">
+                      <Label htmlFor="phone" className="text-sm text-slate-200">
                         Phone Number
                       </Label>
                       <Input
@@ -209,11 +209,11 @@ export default function ContactPage() {
                         type="tel"
                         value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
+                        className="rounded-lg sm:rounded-xl border-slate-600 bg-slate-800 text-white placeholder:text-slate-400 focus:border-indigo-500 focus:ring-indigo-500/20"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="message" className="text-sm text-[#0A1B2A]">
+                      <Label htmlFor="message" className="text-sm text-slate-200">
                         Message
                       </Label>
                       <Textarea
@@ -223,13 +223,13 @@ export default function ContactPage() {
                         placeholder="Tell us about your inquiry..."
                         rows={4}
                         required
-                        className="resize-none rounded-lg sm:rounded-xl border-border/50 bg-[#f8fbff] focus:border-[#276EF1] focus:ring-[#276EF1]/20"
+                        className="resize-none rounded-lg sm:rounded-xl border-slate-600 bg-slate-800 text-white placeholder:text-slate-400 focus:border-indigo-500 focus:ring-indigo-500/20"
                       />
                     </div>
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full rounded-full bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-5 sm:py-6 font-semibold text-white shadow-lg shadow-primary/20 btn-shimmer disabled:opacity-50"
+                      className="w-full rounded-full bg-indigo-500 py-5 sm:py-6 font-semibold text-white shadow-xl hover:bg-indigo-400 hover:scale-105 transition-all disabled:opacity-50"
                       disabled={isLoading}
                     >
                       {isLoading ? (
@@ -246,9 +246,9 @@ export default function ContactPage() {
               </div>
 
               {/* Map */}
-              <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white shadow-sm">
+              <div className="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-600 bg-slate-700">
                 <div className="relative h-64 sm:h-80 lg:h-full lg:min-h-[450px]">
-                  <h3 className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md text-sm sm:text-base font-semibold text-[#0A1B2A]">
+                  <h3 className="absolute top-4 left-4 z-10 bg-slate-800/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md text-sm sm:text-base font-semibold text-white">
                     C-LABS Location Map
                   </h3>
                   <iframe
@@ -271,10 +271,10 @@ export default function ContactPage() {
         <section id="faq" className="py-12 sm:py-16 md:py-20 lg:py-28">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-3xl">
-              <h2 className="mb-3 sm:mb-4 text-center text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-[#0A1B2A]">
+              <h2 className="mb-3 sm:mb-4 text-center text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-900">
                 Frequently Asked Questions
               </h2>
-              <p className="mb-8 sm:mb-12 text-center text-base sm:text-lg text-[#4A6382]">
+              <p className="mb-8 sm:mb-12 text-center text-base sm:text-lg text-slate-600">
                 Find answers to common questions about our programs
               </p>
 
@@ -283,12 +283,12 @@ export default function ContactPage() {
                   <AccordionItem
                     key={index}
                     value={`faq-${index}`}
-                    className="rounded-xl sm:rounded-2xl border border-border/50 bg-white px-4 sm:px-6 shadow-sm"
+                    className="rounded-xl sm:rounded-2xl border border-indigo-100 bg-white px-4 sm:px-6 shadow-sm"
                   >
-                    <AccordionTrigger className="text-left text-sm sm:text-base font-semibold text-[#0A1B2A] hover:no-underline py-4 sm:py-5">
+                    <AccordionTrigger className="text-left text-sm sm:text-base font-semibold text-slate-900 hover:no-underline py-4 sm:py-5">
                       {faq.question}
                     </AccordionTrigger>
-                    <AccordionContent className="text-sm sm:text-base text-[#4A6382] pb-4 sm:pb-5">
+                    <AccordionContent className="text-sm sm:text-base text-slate-600 pb-4 sm:pb-5">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
