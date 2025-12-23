@@ -205,9 +205,22 @@ export function Footer() {
               </div>
             </div>
 
-            <p className="order-2 md:order-1 text-xs sm:text-sm text-white/40 text-center md:text-left pb-[env(safe-area-inset-bottom)]">
-              &copy; {new Date().getFullYear()} C-LABS. All rights reserved.
-            </p>
+            <div className="order-2 md:order-1 flex flex-col gap-2 text-center md:text-left pb-[env(safe-area-inset-bottom)]">
+              <p className="text-xs sm:text-sm text-white/40">
+                &copy; {new Date().getFullYear()} C-LABS. All rights reserved.
+              </p>
+              <p className="text-xs sm:text-sm text-white/50 font-light">
+                Developed and Managed by{" "}
+                <a 
+                  href="https://www.innowavz.in" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="font-semibold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent hover:from-indigo-300 hover:via-purple-300 hover:to-pink-300 transition-all duration-300"
+                >
+                  Innowavz
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
