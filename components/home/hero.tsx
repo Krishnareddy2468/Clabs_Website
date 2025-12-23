@@ -13,6 +13,8 @@ interface Event {
   location: string
   image_url: string | null
   amount: number
+  total_seats: number
+  available_seats: number
 }
 
 interface Banner {
@@ -87,9 +89,9 @@ export function Hero() {
 
   return (
     <>
-      {/* Scrolling Event Banner - Vibrant Colors */}
+      {/* Scrolling Event Banner - Red Background */}
       {showBanner && events.length > 0 && (
-        <div className="relative bg-gradient-to-r from-violet-600 via-fuchsia-500 to-rose-500 text-white overflow-hidden shadow-xl shadow-fuchsia-500/20">
+        <div className="relative bg-red-600 text-white overflow-hidden shadow-xl">
           <div className="container mx-auto px-4 relative">
             <div className="relative h-14 sm:h-16 flex items-center">
               {/* Scrolling content with improved animation */}
@@ -97,30 +99,33 @@ export function Hero() {
                 <div className="flex items-center gap-12 sm:gap-16 animate-marquee whitespace-nowrap">
                   {[...events, ...events, ...events, ...events].map((event, index) => (
                     <div key={index} className="flex items-center gap-3 sm:gap-4">
-                      <span className="bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-1 rounded-full text-xs sm:text-sm font-bold text-slate-900 shadow-lg animate-bounce">
-                        Upcoming
+                      <span className="bg-white text-red-600 px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg">
+                         Upcoming
                       </span>
                       <button 
                         onClick={() => handleRegister(event)}
-                        className="font-bold text-sm sm:text-base bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl border-2 border-white/40 hover:bg-white/30 hover:border-white/60 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer hover:scale-105"
+                        className="font-bold text-sm sm:text-base px-4 py-2 rounded-xl border-2 border-white hover:bg-white/20 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer hover:scale-105 animate-float-shine hover:border-yellow-300"
                       >
-                        ✨ {event.title} <ArrowRight className="w-4 h-4 animate-pulse" />
+                        <span className="text-white drop-shadow-[0_0_8px_rgba(255,255,0,0.5)] animate-pulse-glow">
+                          {event.title}
+                        </span>
+                        <ArrowRight className="w-4 h-4 text-white" />
                       </button>
-                      <span className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-2 py-1 rounded-full">
+                      <span className="flex items-center gap-1.5 text-xs sm:text-sm text-white bg-white/20 px-2 py-1 rounded-full">
                         <Calendar className="w-3 h-3" />
                         {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </span>
-                      <span className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-2 py-1 rounded-full">
+                      <span className="flex items-center gap-1.5 text-xs sm:text-sm text-white bg-white/20 px-2 py-1 rounded-full">
                         <MapPin className="w-3 h-3" />
                         {event.location}
                       </span>
                       <button
                         onClick={() => handleRegister(event)}
-                        className="bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 px-5 py-2 rounded-full text-xs sm:text-sm font-bold hover:from-emerald-300 hover:to-cyan-300 transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-110 animate-pulse"
+                        className="bg-white text-red-600 px-5 py-2 rounded-full text-xs sm:text-sm font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
                       >
-                        🎯 Register Now
+                        Register Now →
                       </button>
-                      <span className="text-white/30 text-2xl">•</span>
+                      <span className="text-white/40 text-2xl">•</span>
                     </div>
                   ))}
                 </div>
@@ -129,9 +134,9 @@ export function Hero() {
               {/* Close button */}
               <button
                 onClick={() => setShowBanner(false)}
-                className="absolute right-2 sm:right-4 z-10 p-1.5 hover:bg-white/20 rounded-full transition-colors bg-white/10 backdrop-blur-sm"
+                className="absolute right-2 sm:right-4 z-10 p-1.5 hover:bg-white/20 rounded-full transition-colors bg-white/10"
               >
-                <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </button>
             </div>
           </div>
@@ -145,10 +150,10 @@ export function Hero() {
             {/* Left Content */}
             <div className="flex-1 text-center lg:text-left space-y-5 sm:space-y-6 lg:max-w-md">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-white shadow-sm border border-border/50">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#276EF1]/10">
+              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-white shadow-sm border border-indigo-100">
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600/10">
                   <svg
-                    className="h-3 w-3 text-[#276EF1]"
+                    className="h-3 w-3 text-indigo-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -161,18 +166,18 @@ export function Hero() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm font-medium text-[#0A1B2A]">
+                <span className="text-xs sm:text-sm font-medium text-slate-700">
                   C LABS STEM ACADEMICS - Classes 3 to 9
                 </span>
               </div>
 
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-[#0A1B2A]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-slate-900">
                 Year-Long STEM Academic Excellence
               </h1>
 
               {/* Description */}
-              <p className="text-sm sm:text-base lg:text-lg text-[#4A6382]">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-600">
                 Comprehensive year-long academic course with specially designed academic books for each standard from Class 3 to Class 9.
               </p>
 

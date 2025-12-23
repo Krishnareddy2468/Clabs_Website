@@ -74,7 +74,7 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
   }, [isVisible, value])
 
   return (
-    <div ref={ref} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#0A1B2A]">
+    <div ref={ref} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900">
       {count.toLocaleString()}
       {suffix}
     </div>
@@ -83,19 +83,19 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
 
 export function StatsSection() {
   return (
-    <section className="border-y border-border/50 bg-white py-12 sm:py-16 md:py-20">
+    <section className="border-y border-indigo-100 bg-white py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 md:gap-8">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="flex flex-col items-center rounded-xl sm:rounded-2xl bg-gradient-to-b from-[#f8fbff] to-white p-4 sm:p-6 md:p-8 text-center shadow-sm border border-border/50"
+              className="flex flex-col items-center rounded-xl sm:rounded-2xl bg-gradient-to-b from-indigo-50 to-white p-4 sm:p-6 md:p-8 text-center shadow-sm border border-indigo-100 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300"
             >
-              <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl sm:rounded-2xl bg-[#276EF1]/10 text-[#276EF1]">
+              <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl sm:rounded-2xl bg-indigo-600/10 text-indigo-600">
                 <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" strokeWidth={1.5} />
               </div>
               <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-              <span className="mt-1.5 sm:mt-2 text-xs sm:text-sm font-medium text-[#4A6382]">{stat.label}</span>
+              <span className="mt-1.5 sm:mt-2 text-xs sm:text-sm font-medium text-slate-600">{stat.label}</span>
             </div>
           ))}
         </div>

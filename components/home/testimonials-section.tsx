@@ -32,10 +32,10 @@ export function TestimonialsSection() {
 		<section className="py-16 sm:py-24 md:py-28 lg:py-36 bg-white">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="mx-auto mb-10 sm:mb-12 md:mb-16 max-w-2xl text-center">
-					<h2 className="mb-3 sm:mb-4 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-[#0A1B2A]">
+					<h2 className="mb-3 sm:mb-4 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-900">
 						What People Say
 					</h2>
-					<p className="text-base sm:text-lg text-[#4A6382]">
+					<p className="text-base sm:text-lg text-slate-600">
 						Hear from parents, educators, and students about C LABS STEM ACADEMICS
 					</p>
 				</div>
@@ -44,20 +44,20 @@ export function TestimonialsSection() {
 					{testimonials.map((testimonial, index) => (
 						<div
 							key={index}
-							className="premium-card relative overflow-hidden rounded-xl sm:rounded-2xl border border-border/50 bg-white p-6 sm:p-8"
+							className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-indigo-100 bg-white p-6 sm:p-8 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300"
 						>
-							<Quote className="absolute right-4 sm:right-6 top-4 sm:top-6 h-8 w-8 sm:h-10 sm:w-10 text-[#276EF1]/10" />
+							<Quote className="absolute right-4 sm:right-6 top-4 sm:top-6 h-8 w-8 sm:h-10 sm:w-10 text-indigo-600/10" />
 
 							<div className="mb-4 sm:mb-5 flex gap-1">
 								{[...Array(testimonial.rating)].map((_, i) => (
 									<Star
 										key={i}
-										className="h-4 w-4 sm:h-5 sm:w-5 fill-[#FFC947] text-[#FFC947]"
+										className="h-4 w-4 sm:h-5 sm:w-5 fill-indigo-500 text-indigo-500"
 									/>
 								))}
 							</div>
 
-							<p className="mb-5 sm:mb-6 text-sm sm:text-base text-[#4A6382] leading-relaxed">
+							<p className="mb-5 sm:mb-6 text-sm sm:text-base text-slate-600 leading-relaxed">
 								"{testimonial.content}"
 							</p>
 
@@ -68,13 +68,13 @@ export function TestimonialsSection() {
 										"/placeholder.svg?height=48&width=48&query=professional portrait"
 									}
 									alt={testimonial.name}
-									className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover border-2 border-[#276EF1]/10"
+									className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover border-2 border-indigo-100"
 								/>
 								<div>
-									<p className="text-sm sm:text-base font-semibold text-[#0A1B2A]">
+									<p className="text-sm sm:text-base font-semibold text-slate-900">
 										{testimonial.name}
 									</p>
-									<p className="text-xs sm:text-sm text-[#4A6382]">
+									<p className="text-xs sm:text-sm text-slate-600">
 										{testimonial.role}
 									</p>
 								</div>

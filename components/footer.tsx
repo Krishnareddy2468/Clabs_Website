@@ -77,13 +77,13 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
+    <footer className="bg-slate-800 text-white border-t border-slate-700">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
         <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand - Full width on mobile */}
           <div className="sm:col-span-2 lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <div className="flex h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-500">
                 <Cpu className="h-5 w-5 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
               </div>
               <span className="text-xl sm:text-xl lg:text-2xl font-bold tracking-tight">C-LABS</span>
@@ -98,7 +98,7 @@ export function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-all hover:border-pink-500 hover:text-pink-400 active:scale-95 touch-manipulation"
+                  className="flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-all hover:border-indigo-400 hover:text-indigo-400 active:scale-95 touch-manipulation"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -116,7 +116,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="inline-flex items-center gap-1 text-sm sm:text-[15px] text-white/60 transition-colors hover:text-[#37D2C5] active:text-[#37D2C5] touch-manipulation"
+                      className="inline-flex items-center gap-1 text-sm sm:text-[15px] text-white/60 transition-colors hover:text-indigo-400 active:text-indigo-400 touch-manipulation"
                     >
                       {link.label}
                     </Link>
@@ -133,7 +133,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="inline-flex items-center gap-1 text-sm sm:text-[15px] text-white/60 transition-colors hover:text-cyan-400 active:text-cyan-400 touch-manipulation"
+                      className="inline-flex items-center gap-1 text-sm sm:text-[15px] text-white/60 transition-colors hover:text-indigo-300 active:text-indigo-300 touch-manipulation"
                     >
                       {link.label}
                     </Link>

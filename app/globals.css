@@ -4,95 +4,96 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Beautiful Contrast Color Palette - Modern & Vibrant */
-  --background: #fafbfc;
-  --foreground: #1a1a2e;
+  /* Premium Three-Color Palette - Navy, Indigo, Light Blue */
+  --background: #ffffff;
+  --foreground: #1e293b;
   --card: #ffffff;
-  --card-foreground: #1a1a2e;
+  --card-foreground: #1e293b;
   --popover: #ffffff;
-  --popover-foreground: #1a1a2e;
+  --popover-foreground: #1e293b;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #f97316;
+  --secondary: #334155;
   --secondary-foreground: #ffffff;
-  --muted: #f1f5f9;
+  --muted: #f0f7ff;
   --muted-foreground: #64748b;
-  --accent: #10b981;
+  --accent: #818cf8;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(99, 102, 241, 0.15);
-  --input: rgba(99, 102, 241, 0.1);
+  --border: rgba(99, 102, 241, 0.1);
+  --input: rgba(99, 102, 241, 0.08);
   --ring: #6366f1;
   --chart-1: #6366f1;
-  --chart-2: #f97316;
-  --chart-3: #10b981;
-  --chart-4: #ec4899;
-  --chart-5: #06b6d4;
-  --radius: 1.5rem;
+  --chart-2: #818cf8;
+  --chart-3: #334155;
+  --chart-4: #64748b;
+  --chart-5: #f0f7ff;
+  --radius: 1rem;
   --sidebar: #ffffff;
-  --sidebar-foreground: #1a1a2e;
+  --sidebar-foreground: #1e293b;
   --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #1a1a2e;
-  --sidebar-border: rgba(99, 102, 241, 0.1);
+  --sidebar-accent: #f0f7ff;
+  --sidebar-accent-foreground: #1e293b;
+  --sidebar-border: rgba(99, 102, 241, 0.08);
   --sidebar-ring: #6366f1;
 
-  /* Custom CLABS Vibrant colors */
+  /* Custom CLABS Premium Colors */
+  --clabs-navy: #1e293b;
+  --clabs-navy-light: #334155;
   --clabs-indigo: #6366f1;
-  --clabs-orange: #f97316;
-  --clabs-emerald: #10b981;
-  --clabs-pink: #ec4899;
-  --clabs-cyan: #06b6d4;
-  --clabs-violet: #8b5cf6;
-  --clabs-gradient-start: #f8fafc;
-  --clabs-gradient-end: #f1f5f9;
-  --clabs-dark: #1a1a2e;
-  --clabs-shadow: rgba(99, 102, 241, 0.1);
+  --clabs-indigo-light: #818cf8;
+  --clabs-blue-light: #f0f7ff;
+  --clabs-blue-lighter: #e8f4ff;
+  --clabs-text-dark: #1e293b;
+  --clabs-text-light: #64748b;
+  --clabs-shadow: rgba(99, 102, 241, 0.08);
 }
 
 .dark {
-  --background: #0f0f23;
+  --background: #1e293b;
   --foreground: #f8fafc;
-  --card: #1a1a2e;
+  --card: #334155;
   --card-foreground: #f8fbff;
-  --popover: #122236;
+  --popover: #334155;
   --popover-foreground: #f8fbff;
-  --primary: #5b8def;
-  --primary-foreground: #0a1b2a;
-  --secondary: #6edcd2;
-  --secondary-foreground: #0a1b2a;
-  --muted: #1a3049;
-  --muted-foreground: #8fa8c7;
-  --accent: #ffc947;
-  --accent-foreground: #0a1b2a;
+  --primary: #818cf8;
+  --primary-foreground: #1e293b;
+  --secondary: #6366f1;
+  --secondary-foreground: #ffffff;
+  --muted: #475569;
+  --muted-foreground: #cbd5e1;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: #f8fbff;
-  --border: rgba(91, 141, 239, 0.2);
-  --input: rgba(91, 141, 239, 0.2);
-  --ring: #5b8def;
-  --chart-1: #5b8def;
-  --chart-2: #6edcd2;
-  --chart-3: #ffc947;
-  --chart-4: #276ef1;
-  --chart-5: #37d2c5;
-  --sidebar: #122236;
+  --border: rgba(129, 140, 248, 0.15);
+  --input: rgba(129, 140, 248, 0.1);
+  --ring: #818cf8;
+  --chart-1: #818cf8;
+  --chart-2: #6366f1;
+  --chart-3: #475569;
+  --chart-4: #334155;
+  --chart-5: #1e293b;
+  --sidebar: #334155;
   --sidebar-foreground: #f8fbff;
-  --sidebar-primary: #5b8def;
+  --sidebar-primary: #818cf8;
   --sidebar-primary-foreground: #f8fbff;
-  --sidebar-accent: #1a3049;
+  --sidebar-accent: #475569;
   --sidebar-accent-foreground: #f8fbff;
-  --sidebar-border: rgba(91, 141, 239, 0.2);
-  --sidebar-ring: #5b8def;
+  --sidebar-border: rgba(129, 140, 248, 0.1);
+  --sidebar-ring: #818cf8;
 
-  --clabs-blue: #5b8def;
-  --clabs-aqua: #6edcd2;
-  --clabs-gold: #ffc947;
-  --clabs-gradient-start: #0f2338;
-  --clabs-gradient-end: #0a1b2a;
-  --clabs-dark: #f8fbff;
-  --clabs-shadow: rgba(91, 141, 239, 0.1);
+  --clabs-navy: #f8fafc;
+  --clabs-navy-light: #cbd5e1;
+  --clabs-indigo: #818cf8;
+  --clabs-indigo-light: #a5b4fc;
+  --clabs-blue-light: #1e293b;
+  --clabs-blue-lighter: #334155;
+  --clabs-text-dark: #f8fafc;
+  --clabs-text-light: #cbd5e1;
+  --clabs-shadow: rgba(129, 140, 248, 0.1);
 }
 
 @theme inline {
@@ -222,6 +223,47 @@ html {
   100% {
     transform: translateX(-50%);
   }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes float-shine {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow: 0 0 8px rgba(255, 255, 0, 0.5), 0 0 12px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(255, 255, 0, 0.8), 0 0 24px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-float-shine {
+  animation: float-shine 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* Scrolling logos animation - smooth infinite marquee */

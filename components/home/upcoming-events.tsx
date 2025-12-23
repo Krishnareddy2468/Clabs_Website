@@ -97,7 +97,7 @@ export function UpcomingEvents() {
     <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-rose-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+          <h2 className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-900 mb-2 sm:mb-3">
             🎯 Upcoming Events
           </h2>
           <p className="text-base sm:text-lg text-slate-600">
@@ -117,7 +117,7 @@ export function UpcomingEvents() {
             >
               {events.map((event, index) => (
                 <div key={event.id} className="min-w-full flex-shrink-0">
-                  <div className="grid md:grid-cols-2 gap-8 bg-gradient-to-br from-violet-50 via-fuchsia-50 to-rose-50 p-8 rounded-2xl border border-fuchsia-200 shadow-xl shadow-fuchsia-500/10">
+                  <div className="grid md:grid-cols-2 gap-8 bg-indigo-50/50 p-8 rounded-2xl border border-indigo-100 shadow-xl shadow-indigo-500/10">
                     {/* Event Image */}
                     <div className="relative h-64 md:h-auto rounded-xl overflow-hidden">
                       {event.image_url ? (
@@ -127,7 +127,7 @@ export function UpcomingEvents() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-rose-500 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-indigo-500 flex items-center justify-center">
                           <Calendar className="w-24 h-24 text-white opacity-50" />
                         </div>
                       )}
@@ -155,13 +155,13 @@ export function UpcomingEvents() {
                         </div>
 
                         <div className="flex items-center gap-3 text-slate-600">
-                          <MapPin className="w-5 h-5 text-pink-500" />
+                          <MapPin className="w-5 h-5 text-indigo-500" />
                           <span>{event.location}</span>
                         </div>
 
                         <div className="flex items-center gap-3">
-                          <IndianRupee className="w-5 h-5 text-emerald-600" />
-                          <span className="text-lg font-semibold text-green-600">
+                          <IndianRupee className="w-5 h-5 text-indigo-600" />
+                          <span className="text-lg font-semibold text-indigo-600">
                             {event.amount === 0 ? 'Free Event' : `₹${event.amount.toFixed(2)}`}
                           </span>
                         </div>
@@ -170,7 +170,7 @@ export function UpcomingEvents() {
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
                             event.available_seats === 0 ? 'bg-red-500' :
                             event.available_seats < 10 ? 'bg-orange-500' :
-                            'bg-green-500'
+                            'bg-indigo-500'
                           }`}>
                             <span className="text-white text-xs font-bold">
                               {event.available_seats}
@@ -179,7 +179,7 @@ export function UpcomingEvents() {
                           <span className={`text-sm font-medium ${
                             event.available_seats === 0 ? 'text-red-600' :
                             event.available_seats < 10 ? 'text-orange-600' :
-                            'text-green-600'
+                            'text-indigo-600'
                           }`}>
                             {event.available_seats === 0 
                               ? 'Seats Full' 
@@ -194,7 +194,7 @@ export function UpcomingEvents() {
                       <Button
                         onClick={() => handleRegister(event)}
                         disabled={event.available_seats === 0}
-                        className="w-full md:w-auto bg-gradient-to-r from-violet-500 via-fuchsia-500 to-rose-500 text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-fuchsia-500/40 hover:scale-105 transition-all"
+                        className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-indigo-500/30 hover:scale-105 transition-all"
                       >
                         {event.available_seats === 0 ? 'Event Full' : 'Register for Event'}
                         <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />

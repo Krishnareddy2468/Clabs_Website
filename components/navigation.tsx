@@ -43,7 +43,7 @@ export function Navigation() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/95 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto flex h-16 sm:h-16 lg:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-rose-500 shadow-lg shadow-fuchsia-500/40 animate-pulse">
+          <div className="flex h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-500 shadow-lg shadow-indigo-500/30">
             <Cpu className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
           </div>
           <span className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground tracking-tight">C-LABS</span>
@@ -64,7 +64,7 @@ export function Navigation() {
 
         <div className="hidden items-center lg:flex">
           <Button
-            className="rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-rose-500 px-6 lg:px-7 py-2.5 text-[15px] font-semibold text-white shadow-lg shadow-fuchsia-500/40 transition-all hover:shadow-xl hover:shadow-fuchsia-500/50 hover:scale-105 btn-shimmer"
+            className="rounded-full bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 lg:px-7 py-2.5 text-[15px] font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/35 hover:scale-105"
             asChild
           >
             <Link href="/programs">Explore Programs</Link>
