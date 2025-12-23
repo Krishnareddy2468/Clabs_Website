@@ -102,10 +102,13 @@ export function EventsBanner() {
                   </span>
                 )}
               </div>
-              <Link href={currentEvent.apply_link || '#'} target="_blank" className="block mt-1">
-                <h3 className="font-semibold sm:text-lg transition-all duration-300 hover:scale-105 hover:text-yellow-100 hover:underline cursor-pointer">{currentEvent.title}</h3>
+              <Link href={currentEvent.apply_link || '#'} target="_blank" className="block mt-1 group/title">
+                <h3 className="font-bold text-base sm:text-xl transition-all duration-300 hover:scale-105 text-white bg-yellow-400/20 px-3 py-1.5 rounded-lg border-2 border-yellow-300 cursor-pointer inline-flex items-center gap-2 hover:bg-yellow-400/30 hover:border-yellow-200">
+                  👉 {currentEvent.title}
+                  <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover/title:translate-x-1 animate-pulse" />
+                </h3>
               </Link>
-              <p className="mt-1 line-clamp-1 text-xs text-white/90 sm:text-sm transition-all duration-300 hover:text-white">
+              <p className="mt-2 line-clamp-1 text-xs text-white/90 sm:text-sm transition-all duration-300 hover:text-white">
                 {currentEvent.description}
               </p>
               <div className="mt-1 flex items-center gap-3 text-xs text-white/80">

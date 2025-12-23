@@ -87,9 +87,9 @@ export function Hero() {
 
   return (
     <>
-      {/* Scrolling Event Banner - Improved */}
+      {/* Scrolling Event Banner - Vibrant Colors */}
       {showBanner && events.length > 0 && (
-        <div className="relative bg-gradient-to-r from-[#276EF1] via-[#1E88E5] to-[#37D2C5] text-white overflow-hidden shadow-lg">
+        <div className="relative bg-gradient-to-r from-violet-600 via-fuchsia-500 to-rose-500 text-white overflow-hidden shadow-xl shadow-fuchsia-500/20">
           <div className="container mx-auto px-4 relative">
             <div className="relative h-14 sm:h-16 flex items-center">
               {/* Scrolling content with improved animation */}
@@ -97,10 +97,15 @@ export function Hero() {
                 <div className="flex items-center gap-12 sm:gap-16 animate-marquee whitespace-nowrap">
                   {[...events, ...events, ...events, ...events].map((event, index) => (
                     <div key={index} className="flex items-center gap-3 sm:gap-4">
-                      <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs sm:text-sm font-semibold border border-white/30">
-                         Upcoming
+                      <span className="bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-1 rounded-full text-xs sm:text-sm font-bold text-slate-900 shadow-lg animate-bounce">
+                        Upcoming
                       </span>
-                      <span className="font-bold text-sm sm:text-base">{event.title}</span>
+                      <button 
+                        onClick={() => handleRegister(event)}
+                        className="font-bold text-sm sm:text-base bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl border-2 border-white/40 hover:bg-white/30 hover:border-white/60 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer hover:scale-105"
+                      >
+                        ✨ {event.title} <ArrowRight className="w-4 h-4 animate-pulse" />
+                      </button>
                       <span className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-2 py-1 rounded-full">
                         <Calendar className="w-3 h-3" />
                         {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -111,9 +116,9 @@ export function Hero() {
                       </span>
                       <button
                         onClick={() => handleRegister(event)}
-                        className="bg-white text-[#276EF1] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold hover:bg-yellow-300 hover:text-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                        className="bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 px-5 py-2 rounded-full text-xs sm:text-sm font-bold hover:from-emerald-300 hover:to-cyan-300 transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-110 animate-pulse"
                       >
-                        Register Now →
+                        🎯 Register Now
                       </button>
                       <span className="text-white/30 text-2xl">•</span>
                     </div>

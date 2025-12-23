@@ -77,13 +77,13 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#0A1B2A] text-white">
+    <footer className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
         <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand - Full width on mobile */}
           <div className="sm:col-span-2 lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <div className="flex h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#276EF1] to-[#37D2C5]">
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
                 <Cpu className="h-5 w-5 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
               </div>
               <span className="text-xl sm:text-xl lg:text-2xl font-bold tracking-tight">C-LABS</span>
@@ -98,7 +98,7 @@ export function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-all hover:border-[#37D2C5] hover:text-[#37D2C5] active:scale-95 touch-manipulation"
+                  className="flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-all hover:border-pink-500 hover:text-pink-400 active:scale-95 touch-manipulation"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -133,7 +133,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="inline-flex items-center gap-1 text-sm sm:text-[15px] text-white/60 transition-colors hover:text-[#37D2C5] active:text-[#37D2C5] touch-manipulation"
+                      className="inline-flex items-center gap-1 text-sm sm:text-[15px] text-white/60 transition-colors hover:text-cyan-400 active:text-cyan-400 touch-manipulation"
                     >
                       {link.label}
                     </Link>
@@ -149,9 +149,9 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:support@clabs.life"
-                  className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-[#37D2C5] active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
+                  className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-pink-400 active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
                 >
-                  <Mail className="h-4 w-4 shrink-0 text-[#37D2C5]" />
+                  <Mail className="h-4 w-4 shrink-0 text-pink-400" />
                   <span className="break-all">support@clabs.life</span>
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto sm:hidden text-white/30" />
                 </a>
@@ -159,20 +159,20 @@ export function Footer() {
               <li>
                 <a
                   href="tel:+919502335257"
-                  className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-[#37D2C5] active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
+                  className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60 hover:text-cyan-400 active:bg-white/10 sm:active:bg-transparent transition-colors touch-manipulation"
                 >
-                  <Phone className="h-4 w-4 shrink-0 text-[#37D2C5]" />
+                  <Phone className="h-4 w-4 shrink-0 text-cyan-400" />
                   <span>+91 9502335257</span>
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto sm:hidden text-white/30" />
                 </a>
               </li>
               <li className="space-y-2">
                 <div className="flex items-start gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60">
-                  <MapPin className="h-4 w-4 shrink-0 text-[#37D2C5] mt-0.5" />
+                  <MapPin className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
                   <span className="leading-relaxed">Above Honda Showroom, Nirmal Road, Bhainsa - 504103</span>
                 </div>
                 <div className="flex items-start gap-3 rounded-xl bg-white/5 px-3 py-3 sm:bg-transparent sm:px-0 sm:py-0 text-sm sm:text-[15px] text-white/60">
-                  <MapPin className="h-4 w-4 shrink-0 text-[#37D2C5] mt-0.5" />
+                  <MapPin className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
                   <span className="leading-relaxed">16-11-740/9/1, Rudra Towers, Dilsukhnagar - 500060</span>
                 </div>
               </li>

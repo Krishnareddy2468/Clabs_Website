@@ -4,55 +4,58 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated CLABS Premium Color Palette */
-  --background: #f8fbff;
-  --foreground: #0a1b2a;
+  /* Beautiful Contrast Color Palette - Modern & Vibrant */
+  --background: #fafbfc;
+  --foreground: #1a1a2e;
   --card: #ffffff;
-  --card-foreground: #0a1b2a;
+  --card-foreground: #1a1a2e;
   --popover: #ffffff;
-  --popover-foreground: #0a1b2a;
-  --primary: #276ef1;
+  --popover-foreground: #1a1a2e;
+  --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #37d2c5;
-  --secondary-foreground: #0a1b2a;
-  --muted: #eaf6ff;
-  --muted-foreground: #4a6382;
-  --accent: #ffc947;
-  --accent-foreground: #0a1b2a;
-  --destructive: oklch(0.577 0.245 27.325);
+  --secondary: #f97316;
+  --secondary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(39, 110, 241, 0.1);
-  --input: rgba(39, 110, 241, 0.1);
-  --ring: #276ef1;
-  --chart-1: #276ef1;
-  --chart-2: #37d2c5;
-  --chart-3: #ffc947;
-  --chart-4: #5b8def;
-  --chart-5: #6edcd2;
+  --border: rgba(99, 102, 241, 0.15);
+  --input: rgba(99, 102, 241, 0.1);
+  --ring: #6366f1;
+  --chart-1: #6366f1;
+  --chart-2: #f97316;
+  --chart-3: #10b981;
+  --chart-4: #ec4899;
+  --chart-5: #06b6d4;
   --radius: 1.5rem;
   --sidebar: #ffffff;
-  --sidebar-foreground: #0a1b2a;
-  --sidebar-primary: #276ef1;
+  --sidebar-foreground: #1a1a2e;
+  --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eaf6ff;
-  --sidebar-accent-foreground: #0a1b2a;
-  --sidebar-border: rgba(39, 110, 241, 0.1);
-  --sidebar-ring: #276ef1;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #1a1a2e;
+  --sidebar-border: rgba(99, 102, 241, 0.1);
+  --sidebar-ring: #6366f1;
 
-  /* Custom CLABS Premium colors */
-  --clabs-blue: #276ef1;
-  --clabs-aqua: #37d2c5;
-  --clabs-gold: #ffc947;
-  --clabs-gradient-start: #f0f7ff;
-  --clabs-gradient-end: #e8f4ff;
-  --clabs-dark: #0a1b2a;
-  --clabs-shadow: rgba(39, 110, 241, 0.08);
+  /* Custom CLABS Vibrant colors */
+  --clabs-indigo: #6366f1;
+  --clabs-orange: #f97316;
+  --clabs-emerald: #10b981;
+  --clabs-pink: #ec4899;
+  --clabs-cyan: #06b6d4;
+  --clabs-violet: #8b5cf6;
+  --clabs-gradient-start: #f8fafc;
+  --clabs-gradient-end: #f1f5f9;
+  --clabs-dark: #1a1a2e;
+  --clabs-shadow: rgba(99, 102, 241, 0.1);
 }
 
 .dark {
-  --background: #0a1b2a;
-  --foreground: #f8fbff;
-  --card: #122236;
+  --background: #0f0f23;
+  --foreground: #f8fafc;
+  --card: #1a1a2e;
   --card-foreground: #f8fbff;
   --popover: #122236;
   --popover-foreground: #f8fbff;
@@ -236,6 +239,25 @@ html {
 }
 
 .animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* School logos scrolling animation */
+@keyframes scroll-logos-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-scroll-logos {
+  animation: scroll-logos-horizontal 25s linear infinite;
+}
+
+.animate-scroll-logos:hover,
+.hover\:pause-animation:hover {
   animation-play-state: paused;
 }
 

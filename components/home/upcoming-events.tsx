@@ -51,10 +51,14 @@ export function UpcomingEvents() {
   }
 
   useEffect(() => {
-    if (events.length === 0) return
+    if (events.length <= 1) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % events.length)
+      setCurrentIndex((prev) => {
+        const nextIndex = (prev + 1) % events.length
+        console.log('Auto-scrolling to event:', nextIndex)
+        return nextIndex
+      })
     }, 5000)
 
     return () => clearInterval(interval)
@@ -93,10 +97,10 @@ export function UpcomingEvents() {
     <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-[#0A1B2A] mb-2 sm:mb-3">
-            Upcoming Events
+          <h2 className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold bg-gradient-to-r from-violet-600 via-fuchsia-600 to-rose-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+            🎯 Upcoming Events
           </h2>
-          <p className="text-base sm:text-lg text-[#4A6382]">
+          <p className="text-base sm:text-lg text-slate-600">
             Join our exciting workshops and programs
           </p>
         </div>
@@ -105,12 +109,15 @@ export function UpcomingEvents() {
         <div className="relative max-w-6xl mx-auto">
           <div className="overflow-hidden rounded-2xl">
             <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ 
+                transform: `translateX(-${currentIndex * 100}%)`,
+                willChange: 'transform'
+              }}
             >
-              {events.map((event) => (
-                <div key={event.id} className="min-w-full">
-                  <div className="grid md:grid-cols-2 gap-8 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl">
+              {events.map((event, index) => (
+                <div key={event.id} className="min-w-full flex-shrink-0">
+                  <div className="grid md:grid-cols-2 gap-8 bg-gradient-to-br from-violet-50 via-fuchsia-50 to-rose-50 p-8 rounded-2xl border border-fuchsia-200 shadow-xl shadow-fuchsia-500/10">
                     {/* Event Image */}
                     <div className="relative h-64 md:h-auto rounded-xl overflow-hidden">
                       {event.image_url ? (
@@ -120,7 +127,7 @@ export function UpcomingEvents() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#276EF1] to-[#37D2C5] flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-rose-500 flex items-center justify-center">
                           <Calendar className="w-24 h-24 text-white opacity-50" />
                         </div>
                       )}
@@ -128,17 +135,17 @@ export function UpcomingEvents() {
 
                     {/* Event Details */}
                     <div className="flex flex-col justify-center">
-                      <h3 className="text-2xl md:text-3xl font-bold text-[#0A1B2A] mb-4">
+                      <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
                         {event.title}
                       </h3>
                       
-                      <p className="text-[#4A6382] mb-6 line-clamp-3">
+                      <p className="text-slate-600 mb-6 line-clamp-3">
                         {event.description}
                       </p>
 
                       <div className="space-y-3 mb-6">
-                        <div className="flex items-center gap-3 text-[#4A6382]">
-                          <Calendar className="w-5 h-5 text-[#276EF1]" />
+                        <div className="flex items-center gap-3 text-slate-600">
+                          <Calendar className="w-5 h-5 text-indigo-500" />
                           <span>{new Date(event.date).toLocaleDateString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
@@ -147,13 +154,13 @@ export function UpcomingEvents() {
                           })}</span>
                         </div>
 
-                        <div className="flex items-center gap-3 text-[#4A6382]">
-                          <MapPin className="w-5 h-5 text-[#276EF1]" />
+                        <div className="flex items-center gap-3 text-slate-600">
+                          <MapPin className="w-5 h-5 text-pink-500" />
                           <span>{event.location}</span>
                         </div>
 
                         <div className="flex items-center gap-3">
-                          <IndianRupee className="w-5 h-5 text-green-600" />
+                          <IndianRupee className="w-5 h-5 text-emerald-600" />
                           <span className="text-lg font-semibold text-green-600">
                             {event.amount === 0 ? 'Free Event' : `₹${event.amount.toFixed(2)}`}
                           </span>
@@ -187,7 +194,7 @@ export function UpcomingEvents() {
                       <Button
                         onClick={() => handleRegister(event)}
                         disabled={event.available_seats === 0}
-                        className="w-full md:w-auto bg-gradient-to-r from-[#276EF1] to-[#37D2C5] text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full md:w-auto bg-gradient-to-r from-violet-500 via-fuchsia-500 to-rose-500 text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-fuchsia-500/40 hover:scale-105 transition-all"
                       >
                         {event.available_seats === 0 ? 'Event Full' : 'Register for Event'}
                         <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -208,8 +215,8 @@ export function UpcomingEvents() {
                   onClick={() => setCurrentIndex(index)}
                   className={`h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? 'w-8 bg-[#276EF1]'
-                      : 'w-2 bg-gray-300 hover:bg-gray-400'
+                      ? 'w-8 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-rose-500 shadow-lg shadow-fuchsia-500/30'
+                      : 'w-2 bg-gray-300 hover:bg-fuchsia-300'
                   }`}
                   aria-label={`Go to event ${index + 1}`}
                 />
@@ -218,7 +225,7 @@ export function UpcomingEvents() {
           )}
 
           {/* Event Counter */}
-          <div className="text-center mt-4 text-sm text-[#4A6382]">
+          <div className="text-center mt-4 text-sm text-slate-500">
             {currentIndex + 1} / {events.length}
           </div>
         </div>

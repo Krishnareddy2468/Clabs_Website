@@ -43,7 +43,7 @@ export function Navigation() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/95 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto flex h-16 sm:h-16 lg:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-[#276EF1] to-[#37D2C5] shadow-lg shadow-primary/20">
+          <div className="flex h-8 w-8 sm:h-10 sm:w-10 lg:h-11 lg:w-11 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-rose-500 shadow-lg shadow-fuchsia-500/40 animate-pulse">
             <Cpu className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
           </div>
           <span className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground tracking-tight">C-LABS</span>
@@ -64,7 +64,7 @@ export function Navigation() {
 
         <div className="hidden items-center lg:flex">
           <Button
-            className="rounded-full bg-gradient-to-r from-[#276EF1] to-[#37D2C5] px-6 lg:px-7 py-2.5 text-[15px] font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 btn-shimmer"
+            className="rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-rose-500 px-6 lg:px-7 py-2.5 text-[15px] font-semibold text-white shadow-lg shadow-fuchsia-500/40 transition-all hover:shadow-xl hover:shadow-fuchsia-500/50 hover:scale-105 btn-shimmer"
             asChild
           >
             <Link href="/programs">Explore Programs</Link>
@@ -130,7 +130,7 @@ export function Navigation() {
 
           <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-3 sm:px-6 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
             <Button
-              className="w-full rounded-lg bg-gradient-to-r from-[#276EF1] to-[#37D2C5] py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform touch-manipulation"
+              className="w-full rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 active:scale-[0.98] transition-transform touch-manipulation"
               asChild
             >
               <Link href="/programs" onClick={() => setIsOpen(false)}>
