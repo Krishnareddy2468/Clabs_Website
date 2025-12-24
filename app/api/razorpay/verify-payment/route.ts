@@ -27,33 +27,48 @@ export async function POST(request: NextRequest) {
     }
 
     // Payment verified successfully - save registration to database
+    console.log("Payment verified successfully, saving to database...");
+    console.log("Event details:", { id: eventDetails.id, title: eventDetails.title, amount: eventDetails.amount });
+    console.log("Form data:", { name: formData.name, mobile: formData.mobileNumber });
+    
     const supabase = createServiceClient();
+    
+    // Check if service role key is configured
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not configured!");
+      return NextResponse.json(
+        { error: "Server configuration error. Please contact support." },
+        { status: 500 }
+      );
+    }
+    
+    const registrationData = {
+      event_id: eventDetails.id,
+      student_name: formData.name,
+      father_name: formData.fatherName,
+      school_college: formData.schoolOrCollege,
+      class: formData.class,
+      mobile_number: formData.mobileNumber,
+      aadhaar_number: formData.aadhaarNumber,
+      city: formData.city,
+      state: formData.state,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      amount_paid: eventDetails.amount,
+      payment_status: "completed",
+    };
+    
+    console.log("Inserting registration data:", registrationData);
     
     const { data: registration, error: registrationError } = await supabase
       .from("event_registrations")
-      .insert([
-        {
-          event_id: eventDetails.id,
-          student_name: formData.name,
-          father_name: formData.fatherName,
-          school_college: formData.schoolOrCollege,
-          class: formData.class,
-          mobile_number: formData.mobileNumber,
-          aadhaar_number: formData.aadhaarNumber,
-          city: formData.city,
-          state: formData.state,
-          razorpay_order_id,
-          razorpay_payment_id,
-          razorpay_signature,
-          amount_paid: eventDetails.amount,
-          payment_status: "completed",
-        },
-      ])
+      .insert([registrationData])
       .select()
       .single();
 
     if (registrationError) {
-      console.error("Failed to save registration:", registrationError);
+      console.error("❌ Failed to save registration:", registrationError);
       console.error("Registration error details:", {
         message: registrationError.message,
         details: registrationError.details,
@@ -69,6 +84,13 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    console.log("✅ Registration saved successfully:", {
+      id: registration.id,
+      student_name: registration.student_name,
+      event_id: registration.event_id,
+      payment_id: razorpay_payment_id
+    });
 
     // Also store in contacts as backup (optional)
     const message = `Event Registration: ${eventDetails.title}\n\n` +
