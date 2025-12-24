@@ -54,8 +54,18 @@ export async function POST(request: NextRequest) {
 
     if (registrationError) {
       console.error("Failed to save registration:", registrationError);
+      console.error("Registration error details:", {
+        message: registrationError.message,
+        details: registrationError.details,
+        hint: registrationError.hint,
+        code: registrationError.code,
+      });
       return NextResponse.json(
-        { error: "Payment verified but failed to save registration. Please contact support." },
+        { 
+          error: "Payment verified but failed to save registration. Please contact support.",
+          errorCode: registrationError.code,
+          errorDetails: registrationError.message
+        },
         { status: 500 }
       );
     }
