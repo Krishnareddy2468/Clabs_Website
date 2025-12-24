@@ -31,7 +31,7 @@ export default function AdminDashboard() {
         const [schoolsRes, eventsRes, registrationsRes] = await Promise.all([
           supabase.from('schools').select('id', { count: 'exact' }),
           supabase.from('events').select('id', { count: 'exact' }),
-          supabase.from('registrations').select('id', { count: 'exact' })
+          supabase.from('event_registrations').select('id', { count: 'exact' })
         ])
 
         setStats({
