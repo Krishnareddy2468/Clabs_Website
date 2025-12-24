@@ -2,16 +2,8 @@
 
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { TeamSection } from "@/components/home/team-section"
 import { Target, Eye, Heart, Lightbulb, Rocket, Users } from "lucide-react"
-import { useEffect, useState } from "react"
-
-interface TeamMember {
-	id: string
-	name: string
-	role: string
-	image_url: string | null
-	display_order: number
-}
 
 const timeline = [
 	{
@@ -65,21 +57,6 @@ const approaches = [
 ]
 
 export default function AboutPage() {
-	const [team, setTeam] = useState<TeamMember[]>([])
-	const [isLoading, setIsLoading] = useState(true)
-
-	useEffect(() => {
-		fetch("/api/team")
-			.then((res) => res.json())
-			.then((data) => {
-				setTeam(Array.isArray(data) ? data : [])
-				setIsLoading(false)
-			})
-			.catch((err) => {
-				console.error("Failed to load team members:", err)
-				setIsLoading(false)
-			})
-	}, [])
 	return (
 		<div className="flex min-h-screen flex-col">
 			<Navigation />
@@ -218,55 +195,7 @@ export default function AboutPage() {
 				</section>
 
 				{/* Team */}
-				<section
-					id="team"
-					className="bg-slate-800 py-16 sm:py-20 md:py-24 lg:py-32"
-				>
-					<div className="container mx-auto px-4 sm:px-6 lg:px-8">
-						<h2 className="mb-10 sm:mb-12 md:mb-16 text-center text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-white">
-							Meet Our Team
-						</h2>
-						{isLoading ? (
-							<div className="flex justify-center items-center py-20">
-								<div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-							</div>
-						) : team.length > 0 ? (
-							<div className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-2 lg:grid-cols-4">
-								{team.map((member) => (
-									<div key={member.id} className="group text-center">
-										<div className="mb-3 sm:mb-5 overflow-hidden rounded-xl sm:rounded-2xl border border-slate-600 bg-slate-700/50">
-											{member.image_url ? (
-												<img
-													src={member.image_url}
-													alt={member.name}
-													className="h-48 sm:h-56 md:h-64 lg:h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-												/>
-											) : (
-												<div className="h-48 sm:h-56 md:h-64 lg:h-72 w-full flex items-center justify-center bg-gradient-to-br from-indigo-500/20 to-slate-700">
-													<div className="text-5xl font-bold text-indigo-400">
-														{member.name.charAt(0)}
-													</div>
-												</div>
-											)}
-										</div>
-										<h3 className="text-sm sm:text-base md:text-lg font-semibold text-white">
-											{member.name}
-										</h3>
-										<p className="text-xs sm:text-sm text-slate-400">{member.role}</p>
-									</div>
-								))}
-							</div>
-						) : (
-							<div className="text-center py-20">
-								<div className="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-									<Users className="w-10 h-10 text-indigo-400" />
-								</div>
-								<p className="text-slate-300 font-semibold text-lg mb-2">No team members yet</p>
-								<p className="text-sm text-slate-400">Add team members from admin panel</p>
-							</div>
-						)}
-					</div>
-				</section>
+				<TeamSection />
 			</main>
 			<Footer />
 		</div>
