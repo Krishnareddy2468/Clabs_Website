@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createServiceClient } from '@/lib/supabase/server'
 
 export async function GET() {
   try {
+    const supabase = createServiceClient()
     const { data, error } = await supabase
       .from('events')
       .select('*')
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
 
     console.log('Creating event:', { title, description, date, location, image_url, amount })
 
+    const supabase = createServiceClient()
     const { data, error } = await supabase
       .from('events')
       .insert([{ title, description, date, location, image_url, amount: amount || 0 }])
@@ -50,6 +52,7 @@ export async function POST(request: Request) {
 export async function PUT(request: NextRequest) {
   const body = await request.json()
 
+  const supabase = createServiceClient()
   const { data, error } = await supabase
     .from('events')
     .update({
@@ -77,6 +80,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Event ID required' }, { status: 400 })
   }
 
+  const supabase = createServiceClient()
   const { error } = await supabase.from('events').delete().eq('id', id)
 
   if (error) {
