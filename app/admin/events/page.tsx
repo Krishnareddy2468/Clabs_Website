@@ -20,6 +20,7 @@ interface Event {
   total_seats: number;
   available_seats: number;
   created_at: string;
+  registered_count?: number;
 }
 
 function EventsPageContent() {
@@ -73,7 +74,24 @@ function EventsPageContent() {
         .order("date", { ascending: true });
 
       if (error) throw error;
-      setEvents(Array.isArray(data) ? data : []);
+      
+      // Fetch registration counts for each event
+      const eventsWithCounts = await Promise.all(
+        (Array.isArray(data) ? data : []).map(async (event) => {
+          const { count } = await supabase
+            .from("event_registrations")
+            .select("*", { count: "exact", head: true })
+            .eq("event_id", event.id)
+            .eq("payment_status", "completed");
+          
+          return {
+            ...event,
+            registered_count: count || 0,
+          };
+        })
+      );
+      
+      setEvents(eventsWithCounts);
     } catch (err) {
       console.error("Failed to load events:", err);
       setEvents([]);
@@ -416,7 +434,7 @@ function EventsPageContent() {
                         event.available_seats < 10 ? "text-orange-600" : 
                         "text-green-600"
                       }`}>
-                        {event.available_seats}/{event.total_seats}
+                        {event.registered_count ?? (event.total_seats - event.available_seats)}/{event.total_seats}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">

@@ -14,8 +14,27 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    console.log('Fetched events:', data)
-    return NextResponse.json(data || [])
+    // Calculate actual available seats for each event
+    const eventsWithCorrectSeats = await Promise.all(
+      (data || []).map(async (event) => {
+        const { count } = await supabase
+          .from('event_registrations')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_id', event.id)
+          .eq('payment_status', 'completed')
+        
+        const registeredCount = count || 0
+        const actualAvailableSeats = event.total_seats - registeredCount
+        
+        return {
+          ...event,
+          available_seats: actualAvailableSeats
+        }
+      })
+    )
+
+    console.log('Fetched events with corrected seats:', eventsWithCorrectSeats)
+    return NextResponse.json(eventsWithCorrectSeats)
   } catch (error) {
     console.error('Exception fetching events:', error)
     return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 })
