@@ -27,10 +27,10 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceClient();
 
-    // Check if seats are available
+    // Check if seats are available by counting actual registrations
     const { data: event, error: eventError } = await supabase
       .from("events")
-      .select("available_seats, title")
+      .select("total_seats, title")
       .eq("id", eventId)
       .single();
 
@@ -41,7 +41,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (event.available_seats <= 0) {
+    // Count completed registrations to check actual availability
+    const { count: registeredCount, error: countError } = await supabase
+      .from("event_registrations")
+      .select("*", { count: "exact", head: true })
+      .eq("event_id", eventId)
+      .eq("payment_status", "completed");
+
+    if (countError) {
+      console.error("Failed to count registrations:", countError);
+      return NextResponse.json(
+        { error: "Failed to verify seat availability" },
+        { status: 500 }
+      );
+    }
+
+    const actualAvailableSeats = event.total_seats - (registeredCount || 0);
+
+    if (actualAvailableSeats <= 0) {
       return NextResponse.json(
         { error: "No seats available for this event" },
         { status: 400 }
