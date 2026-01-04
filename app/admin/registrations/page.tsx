@@ -260,13 +260,12 @@ export default function RegistrationsPage() {
 
   const stats = {
     total: registrations.length,
-    completed: registrations.filter((r) => r.payment_status === "completed").length,
-    pending: registrations.filter((r) => r.payment_status === "pending").length,
+    upcomingOngoing: registrations.filter((r) => r.events?.status === "upcoming" || r.events?.status === "ongoing").length,
+    completed: registrations.filter((r) => r.events?.status === "completed").length,
+    pendingPayment: registrations.filter((r) => r.payment_status === "pending").length,
     totalRevenue: registrations
       .filter((r) => r.payment_status === "completed")
       .reduce((sum, r) => sum + r.amount_paid, 0),
-    upcomingEvents: registrations.filter((r) => r.events?.status === "upcoming" || r.events?.status === "ongoing").length,
-    completedEvents: registrations.filter((r) => r.events?.status === "completed").length,
     upcomingRevenue: registrations
       .filter((r) => r.payment_status === "completed" && r.events?.status === "upcoming")
       .reduce((sum, r) => sum + r.amount_paid, 0),
@@ -313,6 +312,18 @@ export default function RegistrationsPage() {
 
         <div className="bg-white rounded-xl border p-4">
           <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Upcoming/Ongoing</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.upcomingOngoing}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
               <CheckCircle className="w-5 h-5 text-green-600" />
             </div>
@@ -330,7 +341,7 @@ export default function RegistrationsPage() {
             </div>
             <div>
               <p className="text-sm text-gray-500">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.pendingPayment}</p>
             </div>
           </div>
         </div>
@@ -378,7 +389,7 @@ export default function RegistrationsPage() {
             size="sm"
             className={eventStatusFilter === "upcoming" ? "bg-blue-600 hover:bg-blue-700" : ""}
           >
-            Upcoming/Ongoing ({stats.upcomingEvents})
+            Upcoming/Ongoing ({stats.upcomingOngoing})
           </Button>
           <Button
             variant={eventStatusFilter === "completed" ? "default" : "outline"}
@@ -386,7 +397,7 @@ export default function RegistrationsPage() {
             size="sm"
             className={eventStatusFilter === "completed" ? "bg-gray-600 hover:bg-gray-700" : ""}
           >
-            Completed Events ({stats.completedEvents})
+            Completed Events ({stats.completed})
           </Button>
         </div>
         

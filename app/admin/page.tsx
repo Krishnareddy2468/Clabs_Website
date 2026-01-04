@@ -22,15 +22,22 @@ interface Stats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({ schools: 0, events: 0, registrations: 0 })
   const [isLoading, setIsLoading] = useState(true)
+  const [overallGrowth, setOverallGrowth] = useState(0)
 
   useEffect(() => {
     async function loadStats() {
       try {
         const supabase = createClient()
         
-        const [schoolsRes, eventsRes, registrationsRes] = await Promise.all([
+        // Get date for last 30 days
+        const now = new Date()
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+
+        const [schoolsRes, eventsRes, registrationsRes, recentRegs, allRegs] = await Promise.all([
           supabase.from('schools').select('id', { count: 'exact' }),
           supabase.from('events').select('id', { count: 'exact' }),
+          supabase.from('event_registrations').select('id', { count: 'exact' }),
+          supabase.from('event_registrations').select('id', { count: 'exact' }).gte('created_at', thirtyDaysAgo.toISOString()),
           supabase.from('event_registrations').select('id', { count: 'exact' })
         ])
 
@@ -39,6 +46,12 @@ export default function AdminDashboard() {
           events: eventsRes.count || 0,
           registrations: registrationsRes.count || 0
         })
+
+        // Calculate activity rate (last 30 days as % of all time)
+        const recentCount = recentRegs.count || 0
+        const totalCount = allRegs.count || 0
+        const activityRate = totalCount === 0 ? 0 : Math.round((recentCount / totalCount) * 100)
+        setOverallGrowth(activityRate)
       } catch (error) {
         console.error('Failed to load stats:', error)
       } finally {
@@ -73,10 +86,10 @@ export default function AdminDashboard() {
     },
     {
       title: "Growth",
-      value: "+12%",
+      value: `${overallGrowth}%`,
       icon: TrendingUp,
       color: "from-orange-500 to-orange-600",
-      href: "/admin"
+      href: "/admin/analytics"
     }
   ]
 
