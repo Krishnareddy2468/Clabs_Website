@@ -11,7 +11,8 @@ export async function GET(request: NextRequest) {
         *,
         events (
           title,
-          date
+          date,
+          status
         )
       `)
       .order("created_at", { ascending: false });

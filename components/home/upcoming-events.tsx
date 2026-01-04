@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Calendar, MapPin, ArrowRight, IndianRupee } from "lucide-react"
+import { Calendar, MapPin, ArrowRight, IndianRupee, MessageSquare, CheckCircle, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EventRegistrationModal } from "./event-registration-modal"
+import { EventFeedbackModal } from "./event-feedback-modal"
 
 interface Event {
   id: string
@@ -15,6 +16,7 @@ interface Event {
   amount: number
   total_seats: number
   available_seats: number
+  status?: string
 }
 
 export function UpcomingEvents() {
@@ -22,6 +24,7 @@ export function UpcomingEvents() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -67,6 +70,47 @@ export function UpcomingEvents() {
   const handleRegister = (event: Event) => {
     setSelectedEvent(event)
     setIsModalOpen(true)
+  }
+
+  const handleFeedback = (event: Event) => {
+    setSelectedEvent(event)
+    setIsFeedbackModalOpen(true)
+  }
+
+  const getStatusBadge = (status?: string) => {
+    if (!status) return null
+    
+    const statusConfig = {
+      upcoming: {
+        bg: "bg-blue-100",
+        text: "text-blue-700",
+        icon: Clock,
+        label: "Upcoming",
+      },
+      ongoing: {
+        bg: "bg-green-100",
+        text: "text-green-700",
+        icon: CheckCircle,
+        label: "Ongoing",
+      },
+      completed: {
+        bg: "bg-gray-100",
+        text: "text-gray-700",
+        icon: CheckCircle,
+        label: "Completed",
+      },
+    }
+
+    const config = statusConfig[status as keyof typeof statusConfig]
+    if (!config) return null
+
+    const Icon = config.icon
+    return (
+      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${config.bg} ${config.text} text-sm font-medium`}>
+        <Icon className="w-4 h-4" />
+        {config.label}
+      </div>
+    )
   }
 
   if (loading) {
@@ -135,6 +179,11 @@ export function UpcomingEvents() {
 
                     {/* Event Details */}
                     <div className="flex flex-col justify-center">
+                      {/* Status Badge */}
+                      <div className="mb-3">
+                        {getStatusBadge(event.status)}
+                      </div>
+                      
                       <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
                         {event.title}
                       </h3>
@@ -191,14 +240,25 @@ export function UpcomingEvents() {
                         </div>
                       </div>
 
-                      <Button
-                        onClick={() => handleRegister(event)}
-                        disabled={event.available_seats === 0}
-                        className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-indigo-500/30 hover:scale-105 transition-all"
-                      >
-                        {event.available_seats === 0 ? 'Event Full' : 'Register for Event'}
-                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                      </Button>
+                      {/* Action Button - Register or Feedback based on status */}
+                      {event.status === 'ongoing' || event.status === 'completed' ? (
+                        <Button
+                          onClick={() => handleFeedback(event)}
+                          className="w-full md:w-auto bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white px-8 py-6 text-lg group hover:shadow-2xl hover:shadow-blue-900/30 hover:scale-105 transition-all"
+                        >
+                          Share Your Feedback
+                          <MessageSquare className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleRegister(event)}
+                          disabled={event.available_seats === 0}
+                          className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-8 py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-indigo-500/30 hover:scale-105 transition-all"
+                        >
+                          {event.available_seats === 0 ? 'Event Full' : 'Register for Event'}
+                          <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -218,14 +278,27 @@ export function UpcomingEvents() {
                       ? 'w-8 bg-indigo-500 shadow-lg shadow-indigo-500/30'
                       : 'w-2 bg-slate-300 hover:bg-indigo-300'
                   }`}
-                  aria-label={`Go to event ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Event Counter */}
-          <div className="text-center mt-4 text-sm text-slate-500">
+         >
+          <EventRegistrationModal
+            event={selectedEvent}
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false)
+              setSelectedEvent(null)
+            }}
+          />
+          <EventFeedbackModal
+            event={selectedEvent}
+            isOpen={isFeedbackModalOpen}
+            onClose={() => {
+              setIsFeedbackModalOpen(false)
+              setSelectedEvent(null)
+            }}
+            onSuccess={() => {
+              fetchEvents() // Refresh events after feedback
+            }}
+          />
+        <  <div className="text-center mt-4 text-sm text-slate-500">
             {currentIndex + 1} / {events.length}
           </div>
         </div>

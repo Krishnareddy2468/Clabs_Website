@@ -26,6 +26,7 @@ interface Registration {
   events?: {
     title: string;
     date: string;
+    status?: string;
   };
 }
 
@@ -40,6 +41,7 @@ export default function RegistrationsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [eventStatusFilter, setEventStatusFilter] = useState<string>("all"); // new: filter by event status
   const [showModal, setShowModal] = useState(false);
   const [editingReg, setEditingReg] = useState<Registration | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
@@ -182,17 +184,22 @@ export default function RegistrationsPage() {
       reg.mobile_number.includes(searchQuery) ||
       reg.events?.title.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesStatus = 
+    const matchesPaymentStatus =
       filterStatus === "all" || reg.payment_status === filterStatus;
 
-    return matchesSearch && matchesStatus;
+    const matchesEventStatus =
+      eventStatusFilter === "all" || 
+      (eventStatusFilter === "upcoming" && (reg.events?.status === "upcoming" || reg.events?.status === "ongoing")) ||
+      (eventStatusFilter === "completed" && reg.events?.status === "completed");
+
+    return matchesSearch && matchesPaymentStatus && matchesEventStatus;
   });
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
-      year: "numeric",
       month: "short",
       day: "numeric",
+      year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -258,6 +265,14 @@ export default function RegistrationsPage() {
     totalRevenue: registrations
       .filter((r) => r.payment_status === "completed")
       .reduce((sum, r) => sum + r.amount_paid, 0),
+    upcomingEvents: registrations.filter((r) => r.events?.status === "upcoming" || r.events?.status === "ongoing").length,
+    completedEvents: registrations.filter((r) => r.events?.status === "completed").length,
+    upcomingRevenue: registrations
+      .filter((r) => r.payment_status === "completed" && r.events?.status === "upcoming")
+      .reduce((sum, r) => sum + r.amount_paid, 0),
+    completedRevenue: registrations
+      .filter((r) => r.payment_status === "completed" && (r.events?.status === "ongoing" || r.events?.status === "completed"))
+      .reduce((sum, r) => sum + r.amount_paid, 0),
   };
 
   return (
@@ -283,7 +298,7 @@ export default function RegistrationsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white rounded-xl border p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -322,50 +337,94 @@ export default function RegistrationsPage() {
 
         <div className="bg-white rounded-xl border p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <span className="text-xl font-bold text-purple-600">₹</span>
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <span className="text-xl font-bold text-blue-600">₹</span>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-900">₹{stats.totalRevenue.toFixed(2)}</p>
+              <p className="text-sm text-gray-500">Upcoming Revenue</p>
+              <p className="text-xl font-bold text-blue-900">₹{stats.upcomingRevenue.toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+              <span className="text-xl font-bold text-gray-600">₹</span>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Completed Revenue</p>
+              <p className="text-xl font-bold text-gray-900">₹{stats.completedRevenue.toFixed(2)}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input
-            placeholder="Search by name, mobile, or event..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+      <div className="flex flex-col gap-3">
+        {/* Event Status Filter */}
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-sm font-medium text-gray-700">Event Status:</span>
+          <Button
+            variant={eventStatusFilter === "all" ? "default" : "outline"}
+            onClick={() => setEventStatusFilter("all")}
+            size="sm"
+          >
+            All Events
+          </Button>
+          <Button
+            variant={eventStatusFilter === "upcoming" ? "default" : "outline"}
+            onClick={() => setEventStatusFilter("upcoming")}
+            size="sm"
+            className={eventStatusFilter === "upcoming" ? "bg-blue-600 hover:bg-blue-700" : ""}
+          >
+            Upcoming/Ongoing ({stats.upcomingEvents})
+          </Button>
+          <Button
+            variant={eventStatusFilter === "completed" ? "default" : "outline"}
+            onClick={() => setEventStatusFilter("completed")}
+            size="sm"
+            className={eventStatusFilter === "completed" ? "bg-gray-600 hover:bg-gray-700" : ""}
+          >
+            Completed Events ({stats.completedEvents})
+          </Button>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={filterStatus === "all" ? "default" : "outline"}
-            onClick={() => setFilterStatus("all")}
-            size="sm"
-          >
-            All
-          </Button>
-          <Button
-            variant={filterStatus === "completed" ? "default" : "outline"}
-            onClick={() => setFilterStatus("completed")}
-            size="sm"
-          >
-            Completed
-          </Button>
-          <Button
-            variant={filterStatus === "pending" ? "default" : "outline"}
-            onClick={() => setFilterStatus("pending")}
-            size="sm"
-          >
-            Pending
-          </Button>
+        
+        {/* Search and Payment Status Filter */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              placeholder="Search by name, mobile, or event..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex gap-2">
+            <span className="text-sm font-medium text-gray-700 flex items-center">Payment:</span>
+            <Button
+              variant={filterStatus === "all" ? "default" : "outline"}
+              onClick={() => setFilterStatus("all")}
+              size="sm"
+            >
+              All
+            </Button>
+            <Button
+              variant={filterStatus === "completed" ? "default" : "outline"}
+              onClick={() => setFilterStatus("completed")}
+              size="sm"
+            >
+              Completed
+            </Button>
+            <Button
+              variant={filterStatus === "pending" ? "default" : "outline"}
+              onClick={() => setFilterStatus("pending")}
+              size="sm"
+            >
+              Pending
+            </Button>
+          </div>
         </div>
       </div>
 

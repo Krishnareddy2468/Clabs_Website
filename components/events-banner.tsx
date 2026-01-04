@@ -2,20 +2,21 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, ArrowRight, X, Users } from "lucide-react"
+import { Calendar, Clock, ArrowRight, X, Users, MessageSquare, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import { EventFeedbackModal } from "@/components/home/event-feedback-modal"
 
 interface Event {
   id: string
   title: string
   description: string
   date: string
-  end_date?: string
-  image: string
-  apply_link: string
-  active: boolean
+  location: string
+  image_url: string | null
+  amount: number
   total_seats: number
   available_seats: number
+  status?: string
 }
 
 export function EventsBanner() {
@@ -24,12 +25,14 @@ export function EventsBanner() {
   const [isVisible, setIsVisible] = useState(true)
   const [isPaused, setIsPaused] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
   useEffect(() => {
     // Load active events from API
     const loadEvents = async () => {
       try {
-        const response = await fetch('/api/events?active=true')
+        const response = await fetch('/api/events')
         if (response.ok) {
           const data = await response.json()
           setEvents(data)
@@ -93,61 +96,88 @@ export function EventsBanner() {
 
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-white/30 px-3 py-0.5 text-xs font-medium backdrop-blur-sm transition-all duration-300 hover:bg-white/40 hover:scale-105 animate-pulse">
-                  Upcoming Event
-                </span>
+                {currentEvent.status === 'ongoing' ? (
+                  <span className="rounded-full bg-green-500/90 px-3 py-0.5 text-xs font-medium backdrop-blur-sm transition-all duration-300 hover:bg-green-500 hover:scale-105 animate-pulse flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    Ongoing
+                  </span>
+                ) : currentEvent.status === 'completed' ? (
+                  <span className="rounded-full bg-gray-500/90 px-3 py-0.5 text-xs font-medium backdrop-blur-sm transition-all duration-300 hover:bg-gray-500 hover:scale-105 flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    Completed
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-white/30 px-3 py-0.5 text-xs font-medium backdrop-blur-sm transition-all duration-300 hover:bg-white/40 hover:scale-105 animate-pulse flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    Upcoming
+                  </span>
+                )}
                 {events.length > 1 && (
                   <span className="text-xs text-white/80 transition-all duration-300 hover:text-white">
                     {currentIndex + 1} of {events.length}
                   </span>
                 )}
               </div>
-              <Link href={currentEvent.apply_link || '#'} target="_blank" className="block mt-1 group/title">
-                <h3 className="font-bold text-base sm:text-xl transition-all duration-300 hover:scale-105 text-white bg-yellow-400/20 px-3 py-1.5 rounded-lg border-2 border-yellow-300 cursor-pointer inline-flex items-center gap-2 hover:bg-yellow-400/30 hover:border-yellow-200">
+              <div className="block mt-1 group/title">
+                <h3 className="font-bold text-base sm:text-xl transition-all duration-300 text-white bg-yellow-400/20 px-3 py-1.5 rounded-lg border-2 border-yellow-300 inline-flex items-center gap-2">
                   👉 {currentEvent.title}
-                  <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover/title:translate-x-1 animate-pulse" />
                 </h3>
-              </Link>
+              </div>
               <p className="mt-2 line-clamp-1 text-xs text-white/90 sm:text-sm transition-all duration-300 hover:text-white">
                 {currentEvent.description}
               </p>
               <div className="mt-1 flex items-center gap-3 text-xs text-white/80">
                 <span className="flex items-center gap-1 transition-all duration-300 hover:text-white hover:scale-105">
-                  <Clock className="h-3 w-3" />
+                  <Calendar className="h-3 w-3" />
                   {new Date(currentEvent.date).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
-                    year: "numeric",
                   })}
                 </span>
-                <span className={`flex items-center gap-1 font-medium transition-all duration-300 hover:scale-110 ${
-                  currentEvent.available_seats === 0 ? 'text-red-300 animate-pulse' :
-                  currentEvent.available_seats < 10 ? 'text-yellow-300 animate-bounce' :
-                  'text-white'
-                }`}>
-                  <Users className="h-3 w-3" />
-                  {currentEvent.available_seats === 0 
-                    ? 'Seats Full' 
-                    : currentEvent.available_seats < 10 
-                      ? `Only ${currentEvent.available_seats} seats left!` 
-                      : `${currentEvent.available_seats}/${currentEvent.total_seats} seats`
-                  }
+                <span className="flex items-center gap-1 transition-all duration-300 hover:text-white hover:scale-105">
+                  📍 {currentEvent.location}
                 </span>
+                {currentEvent.status === 'upcoming' && (
+                  <span className={`flex items-center gap-1 font-medium transition-all duration-300 hover:scale-110 ${
+                    currentEvent.available_seats === 0 ? 'text-red-300 animate-pulse' :
+                    currentEvent.available_seats < 10 ? 'text-yellow-300 animate-bounce' :
+                    'text-white'
+                  }`}>
+                    <Users className="h-3 w-3" />
+                    {currentEvent.available_seats === 0 
+                      ? 'Seats Full' 
+                      : currentEvent.available_seats < 10 
+                        ? `Only ${currentEvent.available_seats} seats left!` 
+                        : `${currentEvent.available_seats}/${currentEvent.total_seats} seats`
+                    }
+                  </span>
+                )}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {currentEvent.apply_link && (
-              <Link href={currentEvent.apply_link} target="_blank">
-                <Button
-                  size="sm"
-                  className="bg-white text-[#276EF1] hover:bg-white/90 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-0.5"
-                >
-                  Apply Now
-                  <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </Link>
+            {currentEvent.status === 'ongoing' || currentEvent.status === 'completed' ? (
+              <Button
+                size="sm"
+                onClick={() => {
+                  setSelectedEvent(currentEvent)
+                  setIsFeedbackModalOpen(true)
+                }}
+                className="bg-[#1e3a8a] text-white hover:bg-[#1e40af] transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-0.5"
+              >
+                Share Feedback
+                <MessageSquare className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                disabled={currentEvent.available_seats === 0}
+                className="bg-white text-[#276EF1] hover:bg-white/90 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50"
+              >
+                {currentEvent.available_seats === 0 ? 'Event Full' : 'Register Now'}
+                <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Button>
             )}
 
             <button
@@ -188,6 +218,18 @@ export function EventsBanner() {
         <div className="absolute top-2 right-2 sm:right-20 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 text-xs animate-fade-in">
           Paused
         </div>
+      )}
+      
+      {/* Feedback Modal */}
+      {selectedEvent && (
+        <EventFeedbackModal
+          event={selectedEvent}
+          isOpen={isFeedbackModalOpen}
+          onClose={() => {
+            setIsFeedbackModalOpen(false)
+            setSelectedEvent(null)
+          }}
+        />
       )}
     </div>
   )

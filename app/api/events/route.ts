@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 
+// Helper function to calculate event status based on date
+function calculateEventStatus(eventDate: string): string {
+  const now = new Date()
+  const event = new Date(eventDate)
+  
+  // Reset time to compare only dates
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const eventDay = new Date(event.getFullYear(), event.getMonth(), event.getDate())
+  
+  if (eventDay.getTime() > today.getTime()) {
+    return 'upcoming'
+  } else if (eventDay.getTime() === today.getTime()) {
+    return 'ongoing'
+  } else {
+    return 'completed'
+  }
+}
+
 export async function GET() {
   try {
     const supabase = createServiceClient()
@@ -14,7 +32,7 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Calculate actual available seats for each event
+    // Calculate actual available seats and update status for each event
     const eventsWithCorrectSeats = await Promise.all(
       (data || []).map(async (event) => {
         const { count } = await supabase
@@ -26,8 +44,20 @@ export async function GET() {
         const registeredCount = count || 0
         const actualAvailableSeats = event.total_seats - registeredCount
         
+        // Calculate correct status based on date
+        const correctStatus = calculateEventStatus(event.date)
+        
+        // Update status in database if it's different
+        if (event.status !== correctStatus) {
+          await supabase
+            .from('events')
+            .update({ status: correctStatus })
+            .eq('id', event.id)
+        }
+        
         return {
           ...event,
+          status: correctStatus,
           available_seats: actualAvailableSeats
         }
       })

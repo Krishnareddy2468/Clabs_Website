@@ -1,9 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Calendar, MapPin, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, Calendar, MapPin, X, ChevronLeft, ChevronRight, MessageSquare, CheckCircle, Clock } from "lucide-react"
 import { useEffect, useState } from "react"
 import { EventRegistrationModal } from "./event-registration-modal"
+import { EventFeedbackModal } from "./event-feedback-modal"
 
 interface Event {
   id: string
@@ -15,6 +16,7 @@ interface Event {
   amount: number
   total_seats: number
   available_seats: number
+  status?: string
 }
 
 interface Banner {
@@ -30,6 +32,7 @@ export function Hero() {
   const [showBanner, setShowBanner] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -75,6 +78,11 @@ export function Hero() {
     setIsModalOpen(true)
   }
 
+  const handleFeedback = (event: Event) => {
+    setSelectedEvent(event)
+    setIsFeedbackModalOpen(true)
+  }
+
   const nextBanner = () => {
     setCurrentBannerIndex((prev) => (prev + 1) % banners.length)
   }
@@ -99,11 +107,24 @@ export function Hero() {
                 <div className="flex items-center gap-12 sm:gap-16 animate-marquee whitespace-nowrap">
                   {[...events, ...events, ...events, ...events].map((event, index) => (
                     <div key={index} className="flex items-center gap-3 sm:gap-4">
-                      <span className="bg-white text-red-600 px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg">
-                         Upcoming
-                      </span>
+                      {event.status === 'ongoing' ? (
+                        <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Ongoing
+                        </span>
+                      ) : event.status === 'completed' ? (
+                        <span className="bg-gray-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="bg-white text-red-600 px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          Upcoming
+                        </span>
+                      )}
                       <button 
-                        onClick={() => handleRegister(event)}
+                        onClick={() => (event.status === 'ongoing' || event.status === 'completed') ? handleFeedback(event) : handleRegister(event)}
                         className="font-bold text-sm sm:text-base px-4 py-2 rounded-xl border-2 border-white hover:bg-white/20 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer hover:scale-105 animate-float"
                       >
                         <span className="text-white">
@@ -119,12 +140,23 @@ export function Hero() {
                         <MapPin className="w-3 h-3" />
                         {event.location}
                       </span>
-                      <button
-                        onClick={() => handleRegister(event)}
-                        className="bg-white text-red-600 px-5 py-2 rounded-full text-xs sm:text-sm font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
-                      >
-                        Register Now →
-                      </button>
+                      {event.status === 'ongoing' || event.status === 'completed' ? (
+                        <button
+                          onClick={() => handleFeedback(event)}
+                          className="bg-[#1e3a8a] text-white px-5 py-2 rounded-full text-xs sm:text-sm font-bold hover:bg-[#1e40af] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 flex items-center gap-1"
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                          Share Feedback →
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleRegister(event)}
+                          disabled={event.available_seats === 0}
+                          className="bg-white text-red-600 px-5 py-2 rounded-full text-xs sm:text-sm font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {event.available_seats === 0 ? 'Event Full' : 'Register Now →'}
+                        </button>
+                      )}
                       <span className="text-white/40 text-2xl">•</span>
                     </div>
                   ))}
@@ -296,14 +328,24 @@ export function Hero() {
 
       {/* Registration Modal */}
       {selectedEvent && (
-        <EventRegistrationModal
-          event={selectedEvent}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false)
-            setSelectedEvent(null)
-          }}
-        />
+        <>
+          <EventRegistrationModal
+            event={selectedEvent}
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false)
+              setSelectedEvent(null)
+            }}
+          />
+          <EventFeedbackModal
+            event={selectedEvent}
+            isOpen={isFeedbackModalOpen}
+            onClose={() => {
+              setIsFeedbackModalOpen(false)
+              setSelectedEvent(null)
+            }}
+          />
+        </>
       )}
     </>
   )

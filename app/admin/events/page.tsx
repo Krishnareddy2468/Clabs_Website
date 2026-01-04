@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Plus, Trash2, Loader2, Calendar, Search, Edit } from "lucide-react";
+import { Plus, Trash2, Loader2, Calendar, Search, Edit, MessageSquare, Star, X, CheckCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,8 +19,20 @@ interface Event {
   amount: number;
   total_seats: number;
   available_seats: number;
+  status?: string;
   created_at: string;
   registered_count?: number;
+}
+
+interface Feedback {
+  id: string;
+  event_id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  rating: number;
+  feedback: string;
+  created_at: string;
 }
 
 function EventsPageContent() {
@@ -31,6 +43,8 @@ function EventsPageContent() {
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEventFeedback, setSelectedEventFeedback] = useState<{ event: Event; feedback: Feedback[] } | null>(null);
+  const [loadingFeedback, setLoadingFeedback] = useState(false);
 
   // Form fields
   const [title, setTitle] = useState("");
@@ -220,6 +234,61 @@ function EventsPageContent() {
     }
   };
 
+  const handleViewFeedback = async (event: Event) => {
+    try {
+      setLoadingFeedback(true);
+      const response = await fetch(`/api/events/feedback?event_id=${event.id}`);
+      const feedback = await response.json();
+      setSelectedEventFeedback({ event, feedback });
+    } catch (error) {
+      console.error("Failed to load feedback:", error);
+      alert("Failed to load feedback");
+    } finally {
+      setLoadingFeedback(false);
+    }
+  };
+
+  const handleDeleteFeedback = async (feedbackId: string) => {
+    if (!confirm("Delete this feedback?")) return;
+    
+    try {
+      const response = await fetch(`/api/events/feedback?id=${feedbackId}`, {
+        method: "DELETE",
+      });
+      
+      if (!response.ok) throw new Error("Failed to delete feedback");
+      
+      // Reload feedback
+      if (selectedEventFeedback) {
+        await handleViewFeedback(selectedEventFeedback.event);
+      }
+    } catch (error) {
+      console.error("Failed to delete feedback:", error);
+      alert("Failed to delete feedback");
+    }
+  };
+
+  const getStatusBadge = (status?: string) => {
+    if (!status) status = 'upcoming';
+    
+    const statusConfig = {
+      upcoming: { bg: "bg-blue-100", text: "text-blue-700", icon: Clock, label: "Upcoming" },
+      ongoing: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle, label: "Ongoing" },
+      completed: { bg: "bg-gray-100", text: "text-gray-700", icon: CheckCircle, label: "Completed" },
+    };
+
+    const config = statusConfig[status as keyof typeof statusConfig];
+    if (!config) return null;
+
+    const Icon = config.icon;
+    return (
+      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full ${config.bg} ${config.text} text-xs font-medium`}>
+        <Icon className="w-3 h-3" />
+        {config.label}
+      </span>
+    );
+  };
+
   const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -382,6 +451,9 @@ function EventsPageContent() {
                     Date
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    Status
+                  </th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
                     Location
                   </th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
@@ -422,6 +494,9 @@ function EventsPageContent() {
                     <td className="py-3 px-4 text-sm text-gray-600">
                       {formatDate(event.date)}
                     </td>
+                    <td className="py-3 px-4 text-sm">
+                      {getStatusBadge(event.status)}
+                    </td>
                     <td className="py-3 px-4 text-sm text-gray-600">
                       {event.location}
                     </td>
@@ -439,6 +514,15 @@ function EventsPageContent() {
                     </td>
                     <td className="py-3 px-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        {(event.status === 'ongoing' || event.status === 'completed') && (
+                          <button
+                            onClick={() => handleViewFeedback(event)}
+                            className="text-[#1e3a8a] hover:text-[#1e40af] p-2"
+                            title="View feedback"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </button>
+                        )}
                         <button
                           onClick={() => handleEdit(event)}
                           className="text-blue-500 hover:text-blue-700 p-2"
@@ -468,6 +552,95 @@ function EventsPageContent() {
           <p className="text-sm text-gray-500 mt-1">
             Create your first event to get started
           </p>
+        </div>
+      )}
+      
+      {/* Feedback Modal */}
+      {selectedEventFeedback && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] p-6 rounded-t-2xl">
+              <button
+                onClick={() => setSelectedEventFeedback(null)}
+                className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <h2 className="text-2xl font-bold text-white pr-8">Event Feedback</h2>
+              <p className="text-blue-100 mt-1">{selectedEventFeedback.event.title}</p>
+              <p className="text-blue-200 text-sm mt-1">
+                {selectedEventFeedback.feedback.length} feedback responses
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {loadingFeedback ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+                </div>
+              ) : selectedEventFeedback.feedback.length === 0 ? (
+                <div className="text-center py-12">
+                  <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p className="font-medium text-gray-900">No feedback yet</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Feedback will appear here once attendees submit their responses
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {selectedEventFeedback.feedback.map((fb) => (
+                    <div key={fb.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold text-gray-900">{fb.name}</h4>
+                            <div className="flex items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={`w-4 h-4 ${
+                                    star <= fb.rating
+                                      ? "fill-yellow-400 text-yellow-400"
+                                      : "text-gray-300"
+                                  }`}
+                                />
+                              ))}
+                              <span className="text-sm text-gray-600 ml-1">
+                                ({fb.rating}/5)
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                            <span>{fb.email}</span>
+                            {fb.phone && <span>{fb.phone}</span>}
+                            <span>
+                              {new Date(fb.created_at).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteFeedback(fb.id)}
+                          className="text-red-500 hover:text-red-700 p-2"
+                          title="Delete feedback"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <p className="text-gray-700 whitespace-pre-wrap">{fb.feedback}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
