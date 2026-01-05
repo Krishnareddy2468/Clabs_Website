@@ -1,8 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Calendar, MapPin, X, ChevronLeft, ChevronRight, MessageSquare, CheckCircle, Clock } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ArrowRight, Calendar, MapPin, X, ChevronLeft, ChevronRight, MessageSquare, CheckCircle, Clock, Play, Pause, Users } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
 import { EventRegistrationModal } from "./event-registration-modal"
 import { EventFeedbackModal } from "./event-feedback-modal"
 
@@ -25,15 +25,32 @@ interface Banner {
   image_url: string
 }
 
+interface GalleryImage {
+  id: string
+  title: string
+  image_url: string
+  category: string
+}
+
 export function Hero() {
   const [events, setEvents] = useState<Event[]>([])
   const [banners, setBanners] = useState<Banner[]>([])
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
   const [showBanner, setShowBanner] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  
+  // Event slideshow states
+  const [currentEventIndex, setCurrentEventIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+
+  // Use gallery images from Events category for slideshow
+  const slideshowImages = galleryImages.filter(img => img.image_url && img.image_url.trim() !== '')
 
   useEffect(() => {
     fetch("/api/events")
@@ -42,6 +59,26 @@ export function Hero() {
         setEvents(Array.isArray(data) ? data : [])
       })
       .catch(err => console.error('Failed to load events:', err))
+
+    // Fetch gallery images from Events category
+    fetch("/api/gallery?category=Events")
+      .then(res => res.json())
+      .then(data => {
+        console.log('Gallery images from Events:', data)
+        if (Array.isArray(data) && data.length > 0) {
+          setGalleryImages(data)
+        } else {
+          // Fallback: fetch all gallery images if no Events category
+          fetch("/api/gallery")
+            .then(res => res.json())
+            .then(allData => {
+              console.log('All gallery images:', allData)
+              setGalleryImages(Array.isArray(allData) ? allData : [])
+            })
+            .catch(err => console.error('Failed to load all gallery images:', err))
+        }
+      })
+      .catch(err => console.error('Failed to load gallery images:', err))
 
     setIsLoading(true)
     fetch("/api/banners")
@@ -73,6 +110,17 @@ export function Hero() {
     }
   }, [banners.length])
 
+  // Auto-advance event slideshow every 3 seconds
+  useEffect(() => {
+    if (slideshowImages.length <= 1 || isPaused) return
+    
+    const interval = setInterval(() => {
+      setCurrentEventIndex((prev) => (prev + 1) % slideshowImages.length)
+    }, 3000)
+    
+    return () => clearInterval(interval)
+  }, [slideshowImages.length, isPaused])
+
   const handleRegister = (event: Event) => {
     setSelectedEvent(event)
     setIsModalOpen(true)
@@ -94,6 +142,57 @@ export function Hero() {
   const goToBanner = (index: number) => {
     setCurrentBannerIndex(index)
   }
+
+  // Event slideshow navigation
+  const nextEvent = useCallback(() => {
+    setCurrentEventIndex((prev) => (prev + 1) % slideshowImages.length)
+  }, [slideshowImages.length])
+
+  const prevEvent = useCallback(() => {
+    setCurrentEventIndex((prev) => (prev - 1 + slideshowImages.length) % slideshowImages.length)
+  }, [slideshowImages.length])
+
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 75) {
+      nextEvent()
+    }
+    if (touchStart - touchEnd < -75) {
+      prevEvent()
+    }
+  }
+
+  const getStatusColor = (status?: string) => {
+    switch (status) {
+      case 'ongoing':
+        return 'from-green-500 to-emerald-600'
+      case 'completed':
+        return 'from-gray-500 to-gray-600'
+      default:
+        return 'from-blue-500 to-indigo-600'
+    }
+  }
+
+  const getStatusText = (status?: string) => {
+    switch (status) {
+      case 'ongoing':
+        return '🔴 Live Now'
+      case 'completed':
+        return '✓ Completed'
+      default:
+        return '🎯 Upcoming'
+    }
+  }
+
+  const currentSlideImage = slideshowImages[currentEventIndex]
 
   return (
     <>
@@ -175,12 +274,131 @@ export function Hero() {
         </div>
       )}
 
+      {/* Premium Hero Slider - Apple/Framer Inspired */}
+      {slideshowImages.length > 0 && (
+        <section 
+          className="relative w-full h-screen overflow-hidden bg-[#0B0F1A]"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Background Images with Premium Transition */}
+          {slideshowImages.map((image, index) => (
+            <div
+              key={image.id}
+              className={`absolute inset-0 transition-all duration-[1200ms] ease-out ${
+                index === currentEventIndex 
+                  ? 'opacity-100 scale-100 z-10' 
+                  : 'opacity-0 scale-110 z-0'
+              }`}
+            >
+              <img
+                src={image.image_url || ''}
+                alt={image.title}
+                className="w-full h-full object-cover"
+              />
+              {/* Very subtle gradients - only for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-20"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-20"></div>
+            </div>
+          ))}
+
+          {/* Content Container */}
+          <div className="absolute inset-0 z-30">
+            <div className="container mx-auto px-6 sm:px-8 lg:px-16 h-full flex items-end pb-20">
+              <div className="max-w-3xl">
+                {/* Pill Badge with staggered animation */}
+                <div 
+                  key={`badge-${currentEventIndex}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white text-xs sm:text-sm font-semibold mb-4 animate-fade-in-up"
+                  style={{ animationDelay: '0ms' }}
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#FF3B3B] animate-pulse"></span>
+                  RECENT WORKSHOP
+                </div>
+
+                {/* Large Bold Headline */}
+                <h1 
+                  key={`title-${currentEventIndex}`}
+                  className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.1] mb-4 tracking-tight animate-fade-in-up max-w-2xl"
+                  style={{ animationDelay: '100ms' }}
+                >
+                  {currentSlideImage?.title}
+                </h1>
+
+                {/* Supporting Subtitle */}
+                <p 
+                  key={`subtitle-${currentEventIndex}`}
+                  className="text-base sm:text-lg lg:text-xl text-white/70 font-light mb-8 max-w-xl leading-relaxed animate-fade-in-up"
+                  style={{ animationDelay: '200ms' }}
+                >
+                  Empowering the next generation with hands-on STEM learning experiences
+                </p>
+
+                {/* CTAs */}
+                <div 
+                  key={`ctas-${currentEventIndex}`}
+                  className="flex flex-wrap gap-4 animate-fade-in-up"
+                  style={{ animationDelay: '300ms' }}
+                >
+                  {/* Primary CTA */}
+                  <a
+                    href="/programs"
+                    className="group inline-flex items-center gap-3 px-8 py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
+                  >
+                    Explore Programs
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </a>
+
+                  {/* Secondary Ghost CTA */}
+                  <a
+                    href="/gallery"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-base rounded-full transition-all duration-300"
+                  >
+                    View Gallery
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Minimal Progress Indicator - Bottom Right */}
+          <div className="absolute bottom-8 right-8 z-40">
+            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
+              <span className="text-2xl font-bold text-white tabular-nums">
+                {String(currentEventIndex + 1).padStart(2, '0')}
+              </span>
+              <span className="text-white/50">/</span>
+              <span className="text-lg text-white/70 tabular-nums">
+                {String(slideshowImages.length).padStart(2, '0')}
+              </span>
+            </div>
+          </div>
+
+          {/* Minimal Navigation Arrows */}
+          <button
+            onClick={prevEvent}
+            className="absolute left-6 sm:left-10 top-1/2 -translate-y-1/2 z-40 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            aria-label="Previous"
+          >
+            <ChevronLeft className="w-7 h-7" />
+          </button>
+          <button
+            onClick={nextEvent}
+            className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            aria-label="Next"
+          >
+            <ChevronRight className="w-7 h-7" />
+          </button>
+        </section>
+      )}
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 md:py-16 lg:py-20">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 xl:gap-16">
             {/* Left Content */}
-            <div className="flex-1 text-center lg:text-left space-y-5 sm:space-y-6 lg:max-w-md">
+            <div className="flex-1 text-center lg:text-left space-y-5 sm:space-y-6 w-full lg:max-w-lg">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-white shadow-sm border border-indigo-100">
                 <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600/10">
@@ -236,88 +454,75 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Right Content - School Banner Slideshow (Exact Banner Size) */}
-            <div className="flex-[1.5] w-full">
+            {/* Right Content - School Partnership Carousel Card */}
+            <div className="flex-1 w-full">
               {isLoading ? (
-                <div className="rounded-2xl bg-gradient-to-br from-[#276EF1]/10 to-[#37D2C5]/10 flex items-center justify-center h-[400px] sm:h-[500px] lg:h-[550px]">
+                <div className="rounded-3xl bg-white shadow-2xl flex items-center justify-center h-[600px] lg:h-[700px]">
                   <div className="text-center p-6">
-                    <div className="w-10 h-10 border-4 border-[#276EF1] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                    <p className="text-gray-500">Loading...</p>
+                    <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                    <p className="text-gray-500 font-medium">Loading school partnerships...</p>
                   </div>
                 </div>
               ) : banners.length > 0 ? (
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-b from-gray-50 to-gray-100 h-[400px] sm:h-[500px] lg:h-[550px]">
-                  {/* Banner Images - Responsive sizing */}
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-white h-[600px] lg:h-[700px]">
+                  {/* Banner Images with School Branding Overlay */}
                   {banners.map((banner, index) => (
                     <div
                       key={banner.id}
-                      className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                      className={`absolute inset-0 transition-all duration-1000 ease-out ${
                         index === currentBannerIndex 
-                          ? 'opacity-100 z-10 scale-100' 
-                          : 'opacity-0 z-0 scale-105'
+                          ? 'opacity-100 z-10' 
+                          : 'opacity-0 z-0'
                       }`}
                     >
-                      <img
-                        src={banner.image_url}
-                        alt={banner.title}
-                        className="w-full h-full object-cover sm:object-contain banner-image-mobile"
-                      />
+                      {/* Banner Image */}
+                      <div className="w-full h-full flex items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+                        <img
+                          src={banner.image_url}
+                          alt={banner.title}
+                          className="max-w-full max-h-full object-contain rounded-2xl shadow-xl"
+                        />
+                      </div>
                     </div>
                   ))}
 
-                  {/* Navigation Arrows */}
+                  {/* Navigation Arrows - Clean & Minimal */}
                   {banners.length > 1 && (
                     <>
                       <button
                         onClick={prevBanner}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white rounded-full p-2.5 transition-all shadow-xl hover:scale-110 active:scale-95 border border-gray-200"
-                        aria-label="Previous banner"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 rounded-full p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
+                        aria-label="Previous"
                       >
-                        <ChevronLeft className="w-5 h-5 text-gray-800" />
+                        <ChevronLeft className="w-6 h-6 text-gray-700" />
                       </button>
                       <button
                         onClick={nextBanner}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white rounded-full p-2.5 transition-all shadow-xl hover:scale-110 active:scale-95 border border-gray-200"
-                        aria-label="Next banner"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 rounded-full p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
+                        aria-label="Next"
                       >
-                        <ChevronRight className="w-5 h-5 text-gray-800" />
+                        <ChevronRight className="w-6 h-6 text-gray-700" />
                       </button>
-
-                      {/* Dots Indicator */}
-                      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-0.5 sm:gap-1.5 bg-white/90 backdrop-blur-sm px-1.5 sm:px-3 py-0.5 sm:py-1.5 rounded-full shadow-lg scale-75 sm:scale-100">
-                        {banners.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => goToBanner(index)}
-                            className={`h-1 sm:h-1.5 rounded-full transition-all duration-300 ${
-                              index === currentBannerIndex
-                                ? 'w-3 sm:w-6 bg-[#276EF1]'
-                                : 'w-1 sm:w-1.5 bg-gray-400 hover:bg-gray-600'
-                            }`}
-                            aria-label={`Go to banner ${index + 1}`}
-                          />
-                        ))}
-                      </div>
                     </>
                   )}
 
-                  {/* Banner Counter */}
+                  {/* Slide Counter - Top Right */}
                   {banners.length > 1 && (
-                    <div className="absolute top-3 right-3 z-20 bg-white/90 backdrop-blur-sm text-gray-800 text-xs px-3 py-1 rounded-full font-semibold shadow-lg border border-gray-200">
+                    <div className="absolute top-6 right-6 z-20 bg-white/95 backdrop-blur-sm text-gray-800 text-sm px-4 py-2 rounded-full font-bold shadow-lg border border-gray-200">
                       {currentBannerIndex + 1} / {banners.length}
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="rounded-2xl bg-gradient-to-br from-[#276EF1]/10 to-[#37D2C5]/10 flex items-center justify-center border-2 border-dashed border-[#276EF1]/20 h-[400px] sm:h-[500px] lg:h-[550px]">
+                <div className="rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center border-2 border-dashed border-indigo-200 h-[600px] lg:h-[700px]">
                   <div className="text-center p-8">
-                    <div className="w-20 h-20 bg-[#276EF1]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-10 h-10 text-[#276EF1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <p className="text-gray-600 font-semibold text-lg mb-2">No school banners yet</p>
-                    <p className="text-sm text-gray-400">Add banners from admin panel</p>
+                    <p className="text-gray-700 font-semibold text-lg mb-2">No school partnerships yet</p>
+                    <p className="text-sm text-gray-500">Add school banners from the admin panel</p>
                   </div>
                 </div>
               )}
