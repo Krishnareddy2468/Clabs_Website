@@ -277,7 +277,7 @@ export function Hero() {
       {/* Premium Hero Slider - Apple/Framer Inspired */}
       {slideshowImages.length > 0 && (
         <section 
-          className="relative w-full min-h-[65vh] h-[65vh] sm:min-h-screen sm:h-screen overflow-hidden bg-[#0B0F1A]"
+          className="relative w-full min-h-[60vh] h-[60vh] sm:min-h-screen sm:h-screen overflow-hidden bg-[#0B0F1A]"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -295,10 +295,10 @@ export function Hero() {
               <img
                 src={image.image_url || ''}
                 alt={image.title}
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-cover object-top sm:object-center"
               />
-              {/* Strong bottom gradient for mobile text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 sm:from-black/50 sm:via-transparent sm:to-transparent z-20"></div>
+              {/* Stronger bottom gradient for mobile - keeps faces visible at top */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent sm:from-black/50 sm:via-transparent sm:to-transparent z-20"></div>
               {/* Side gradient for desktop */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden sm:block z-20"></div>
             </div>
@@ -306,12 +306,12 @@ export function Hero() {
 
           {/* Content Container */}
           <div className="absolute inset-0 z-30">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex flex-col justify-end pb-20 sm:pb-20">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex flex-col justify-end pb-6 sm:pb-20">
               <div className="w-full sm:max-w-3xl">
                 {/* Pill Badge with staggered animation */}
                 <div 
                   key={`badge-${currentEventIndex}`}
-                  className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 sm:bg-white/5 backdrop-blur-xl border border-white/10 text-white text-xs font-semibold mb-3 sm:mb-4 animate-fade-in-up"
+                  className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 sm:bg-white/5 backdrop-blur-xl border border-white/10 text-white text-xs font-semibold mb-2 sm:mb-4 animate-fade-in-up"
                   style={{ animationDelay: '0ms' }}
                 >
                   <span className="w-2 h-2 rounded-full bg-[#FF3B3B] animate-pulse"></span>
@@ -321,7 +321,7 @@ export function Hero() {
                 {/* Large Bold Headline - max 2 lines on mobile */}
                 <h1 
                   key={`title-${currentEventIndex}`}
-                  className="text-2xl sm:text-3xl lg:text-5xl font-bold sm:font-black text-white leading-tight sm:leading-[1.1] mb-2 sm:mb-4 tracking-tight animate-fade-in-up line-clamp-2 sm:line-clamp-none"
+                  className="text-xl sm:text-3xl lg:text-5xl font-bold sm:font-black text-white leading-tight sm:leading-[1.1] mb-1.5 sm:mb-4 tracking-tight animate-fade-in-up line-clamp-2 sm:line-clamp-none"
                   style={{ animationDelay: '100ms' }}
                 >
                   {currentSlideImage?.title}
@@ -330,47 +330,68 @@ export function Hero() {
                 {/* Supporting Subtitle - single line on mobile */}
                 <p 
                   key={`subtitle-${currentEventIndex}`}
-                  className="text-sm sm:text-base lg:text-xl text-white/80 sm:text-white/70 font-normal sm:font-light mb-5 sm:mb-8 leading-snug sm:leading-relaxed animate-fade-in-up line-clamp-2 sm:line-clamp-none"
+                  className="text-sm sm:text-base lg:text-xl text-white/80 sm:text-white/70 font-normal sm:font-light mb-4 sm:mb-8 leading-snug sm:leading-relaxed animate-fade-in-up line-clamp-1 sm:line-clamp-none"
                   style={{ animationDelay: '200ms' }}
                 >
                   Empowering the next generation with hands-on STEM learning
                 </p>
 
-                {/* CTAs - Full width stacked on mobile */}
+                {/* CTAs - Only primary on mobile, both on desktop */}
                 <div 
                   key={`ctas-${currentEventIndex}`}
                   className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up"
                   style={{ animationDelay: '300ms' }}
                 >
-                  {/* Primary CTA - Full width on mobile */}
+                  {/* Primary CTA - Full width on mobile, ~46px height */}
                   <a
                     href="/programs"
-                    className="group flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base sm:text-base rounded-xl sm:rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
+                    className="group flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 h-[46px] sm:py-4 sm:h-auto bg-[#FF3B3B]/90 sm:bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base rounded-xl sm:rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
                   >
                     Explore Programs
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </a>
 
-                  {/* Secondary Ghost CTA - Full width on mobile */}
+                  {/* Secondary Ghost CTA - Hidden on mobile */}
                   <a
                     href="/gallery"
-                    className="flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-white/10 sm:bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/30 sm:border-white/20 hover:border-white/40 text-white font-semibold text-base sm:text-base rounded-xl sm:rounded-full transition-all duration-300"
+                    className="hidden sm:flex items-center justify-center gap-3 w-auto px-8 py-4 bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-base rounded-full transition-all duration-300"
                   >
                     View Gallery
                   </a>
+                </div>
+
+                {/* Mobile Pagination Dots - Below CTA */}
+                <div className="flex sm:hidden items-center justify-between mt-4">
+                  <div className="flex items-center gap-1.5">
+                    {slideshowImages.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentEventIndex(index)}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          index === currentEventIndex 
+                            ? 'w-6 bg-white' 
+                            : 'w-2 bg-white/40'
+                        }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-white/60 text-xs font-medium">
+                    {currentEventIndex + 1} / {slideshowImages.length}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Minimal Progress Indicator - Bottom Right - Compact on mobile */}
-          <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-40">
-            <div className="flex items-center gap-1 sm:gap-3 px-3 sm:px-6 py-1.5 sm:py-3 rounded-full bg-white/95 sm:bg-black/40 backdrop-blur-xl border border-white/10">
-              <span className="text-base sm:text-2xl font-bold text-gray-900 sm:text-white tabular-nums">
+          {/* Minimal Progress Indicator - Desktop only */}
+          <div className="absolute bottom-8 right-8 z-40 hidden sm:block">
+            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
+              <span className="text-2xl font-bold text-white tabular-nums">
                 {String(currentEventIndex + 1).padStart(2, '0')}
               </span>
-              <span className="text-gray-500 sm:text-white/50 text-sm">/</span>
-              <span className="text-sm sm:text-lg text-gray-600 sm:text-white/70 tabular-nums">
+              <span className="text-white/50">/</span>
+              <span className="text-lg text-white/70 tabular-nums">
                 {String(slideshowImages.length).padStart(2, '0')}
               </span>
             </div>
@@ -391,22 +412,6 @@ export function Hero() {
           >
             <ChevronRight className="w-7 h-7" />
           </button>
-
-          {/* Mobile Pagination Dots */}
-          <div className="absolute bottom-4 left-4 z-40 flex sm:hidden items-center gap-1.5">
-            {slideshowImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentEventIndex(index)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  index === currentEventIndex 
-                    ? 'w-6 bg-white' 
-                    : 'w-1.5 bg-white/40'
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
         </section>
       )}
 
