@@ -110,13 +110,13 @@ export function Hero() {
     }
   }, [banners.length])
 
-  // Auto-advance event slideshow every 3 seconds
+  // Auto-advance event slideshow every 6 seconds
   useEffect(() => {
     if (slideshowImages.length <= 1 || isPaused) return
     
     const interval = setInterval(() => {
       setCurrentEventIndex((prev) => (prev + 1) % slideshowImages.length)
-    }, 3000)
+    }, 6000)
     
     return () => clearInterval(interval)
   }, [slideshowImages.length, isPaused])
@@ -196,9 +196,9 @@ export function Hero() {
 
   return (
     <>
-      {/* Scrolling Event Banner - Red Background */}
+      {/* Scrolling Event Banner - Red Background - Hidden on mobile */}
       {showBanner && events.length > 0 && (
-        <div className="relative bg-red-600 text-white overflow-hidden shadow-xl">
+        <div className="relative bg-red-600 text-white overflow-hidden shadow-xl hidden sm:block">
           <div className="container mx-auto px-4 relative">
             <div className="relative h-14 sm:h-16 flex items-center">
               {/* Scrolling content with improved animation */}
@@ -277,7 +277,7 @@ export function Hero() {
       {/* Premium Hero Slider - Apple/Framer Inspired */}
       {slideshowImages.length > 0 && (
         <section 
-          className="relative w-full h-screen overflow-hidden bg-[#0B0F1A]"
+          className="relative w-full min-h-[65vh] h-[65vh] sm:min-h-screen sm:h-screen overflow-hidden bg-[#0B0F1A]"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -295,65 +295,66 @@ export function Hero() {
               <img
                 src={image.image_url || ''}
                 alt={image.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
-              {/* Very subtle gradients - only for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-20"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-20"></div>
+              {/* Strong bottom gradient for mobile text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 sm:from-black/50 sm:via-transparent sm:to-transparent z-20"></div>
+              {/* Side gradient for desktop */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden sm:block z-20"></div>
             </div>
           ))}
 
           {/* Content Container */}
           <div className="absolute inset-0 z-30">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex items-end pb-16 sm:pb-20">
-              <div className="max-w-3xl pr-12 sm:pr-0">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex flex-col justify-end pb-20 sm:pb-20">
+              <div className="w-full sm:max-w-3xl">
                 {/* Pill Badge with staggered animation */}
                 <div 
                   key={`badge-${currentEventIndex}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white text-xs sm:text-sm font-semibold mb-4 animate-fade-in-up"
+                  className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 sm:bg-white/5 backdrop-blur-xl border border-white/10 text-white text-xs font-semibold mb-3 sm:mb-4 animate-fade-in-up"
                   style={{ animationDelay: '0ms' }}
                 >
                   <span className="w-2 h-2 rounded-full bg-[#FF3B3B] animate-pulse"></span>
                   RECENT WORKSHOP
                 </div>
 
-                {/* Large Bold Headline */}
+                {/* Large Bold Headline - max 2 lines on mobile */}
                 <h1 
                   key={`title-${currentEventIndex}`}
-                  className="text-2xl sm:text-3xl lg:text-5xl font-black text-white leading-[1.1] mb-3 sm:mb-4 tracking-tight animate-fade-in-up max-w-2xl"
+                  className="text-2xl sm:text-3xl lg:text-5xl font-bold sm:font-black text-white leading-tight sm:leading-[1.1] mb-2 sm:mb-4 tracking-tight animate-fade-in-up line-clamp-2 sm:line-clamp-none"
                   style={{ animationDelay: '100ms' }}
                 >
                   {currentSlideImage?.title}
                 </h1>
 
-                {/* Supporting Subtitle */}
+                {/* Supporting Subtitle - single line on mobile */}
                 <p 
                   key={`subtitle-${currentEventIndex}`}
-                  className="text-sm sm:text-base lg:text-xl text-white/70 font-light mb-6 sm:mb-8 max-w-xl leading-relaxed animate-fade-in-up"
+                  className="text-sm sm:text-base lg:text-xl text-white/80 sm:text-white/70 font-normal sm:font-light mb-5 sm:mb-8 leading-snug sm:leading-relaxed animate-fade-in-up line-clamp-2 sm:line-clamp-none"
                   style={{ animationDelay: '200ms' }}
                 >
-                  Empowering the next generation with hands-on STEM learning experiences
+                  Empowering the next generation with hands-on STEM learning
                 </p>
 
-                {/* CTAs */}
+                {/* CTAs - Full width stacked on mobile */}
                 <div 
                   key={`ctas-${currentEventIndex}`}
-                  className="flex flex-wrap gap-3 sm:gap-4 animate-fade-in-up"
+                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up"
                   style={{ animationDelay: '300ms' }}
                 >
-                  {/* Primary CTA */}
+                  {/* Primary CTA - Full width on mobile */}
                   <a
                     href="/programs"
-                    className="group inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-sm sm:text-base rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
+                    className="group flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base sm:text-base rounded-xl sm:rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
                   >
                     Explore Programs
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </a>
 
-                  {/* Secondary Ghost CTA */}
+                  {/* Secondary Ghost CTA - Full width on mobile */}
                   <a
                     href="/gallery"
-                    className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-sm sm:text-base rounded-full transition-all duration-300"
+                    className="flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-white/10 sm:bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/30 sm:border-white/20 hover:border-white/40 text-white font-semibold text-base sm:text-base rounded-xl sm:rounded-full transition-all duration-300"
                   >
                     View Gallery
                   </a>
@@ -362,34 +363,50 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Minimal Progress Indicator - Bottom Right */}
+          {/* Minimal Progress Indicator - Bottom Right - Compact on mobile */}
           <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-40">
-            <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
-              <span className="text-lg sm:text-2xl font-bold text-white tabular-nums">
+            <div className="flex items-center gap-1 sm:gap-3 px-3 sm:px-6 py-1.5 sm:py-3 rounded-full bg-white/95 sm:bg-black/40 backdrop-blur-xl border border-white/10">
+              <span className="text-base sm:text-2xl font-bold text-gray-900 sm:text-white tabular-nums">
                 {String(currentEventIndex + 1).padStart(2, '0')}
               </span>
-              <span className="text-white/50">/</span>
-              <span className="text-sm sm:text-lg text-white/70 tabular-nums">
+              <span className="text-gray-500 sm:text-white/50 text-sm">/</span>
+              <span className="text-sm sm:text-lg text-gray-600 sm:text-white/70 tabular-nums">
                 {String(slideshowImages.length).padStart(2, '0')}
               </span>
             </div>
           </div>
 
-          {/* Minimal Navigation Arrows */}
+          {/* Minimal Navigation Arrows - Hidden on mobile, visible on tablet+ */}
           <button
             onClick={prevEvent}
-            className="absolute left-3 sm:left-6 lg:left-10 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-black/30 sm:bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            className="absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 z-40 w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 hidden sm:flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
             aria-label="Previous"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
+            <ChevronLeft className="w-7 h-7" />
           </button>
           <button
             onClick={nextEvent}
-            className="absolute right-3 sm:right-6 lg:right-10 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-black/30 sm:bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            className="absolute right-6 lg:right-10 top-1/2 -translate-y-1/2 z-40 w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 hidden sm:flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
             aria-label="Next"
           >
-            <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
+            <ChevronRight className="w-7 h-7" />
           </button>
+
+          {/* Mobile Pagination Dots */}
+          <div className="absolute bottom-4 left-4 z-40 flex sm:hidden items-center gap-1.5">
+            {slideshowImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentEventIndex(index)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  index === currentEventIndex 
+                    ? 'w-6 bg-white' 
+                    : 'w-1.5 bg-white/40'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </section>
       )}
 
