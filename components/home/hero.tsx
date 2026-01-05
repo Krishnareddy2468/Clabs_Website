@@ -110,13 +110,13 @@ export function Hero() {
     }
   }, [banners.length])
 
-  // Auto-advance event slideshow every 6 seconds
+  // Auto-advance event slideshow every 2 seconds
   useEffect(() => {
     if (slideshowImages.length <= 1 || isPaused) return
     
     const interval = setInterval(() => {
       setCurrentEventIndex((prev) => (prev + 1) % slideshowImages.length)
-    }, 6000)
+    }, 2000)
     
     return () => clearInterval(interval)
   }, [slideshowImages.length, isPaused])
@@ -220,9 +220,9 @@ export function Hero() {
 
   return (
     <>
-      {/* Scrolling Event Banner - Red Background - Hidden on mobile */}
+      {/* Scrolling Event Banner - Red Background */}
       {showBanner && events.length > 0 && (
-        <div className="relative bg-red-600 text-white overflow-hidden shadow-xl hidden sm:block">
+        <div className="relative bg-red-600 text-white overflow-hidden shadow-xl">
           <div className="container mx-auto px-4 relative">
             <div className="relative h-14 sm:h-16 flex items-center">
               {/* Scrolling content with improved animation */}
