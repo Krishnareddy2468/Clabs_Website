@@ -156,7 +156,7 @@ export function EventSlideshow() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm z-10 pointer-events-none rounded-2xl sm:rounded-3xl border border-white/10"></div>
             
             {/* Image Container */}
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
+            <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
               {events.map((event, index) => (
                 <div
                   key={event.id}
@@ -180,12 +180,12 @@ export function EventSlideshow() {
               ))}
 
               {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-10 z-30">
+              <div className="absolute bottom-0 left-0 right-0 p-4 pb-6 sm:p-6 lg:p-10 z-30">
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 lg:gap-6">
                   {/* Left Content */}
                   <div className="flex-1 max-w-2xl">
                     {/* Status Badge */}
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${getStatusColor(currentEvent?.status)} text-white text-xs sm:text-sm font-semibold shadow-lg mb-3 sm:mb-4`}>
+                    <div className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-gradient-to-r ${getStatusColor(currentEvent?.status)} text-white text-[10px] sm:text-sm font-semibold shadow-lg mb-2 sm:mb-4`}>
                       <span className="relative flex h-2 w-2">
                         {currentEvent?.status === 'ongoing' && (
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -196,7 +196,7 @@ export function EventSlideshow() {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-2 sm:mb-3 line-clamp-2 drop-shadow-lg">
+                    <h3 className="text-lg sm:text-2xl lg:text-4xl font-bold text-white mb-1.5 sm:mb-3 line-clamp-2 drop-shadow-lg leading-tight">
                       {currentEvent?.title}
                     </h3>
 
@@ -206,9 +206,9 @@ export function EventSlideshow() {
                     </p>
 
                     {/* Meta Info */}
-                    <div className="flex flex-wrap gap-2 sm:gap-4">
-                      <div className="flex items-center gap-1.5 text-white/80 text-xs sm:text-sm bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                        <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <div className="flex flex-wrap gap-1.5 sm:gap-3">
+                      <div className="flex items-center gap-1 sm:gap-1.5 text-white/80 text-[10px] sm:text-sm bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                         <span>
                           {new Date(currentEvent?.date || '').toLocaleDateString('en-US', {
                             month: 'short',
@@ -217,55 +217,58 @@ export function EventSlideshow() {
                           })}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-white/80 text-xs sm:text-sm bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                        <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        <span className="truncate max-w-[120px] sm:max-w-none">{currentEvent?.location}</span>
+                      <div className="flex items-center gap-1 sm:gap-1.5 text-white/80 text-[10px] sm:text-sm bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
+                        <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="truncate max-w-[100px] sm:max-w-none">{currentEvent?.location}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-white/80 text-xs sm:text-sm bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full hidden sm:flex">
-                        <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <div className="flex items-center gap-1 sm:gap-1.5 text-white/80 text-[10px] sm:text-sm bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full hidden sm:flex">
+                        <Users className="w-3 h-3 sm:w-4 sm:h-4" />
                         <span>{currentEvent?.total_seats} seats</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Right - Slide Counter */}
-                  <div className="flex items-center gap-3 lg:gap-4">
+                  <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
                     {/* Pause/Play Button */}
                     <button
                       onClick={() => setIsPaused(!isPaused)}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                      className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                      aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
                     >
-                      {isPaused ? <Play className="w-4 h-4 sm:w-5 sm:h-5" /> : <Pause className="w-4 h-4 sm:w-5 sm:h-5" />}
+                      {isPaused ? <Play className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> : <Pause className="w-3.5 h-3.5 sm:w-5 sm:h-5" />}
                     </button>
 
                     {/* Counter */}
-                    <div className="flex items-baseline gap-1 text-white">
-                      <span className="text-2xl sm:text-3xl lg:text-4xl font-bold">{String(currentIndex + 1).padStart(2, '0')}</span>
-                      <span className="text-white/50 text-lg sm:text-xl">/</span>
-                      <span className="text-white/50 text-lg sm:text-xl">{String(events.length).padStart(2, '0')}</span>
+                    <div className="flex items-baseline gap-0.5 sm:gap-1 text-white">
+                      <span className="text-xl sm:text-3xl lg:text-4xl font-bold">{String(currentIndex + 1).padStart(2, '0')}</span>
+                      <span className="text-white/50 text-base sm:text-xl">/</span>
+                      <span className="text-white/50 text-base sm:text-xl">{String(events.length).padStart(2, '0')}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - Positioned at center-sides on mobile, visible on hover for desktop */}
             <button
               onClick={prevSlide}
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 group-hover:opacity-100 opacity-0 sm:opacity-100"
+              className="absolute left-2 sm:left-4 top-1/3 sm:top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-black/40 sm:bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 sm:group-hover:opacity-100 sm:opacity-0 opacity-70"
+              aria-label="Previous slide"
             >
               <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 group-hover:opacity-100 opacity-0 sm:opacity-100"
+              className="absolute right-2 sm:right-4 top-1/3 sm:top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-black/40 sm:bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 sm:group-hover:opacity-100 sm:opacity-0 opacity-70"
+              aria-label="Next slide"
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
 
-          {/* Thumbnail Navigation */}
-          <div className="mt-4 sm:mt-6 lg:mt-8">
+          {/* Thumbnail Navigation - Hidden on mobile, shown on larger screens */}
+          <div className="mt-4 sm:mt-6 lg:mt-8 hidden sm:block">
             <div className="flex justify-center gap-2 sm:gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
               {events.map((event, index) => (
                 <button

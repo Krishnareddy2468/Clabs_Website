@@ -305,8 +305,8 @@ export function Hero() {
 
           {/* Content Container */}
           <div className="absolute inset-0 z-30">
-            <div className="container mx-auto px-6 sm:px-8 lg:px-16 h-full flex items-end pb-20">
-              <div className="max-w-3xl">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex items-end pb-16 sm:pb-20">
+              <div className="max-w-3xl pr-12 sm:pr-0">
                 {/* Pill Badge with staggered animation */}
                 <div 
                   key={`badge-${currentEventIndex}`}
@@ -320,7 +320,7 @@ export function Hero() {
                 {/* Large Bold Headline */}
                 <h1 
                   key={`title-${currentEventIndex}`}
-                  className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.1] mb-4 tracking-tight animate-fade-in-up max-w-2xl"
+                  className="text-2xl sm:text-3xl lg:text-5xl font-black text-white leading-[1.1] mb-3 sm:mb-4 tracking-tight animate-fade-in-up max-w-2xl"
                   style={{ animationDelay: '100ms' }}
                 >
                   {currentSlideImage?.title}
@@ -329,7 +329,7 @@ export function Hero() {
                 {/* Supporting Subtitle */}
                 <p 
                   key={`subtitle-${currentEventIndex}`}
-                  className="text-base sm:text-lg lg:text-xl text-white/70 font-light mb-8 max-w-xl leading-relaxed animate-fade-in-up"
+                  className="text-sm sm:text-base lg:text-xl text-white/70 font-light mb-6 sm:mb-8 max-w-xl leading-relaxed animate-fade-in-up"
                   style={{ animationDelay: '200ms' }}
                 >
                   Empowering the next generation with hands-on STEM learning experiences
@@ -338,22 +338,22 @@ export function Hero() {
                 {/* CTAs */}
                 <div 
                   key={`ctas-${currentEventIndex}`}
-                  className="flex flex-wrap gap-4 animate-fade-in-up"
+                  className="flex flex-wrap gap-3 sm:gap-4 animate-fade-in-up"
                   style={{ animationDelay: '300ms' }}
                 >
                   {/* Primary CTA */}
                   <a
                     href="/programs"
-                    className="group inline-flex items-center gap-3 px-8 py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
+                    className="group inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-sm sm:text-base rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
                   >
                     Explore Programs
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                   </a>
 
                   {/* Secondary Ghost CTA */}
                   <a
                     href="/gallery"
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-base rounded-full transition-all duration-300"
+                    className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-sm sm:text-base rounded-full transition-all duration-300"
                   >
                     View Gallery
                   </a>
@@ -363,13 +363,13 @@ export function Hero() {
           </div>
 
           {/* Minimal Progress Indicator - Bottom Right */}
-          <div className="absolute bottom-8 right-8 z-40">
-            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
-              <span className="text-2xl font-bold text-white tabular-nums">
+          <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-40">
+            <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
+              <span className="text-lg sm:text-2xl font-bold text-white tabular-nums">
                 {String(currentEventIndex + 1).padStart(2, '0')}
               </span>
               <span className="text-white/50">/</span>
-              <span className="text-lg text-white/70 tabular-nums">
+              <span className="text-sm sm:text-lg text-white/70 tabular-nums">
                 {String(slideshowImages.length).padStart(2, '0')}
               </span>
             </div>
@@ -378,17 +378,17 @@ export function Hero() {
           {/* Minimal Navigation Arrows */}
           <button
             onClick={prevEvent}
-            className="absolute left-6 sm:left-10 top-1/2 -translate-y-1/2 z-40 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            className="absolute left-3 sm:left-6 lg:left-10 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-black/30 sm:bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
             aria-label="Previous"
           >
-            <ChevronLeft className="w-7 h-7" />
+            <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
           </button>
           <button
             onClick={nextEvent}
-            className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 z-40 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            className="absolute right-3 sm:right-6 lg:right-10 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-black/30 sm:bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
             aria-label="Next"
           >
-            <ChevronRight className="w-7 h-7" />
+            <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
           </button>
         </section>
       )}
@@ -457,14 +457,14 @@ export function Hero() {
             {/* Right Content - School Partnership Carousel Card */}
             <div className="flex-1 w-full">
               {isLoading ? (
-                <div className="rounded-3xl bg-white shadow-2xl flex items-center justify-center h-[600px] lg:h-[700px]">
+                <div className="rounded-2xl sm:rounded-3xl bg-white shadow-2xl flex items-center justify-center h-[400px] sm:h-[500px] lg:h-[600px]">
                   <div className="text-center p-6">
                     <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
                     <p className="text-gray-500 font-medium">Loading school partnerships...</p>
                   </div>
                 </div>
               ) : banners.length > 0 ? (
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-white h-[600px] lg:h-[700px]">
+                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl bg-white h-[400px] sm:h-[500px] lg:h-[600px]">
                   {/* Banner Images with School Branding Overlay */}
                   {banners.map((banner, index) => (
                     <div
@@ -476,11 +476,11 @@ export function Hero() {
                       }`}
                     >
                       {/* Banner Image */}
-                      <div className="w-full h-full flex items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+                      <div className="w-full h-full flex items-center justify-center p-3 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100">
                         <img
                           src={banner.image_url}
                           alt={banner.title}
-                          className="max-w-full max-h-full object-contain rounded-2xl shadow-xl"
+                          className="max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-xl"
                         />
                       </div>
                     </div>
@@ -491,30 +491,30 @@ export function Hero() {
                     <>
                       <button
                         onClick={prevBanner}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 rounded-full p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
+                        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 sm:bg-white hover:bg-gray-50 rounded-full p-2 sm:p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
                         aria-label="Previous"
                       >
-                        <ChevronLeft className="w-6 h-6 text-gray-700" />
+                        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                       </button>
                       <button
                         onClick={nextBanner}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 rounded-full p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
+                        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 sm:bg-white hover:bg-gray-50 rounded-full p-2 sm:p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
                         aria-label="Next"
                       >
-                        <ChevronRight className="w-6 h-6 text-gray-700" />
+                        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                       </button>
                     </>
                   )}
 
                   {/* Slide Counter - Top Right */}
                   {banners.length > 1 && (
-                    <div className="absolute top-6 right-6 z-20 bg-white/95 backdrop-blur-sm text-gray-800 text-sm px-4 py-2 rounded-full font-bold shadow-lg border border-gray-200">
+                    <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 bg-white/95 backdrop-blur-sm text-gray-800 text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold shadow-lg border border-gray-200">
                       {currentBannerIndex + 1} / {banners.length}
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center border-2 border-dashed border-indigo-200 h-[600px] lg:h-[700px]">
+                <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center border-2 border-dashed border-indigo-200 h-[400px] sm:h-[500px] lg:h-[600px]">
                   <div className="text-center p-8">
                     <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <svg className="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
