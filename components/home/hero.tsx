@@ -152,9 +152,10 @@ export function Hero() {
     setCurrentEventIndex((prev) => (prev - 1 + slideshowImages.length) % slideshowImages.length)
   }, [slideshowImages.length])
 
-  // Touch handlers for mobile swipe
+  // Touch handlers for mobile swipe (Hero Slideshow)
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX)
+    setIsPaused(true) // Pause on interaction
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -167,6 +168,29 @@ export function Hero() {
     }
     if (touchStart - touchEnd < -75) {
       prevEvent()
+    }
+    // Resume after a short delay
+    setTimeout(() => setIsPaused(false), 3000)
+  }
+
+  // Touch handlers for banner carousel
+  const [bannerTouchStart, setBannerTouchStart] = useState(0)
+  const [bannerTouchEnd, setBannerTouchEnd] = useState(0)
+
+  const handleBannerTouchStart = (e: React.TouchEvent) => {
+    setBannerTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleBannerTouchMove = (e: React.TouchEvent) => {
+    setBannerTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleBannerTouchEnd = () => {
+    if (bannerTouchStart - bannerTouchEnd > 75) {
+      nextBanner()
+    }
+    if (bannerTouchStart - bannerTouchEnd < -75) {
+      prevBanner()
     }
   }
 
@@ -277,7 +301,7 @@ export function Hero() {
       {/* Premium Hero Slider - Apple/Framer Inspired */}
       {slideshowImages.length > 0 && (
         <section 
-          className="relative w-full min-h-[60vh] h-[60vh] sm:min-h-screen sm:h-screen overflow-hidden bg-[#0B0F1A]"
+          className="relative w-full h-[60vh] min-h-[420px] sm:min-h-screen sm:h-screen overflow-hidden bg-[#0B0F1A]"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -286,32 +310,33 @@ export function Hero() {
           {slideshowImages.map((image, index) => (
             <div
               key={image.id}
-              className={`absolute inset-0 transition-all duration-[1200ms] ease-out ${
+              className={`absolute inset-0 transition-opacity duration-[800ms] ease-out ${
                 index === currentEventIndex 
-                  ? 'opacity-100 scale-100 z-10' 
-                  : 'opacity-0 scale-110 z-0'
+                  ? 'opacity-100 z-10' 
+                  : 'opacity-0 z-0'
               }`}
             >
               <img
                 src={image.image_url || ''}
                 alt={image.title}
-                className="w-full h-full object-cover object-top sm:object-center"
+                className="w-full h-full object-cover object-[center_20%] sm:object-center"
               />
-              {/* Stronger bottom gradient for mobile - keeps faces visible at top */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent sm:from-black/50 sm:via-transparent sm:to-transparent z-20"></div>
-              {/* Side gradient for desktop */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden sm:block z-20"></div>
+              {/* Strong bottom gradient for mobile text readability - protects content area only */}
+              <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/70 to-transparent sm:hidden z-20"></div>
+              {/* Desktop gradients */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent hidden sm:block z-20"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent hidden sm:block z-20"></div>
             </div>
           ))}
 
           {/* Content Container */}
           <div className="absolute inset-0 z-30">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex flex-col justify-end pb-6 sm:pb-20">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-16 h-full flex flex-col justify-end pb-5 sm:pb-20">
               <div className="w-full sm:max-w-3xl">
                 {/* Pill Badge with staggered animation */}
                 <div 
                   key={`badge-${currentEventIndex}`}
-                  className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 sm:bg-white/5 backdrop-blur-xl border border-white/10 text-white text-xs font-semibold mb-2 sm:mb-4 animate-fade-in-up"
+                  className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/15 sm:bg-white/5 backdrop-blur-md border border-white/20 sm:border-white/10 text-white text-xs font-semibold mb-2 sm:mb-4 animate-fade-in-up"
                   style={{ animationDelay: '0ms' }}
                 >
                   <span className="w-2 h-2 rounded-full bg-[#FF3B3B] animate-pulse"></span>
@@ -321,7 +346,7 @@ export function Hero() {
                 {/* Large Bold Headline - max 2 lines on mobile */}
                 <h1 
                   key={`title-${currentEventIndex}`}
-                  className="text-xl sm:text-3xl lg:text-5xl font-bold sm:font-black text-white leading-tight sm:leading-[1.1] mb-1.5 sm:mb-4 tracking-tight animate-fade-in-up line-clamp-2 sm:line-clamp-none"
+                  className="text-xl sm:text-3xl lg:text-5xl font-bold sm:font-black text-white leading-tight sm:leading-[1.1] mb-1 sm:mb-4 tracking-tight animate-fade-in-up line-clamp-2 sm:line-clamp-none"
                   style={{ animationDelay: '100ms' }}
                 >
                   {currentSlideImage?.title}
@@ -330,55 +355,47 @@ export function Hero() {
                 {/* Supporting Subtitle - single line on mobile */}
                 <p 
                   key={`subtitle-${currentEventIndex}`}
-                  className="text-sm sm:text-base lg:text-xl text-white/80 sm:text-white/70 font-normal sm:font-light mb-4 sm:mb-8 leading-snug sm:leading-relaxed animate-fade-in-up line-clamp-1 sm:line-clamp-none"
+                  className="text-sm sm:text-base lg:text-xl text-white/90 sm:text-white/70 font-normal sm:font-light mb-3 sm:mb-8 leading-snug sm:leading-relaxed animate-fade-in-up line-clamp-1 sm:line-clamp-none"
                   style={{ animationDelay: '200ms' }}
                 >
                   Empowering the next generation with hands-on STEM learning
                 </p>
 
-                {/* CTAs - Only primary on mobile, both on desktop */}
+                {/* CTA - Only primary on mobile */}
                 <div 
                   key={`ctas-${currentEventIndex}`}
-                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up"
+                  className="animate-fade-in-up"
                   style={{ animationDelay: '300ms' }}
                 >
                   {/* Primary CTA - Full width on mobile, ~46px height */}
                   <a
                     href="/programs"
-                    className="group flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 h-[46px] sm:py-4 sm:h-auto bg-[#FF3B3B]/90 sm:bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base rounded-xl sm:rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
+                    className="group flex sm:inline-flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-8 h-[46px] sm:h-auto sm:py-4 bg-[#FF3B3B] hover:bg-[#E63333] text-white font-bold text-base rounded-xl sm:rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF3B3B]/30"
                   >
                     Explore Programs
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </a>
 
-                  {/* Secondary Ghost CTA - Hidden on mobile */}
+                  {/* Secondary Ghost CTA - Desktop only */}
                   <a
                     href="/gallery"
-                    className="hidden sm:flex items-center justify-center gap-3 w-auto px-8 py-4 bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-base rounded-full transition-all duration-300"
+                    className="hidden sm:inline-flex items-center justify-center gap-3 ml-4 px-8 py-4 bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/20 hover:border-white/40 text-white font-semibold text-base rounded-full transition-all duration-300"
                   >
                     View Gallery
                   </a>
                 </div>
 
-                {/* Mobile Pagination Dots - Below CTA */}
-                <div className="flex sm:hidden items-center justify-between mt-4">
-                  <div className="flex items-center gap-1.5">
-                    {slideshowImages.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentEventIndex(index)}
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          index === currentEventIndex 
-                            ? 'w-6 bg-white' 
-                            : 'w-2 bg-white/40'
-                        }`}
-                        aria-label={`Go to slide ${index + 1}`}
-                      />
-                    ))}
+                {/* Mobile Slide Counter - Below CTA, simple text only */}
+                <div className="flex sm:hidden items-center justify-end mt-3">
+                  <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-sm">
+                    <span className="text-sm font-bold text-white tabular-nums">
+                      {String(currentEventIndex + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-white/50 text-xs">/</span>
+                    <span className="text-xs text-white/70 tabular-nums">
+                      {String(slideshowImages.length).padStart(2, '0')}
+                    </span>
                   </div>
-                  <span className="text-white/60 text-xs font-medium">
-                    {currentEventIndex + 1} / {slideshowImages.length}
-                  </span>
                 </div>
               </div>
             </div>
@@ -479,51 +496,56 @@ export function Hero() {
             {/* Right Content - School Partnership Carousel Card */}
             <div className="flex-1 w-full">
               {isLoading ? (
-                <div className="rounded-2xl sm:rounded-3xl bg-white shadow-2xl flex items-center justify-center h-[400px] sm:h-[500px] lg:h-[600px]">
+                <div className="rounded-2xl sm:rounded-3xl bg-white shadow-2xl flex items-center justify-center h-[350px] sm:h-[500px] lg:h-[600px]">
                   <div className="text-center p-6">
                     <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
                     <p className="text-gray-500 font-medium">Loading school partnerships...</p>
                   </div>
                 </div>
               ) : banners.length > 0 ? (
-                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl bg-white h-[400px] sm:h-[500px] lg:h-[600px]">
+                <div 
+                  className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl bg-white h-[350px] sm:h-[500px] lg:h-[600px]"
+                  onTouchStart={handleBannerTouchStart}
+                  onTouchMove={handleBannerTouchMove}
+                  onTouchEnd={handleBannerTouchEnd}
+                >
                   {/* Banner Images with School Branding Overlay */}
                   {banners.map((banner, index) => (
                     <div
                       key={banner.id}
-                      className={`absolute inset-0 transition-all duration-1000 ease-out ${
+                      className={`absolute inset-0 transition-opacity duration-700 ease-out ${
                         index === currentBannerIndex 
                           ? 'opacity-100 z-10' 
                           : 'opacity-0 z-0'
                       }`}
                     >
                       {/* Banner Image */}
-                      <div className="w-full h-full flex items-center justify-center p-3 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+                      <div className="w-full h-full flex items-center justify-center p-2 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100">
                         <img
                           src={banner.image_url}
                           alt={banner.title}
-                          className="max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-xl"
+                          className="max-w-full max-h-full object-contain rounded-lg sm:rounded-2xl shadow-xl"
                         />
                       </div>
                     </div>
                   ))}
 
-                  {/* Navigation Arrows - Clean & Minimal */}
+                  {/* Navigation Arrows - Hidden on mobile */}
                   {banners.length > 1 && (
                     <>
                       <button
                         onClick={prevBanner}
-                        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 sm:bg-white hover:bg-gray-50 rounded-full p-2 sm:p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 rounded-full p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200 hidden sm:flex items-center justify-center"
                         aria-label="Previous"
                       >
-                        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
+                        <ChevronLeft className="w-6 h-6 text-gray-700" />
                       </button>
                       <button
                         onClick={nextBanner}
-                        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 sm:bg-white hover:bg-gray-50 rounded-full p-2 sm:p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 rounded-full p-3 transition-all shadow-lg hover:scale-110 active:scale-95 border border-gray-200 hidden sm:flex items-center justify-center"
                         aria-label="Next"
                       >
-                        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
+                        <ChevronRight className="w-6 h-6 text-gray-700" />
                       </button>
                     </>
                   )}
@@ -536,7 +558,7 @@ export function Hero() {
                   )}
                 </div>
               ) : (
-                <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center border-2 border-dashed border-indigo-200 h-[400px] sm:h-[500px] lg:h-[600px]">
+                <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center border-2 border-dashed border-indigo-200 h-[350px] sm:h-[500px] lg:h-[600px]">
                   <div className="text-center p-8">
                     <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <svg className="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

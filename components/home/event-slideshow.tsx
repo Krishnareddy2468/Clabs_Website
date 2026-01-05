@@ -156,26 +156,26 @@ export function EventSlideshow() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm z-10 pointer-events-none rounded-2xl sm:rounded-3xl border border-white/10"></div>
             
             {/* Image Container */}
-            <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
+            <div className="relative aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
               {events.map((event, index) => (
                 <div
                   key={event.id}
-                  className={`absolute inset-0 transition-all duration-700 ease-out ${
+                  className={`absolute inset-0 transition-opacity duration-700 ease-out ${
                     index === currentIndex 
-                      ? 'opacity-100 scale-100 z-20' 
-                      : index === (currentIndex + 1) % events.length
-                        ? 'opacity-0 scale-110 z-10'
-                        : 'opacity-0 scale-95 z-0'
+                      ? 'opacity-100 z-20' 
+                      : 'opacity-0 z-0'
                   }`}
                 >
                   <img
                     src={event.image_url || ''}
                     alt={event.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-[center_30%] sm:object-center"
                   />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
+                  {/* Mobile gradient - strong at bottom */}
+                  <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black via-black/60 to-transparent sm:hidden"></div>
+                  {/* Desktop gradients */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent hidden sm:block"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent hidden sm:block"></div>
                 </div>
               ))}
 
@@ -230,57 +230,57 @@ export function EventSlideshow() {
 
                   {/* Right - Slide Counter */}
                   <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
-                    {/* Pause/Play Button */}
+                    {/* Pause/Play Button - Hidden on mobile */}
                     <button
                       onClick={() => setIsPaused(!isPaused)}
-                      className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hidden sm:flex items-center justify-center text-white hover:bg-white/20 transition-all"
                       aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
                     >
-                      {isPaused ? <Play className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> : <Pause className="w-3.5 h-3.5 sm:w-5 sm:h-5" />}
+                      {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
                     </button>
 
                     {/* Counter */}
-                    <div className="flex items-baseline gap-0.5 sm:gap-1 text-white">
-                      <span className="text-xl sm:text-3xl lg:text-4xl font-bold">{String(currentIndex + 1).padStart(2, '0')}</span>
-                      <span className="text-white/50 text-base sm:text-xl">/</span>
-                      <span className="text-white/50 text-base sm:text-xl">{String(events.length).padStart(2, '0')}</span>
+                    <div className="flex items-center gap-1 px-3 py-1.5 sm:px-0 sm:py-0 rounded-full bg-black/30 sm:bg-transparent">
+                      <span className="text-lg sm:text-3xl lg:text-4xl font-bold text-white tabular-nums">{String(currentIndex + 1).padStart(2, '0')}</span>
+                      <span className="text-white/50 text-sm sm:text-xl">/</span>
+                      <span className="text-white/50 text-sm sm:text-xl tabular-nums">{String(events.length).padStart(2, '0')}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Navigation Arrows - Positioned at center-sides on mobile, visible on hover for desktop */}
+            {/* Navigation Arrows - Hidden on mobile, visible on tablet+ */}
             <button
               onClick={prevSlide}
-              className="absolute left-2 sm:left-4 top-1/3 sm:top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-black/40 sm:bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 sm:group-hover:opacity-100 sm:opacity-0 opacity-70"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hidden sm:flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 group-hover:opacity-100 opacity-0"
               aria-label="Previous slide"
             >
-              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-2 sm:right-4 top-1/3 sm:top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-black/40 sm:bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 sm:group-hover:opacity-100 sm:opacity-0 opacity-70"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hidden sm:flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 group-hover:opacity-100 opacity-0"
               aria-label="Next slide"
             >
-              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+              <ChevronRight className="w-6 h-6" />
             </button>
           </div>
 
           {/* Thumbnail Navigation - Hidden on mobile, shown on larger screens */}
-          <div className="mt-4 sm:mt-6 lg:mt-8 hidden sm:block">
+          <div className="mt-6 lg:mt-8 hidden sm:block">
             <div className="flex justify-center gap-2 sm:gap-3 overflow-x-auto pb-2 px-4 scrollbar-hide">
               {events.map((event, index) => (
                 <button
                   key={event.id}
                   onClick={() => setCurrentIndex(index)}
-                  className={`relative flex-shrink-0 rounded-lg sm:rounded-xl overflow-hidden transition-all duration-300 ${
+                  className={`relative flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 ${
                     index === currentIndex 
                       ? 'ring-2 ring-purple-400 ring-offset-2 ring-offset-slate-900 scale-105' 
                       : 'opacity-50 hover:opacity-80'
                   }`}
                 >
-                  <div className="w-16 h-12 sm:w-24 sm:h-16 lg:w-32 lg:h-20">
+                  <div className="w-24 h-16 lg:w-32 lg:h-20">
                     <img
                       src={event.image_url || ''}
                       alt={event.title}
@@ -293,21 +293,6 @@ export function EventSlideshow() {
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* Progress Dots (Mobile) */}
-          <div className="flex justify-center gap-1.5 mt-4 sm:hidden">
-            {events.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
-                    ? 'w-8 bg-purple-400' 
-                    : 'w-1.5 bg-white/30 hover:bg-white/50'
-                }`}
-              />
-            ))}
           </div>
         </div>
       </div>
