@@ -19,13 +19,15 @@ export function TrustedSchools() {
     fetch("/api/schools")
       .then(res => res.json())
       .then(data => {
+        console.log("🏫 Schools data received:", data)
+        console.log("🏫 Number of schools:", data?.length || 0)
         if (Array.isArray(data)) {
           setSchools(data)
         }
         setIsLoading(false)
       })
       .catch(err => {
-        console.error("Failed to load schools:", err)
+        console.error("❌ Failed to load schools:", err)
         setIsLoading(false)
       })
   }, [])
@@ -76,12 +78,16 @@ export function TrustedSchools() {
                     <img
                       src={school.logo_url}
                       alt={school.name}
-                      className="h-16 sm:h-20 w-auto object-contain mb-2"
+                      className="h-14 sm:h-16 w-14 sm:w-16 object-contain mb-2"
+                      onError={(e) => {
+                        console.log("Failed to load logo:", school.logo_url);
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
                   ) : (
-                    <Building2 className="h-16 sm:h-20 w-16 sm:w-20 text-slate-400 mb-2" />
+                    <Building2 className="h-14 sm:h-16 w-14 sm:w-16 text-slate-400 mb-2" />
                   )}
-                  <p className="text-xs sm:text-sm text-white text-center font-medium">
+                  <p className="text-xs sm:text-sm text-white text-center font-medium line-clamp-2">
                     {school.name}
                   </p>
                 </div>
