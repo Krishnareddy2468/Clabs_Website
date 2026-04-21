@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { ChevronLeft, ChevronRight, Calendar, MapPin, Users, Play, Pause, ArrowRight, MessageSquare } from "lucide-react"
+import { ChevronLeft, ChevronRight, Calendar, MapPin, Users, ArrowRight, MessageSquare } from "lucide-react"
 import { EventRegistrationModal } from "./event-registration-modal"
 import { EventFeedbackModal } from "./event-feedback-modal"
 
@@ -126,41 +126,51 @@ export function LiveEventsSlider() {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 group">
-              {/* Glassmorphism border */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm z-10 pointer-events-none rounded-2xl sm:rounded-3xl border border-white/10"></div>
+            <div className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 border border-white/10">
 
-              {/* Image Container */}
-              <div className="relative h-[70vh] min-h-[480px] sm:h-[80vh] sm:min-h-[580px] lg:h-[85vh] lg:min-h-[650px] overflow-hidden">
-                {events.map((event, index) => (
-                  <div
-                    key={event.id}
-                    className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-                      index === currentIndex ? "opacity-100 z-20" : "opacity-0 z-0"
-                    }`}
-                  >
-                    <img
-                      src={event.image_url || ""}
-                      alt={event.title}
-                      className="w-full h-full object-contain object-center bg-black"
-                    />
-                    {/* Mobile gradient */}
-                    <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black via-black/60 to-transparent sm:hidden"></div>
-                    {/* Desktop gradients */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent hidden sm:block"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent hidden sm:block"></div>
-                  </div>
-                ))}
+              {/* Image — clean, no overlay text */}
+              <div className="relative">
+                <div className="relative h-[55vh] min-h-[380px] sm:h-[70vh] sm:min-h-[500px] lg:h-[80vh] lg:min-h-[600px] overflow-hidden bg-black">
+                  {events.map((event, index) => (
+                    <div
+                      key={event.id}
+                      className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                        index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+                      }`}
+                    >
+                      <img
+                        src={event.image_url || ""}
+                        alt={event.title}
+                        className="w-full h-full object-contain object-center"
+                      />
+                    </div>
+                  ))}
+                </div>
 
-                {/* Content Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 pb-6 sm:p-6 lg:p-10 z-30">
-                  <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 lg:gap-6">
-                    {/* Left Content */}
-                    <div className="flex-1 max-w-2xl">
-                      {/* Status Badge */}
-                      <div
-                        className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-gradient-to-r ${cfg.gradient} text-white text-[10px] sm:text-sm font-semibold shadow-lg mb-2 sm:mb-4`}
-                      >
+                {/* Navigation Arrows — over image only */}
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/60 transition-all"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/60 transition-all"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              </div>
+
+              {/* Info strip below image */}
+              <div className="bg-[#0d1b2a] border-t border-white/10 px-4 py-4 sm:px-6 sm:py-5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                  {/* Left: status + title + meta */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r ${cfg.gradient} text-white text-xs font-semibold`}>
                         <span className="relative flex h-2 w-2">
                           {cfg.ping && (
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -169,98 +179,58 @@ export function LiveEventsSlider() {
                         </span>
                         {cfg.label}
                       </div>
-
-                      {/* Title */}
-                      <h3 className="text-lg sm:text-2xl lg:text-4xl font-bold text-white mb-1.5 sm:mb-3 line-clamp-2 drop-shadow-lg leading-tight">
-                        {current?.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-white/70 text-sm sm:text-base lg:text-lg line-clamp-2 mb-3 sm:mb-4 hidden sm:block">
-                        {current?.description}
-                      </p>
-
-                      {/* Meta Info */}
-                      <div className="flex flex-wrap gap-1.5 sm:gap-3 mb-3 sm:mb-5">
-                        <div className="flex items-center gap-1 sm:gap-1.5 text-white/80 text-[10px] sm:text-sm bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
-                          <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span>
-                            {new Date(current?.date || "").toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 sm:gap-1.5 text-white/80 text-[10px] sm:text-sm bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
-                          <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="truncate max-w-[100px] sm:max-w-none">{current?.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1 sm:gap-1.5 text-white/80 text-[10px] sm:text-sm bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full hidden sm:flex">
-                          <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span>{current?.available_seats} seats left</span>
-                        </div>
-                      </div>
-
-                      {/* Action Button */}
-                      {current?.status === "ongoing" ? (
-                        <button
-                          onClick={() => { setSelectedEvent(current); setIsFeedbackModalOpen(true) }}
-                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-all hover:scale-105 shadow-lg"
-                        >
-                          <MessageSquare className="w-4 h-4" />
-                          Share Feedback
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => { setSelectedEvent(current); setIsModalOpen(true) }}
-                          disabled={current?.available_seats === 0}
-                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-sm font-semibold rounded-full transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {current?.available_seats === 0 ? "Event Full" : "Register Now"}
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      )}
+                      {/* Slide counter */}
+                      <span className="text-white/40 text-xs ml-auto sm:hidden">
+                        {String(currentIndex + 1).padStart(2, "0")} / {String(events.length).padStart(2, "0")}
+                      </span>
                     </div>
+                    <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate mb-1">
+                      {current?.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
+                      <span className="flex items-center gap-1 text-white/60 text-xs">
+                        <Calendar className="w-3 h-3" />
+                        {new Date(current?.date || "").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      </span>
+                      <span className="flex items-center gap-1 text-white/60 text-xs">
+                        <MapPin className="w-3 h-3" />
+                        {current?.location}
+                      </span>
+                      <span className="flex items-center gap-1 text-white/60 text-xs">
+                        <Users className="w-3 h-3" />
+                        {current?.available_seats} seats left
+                      </span>
+                    </div>
+                  </div>
 
-                    {/* Right — Counter + Controls */}
-                    <div className="flex items-center gap-2 sm:gap-3">
+                  {/* Right: action + counter */}
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    {current?.status === "ongoing" ? (
                       <button
-                        onClick={() => setIsPaused(!isPaused)}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hidden sm:flex items-center justify-center text-white hover:bg-white/20 transition-all"
-                        aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
+                        onClick={() => { setSelectedEvent(current); setIsFeedbackModalOpen(true) }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-all hover:scale-105 shadow-lg"
                       >
-                        {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
+                        <MessageSquare className="w-4 h-4" />
+                        Share Feedback
                       </button>
-                      <div className="flex items-center gap-1 px-3 py-1.5 sm:px-0 sm:py-0 rounded-full bg-black/30 sm:bg-transparent">
-                        <span className="text-lg sm:text-3xl lg:text-4xl font-bold text-white tabular-nums">
-                          {String(currentIndex + 1).padStart(2, "0")}
-                        </span>
-                        <span className="text-white/50 text-sm sm:text-xl">/</span>
-                        <span className="text-white/50 text-sm sm:text-xl tabular-nums">
-                          {String(events.length).padStart(2, "0")}
-                        </span>
-                      </div>
+                    ) : (
+                      <button
+                        onClick={() => { setSelectedEvent(current); setIsModalOpen(true) }}
+                        disabled={current?.available_seats === 0}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-sm font-semibold rounded-full transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {current?.available_seats === 0 ? "Event Full" : "Register Now"}
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )}
+                    <div className="hidden sm:flex items-center gap-1">
+                      <span className="text-xl font-bold text-white tabular-nums">{String(currentIndex + 1).padStart(2, "0")}</span>
+                      <span className="text-white/40 text-sm">/</span>
+                      <span className="text-white/40 text-sm tabular-nums">{String(events.length).padStart(2, "0")}</span>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hidden sm:flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 group-hover:opacity-100 opacity-0"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hidden sm:flex items-center justify-center text-white hover:bg-white/30 hover:scale-110 transition-all duration-300 group-hover:opacity-100 opacity-0"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
             </div>
 
             {/* Thumbnail Navigation */}
