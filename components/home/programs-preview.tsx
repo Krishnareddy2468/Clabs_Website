@@ -35,14 +35,14 @@ const programs = [
 
 export function ProgramsPreview() {
 	return (
-		<section className="bg-gradient-to-b from-indigo-50 to-white py-16 sm:py-24 md:py-28 lg:py-36">
+		<section className="bg-[#0d1b2a] py-16 sm:py-24 md:py-28 lg:py-36">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="mb-10 sm:mb-12 md:mb-16 flex flex-col items-center justify-between gap-4 sm:gap-6 md:flex-row">
 					<div className="text-center md:text-left">
-						<h2 className="mb-2 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-800">
+						<h2 className="mb-2 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-white">
 							Our Programs
 						</h2>
-						<p className="text-base sm:text-lg text-slate-600">
+						<p className="text-base sm:text-lg text-white/60">
 							Year-long STEM academics for Classes 3 to 9
 						</p>
 					</div>
@@ -63,7 +63,7 @@ export function ProgramsPreview() {
 						<Link
 							key={index}
 							href="/programs"
-							className="group flex flex-col overflow-hidden rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-xl transition-all duration-300"
+							className="group flex flex-col overflow-hidden rounded-xl sm:rounded-2xl bg-[#1a2e4a] border border-white/10 shadow-md hover:shadow-xl transition-all duration-300"
 						>
 							<div className="bg-slate-800 p-5 sm:p-6 relative">
 								{program.popular && (
@@ -79,10 +79,10 @@ export function ProgramsPreview() {
 								</div>
 							</div>
 							<div className="flex flex-1 flex-col p-5 sm:p-6">
-								<h3 className="mb-2 text-base sm:text-lg font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
+								<h3 className="mb-2 text-base sm:text-lg font-semibold text-white group-hover:text-indigo-400 transition-colors">
 									{program.title}
 								</h3>
-								<p className="mb-4 sm:mb-5 flex-1 text-sm leading-relaxed text-slate-600">
+								<p className="mb-4 sm:mb-5 flex-1 text-sm leading-relaxed text-white/60">
 									{program.description}
 								</p>
 								<span className="inline-flex items-center rounded-full bg-slate-800 px-3 sm:px-4 py-2 text-sm font-medium text-white transition-colors group-hover:bg-indigo-600">

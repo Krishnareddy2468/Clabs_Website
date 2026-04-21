@@ -29,13 +29,13 @@ const testimonials = [
 
 export function TestimonialsSection() {
 	return (
-		<section className="py-16 sm:py-24 md:py-28 lg:py-36 bg-gradient-to-b from-indigo-50 to-white">
+		<section className="py-16 sm:py-24 md:py-28 lg:py-36 bg-[#0d1b2a]">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="mx-auto mb-10 sm:mb-12 md:mb-16 max-w-2xl text-center">
-					<h2 className="mb-3 sm:mb-4 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-800">
+					<h2 className="mb-3 sm:mb-4 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-white">
 						What People Say
 					</h2>
-					<p className="text-base sm:text-lg text-slate-600">
+					<p className="text-base sm:text-lg text-white/60">
 						Hear from parents, educators, and students about C LABS STEM ACADEMICS
 					</p>
 				</div>
@@ -44,7 +44,7 @@ export function TestimonialsSection() {
 					{testimonials.map((testimonial, index) => (
 						<div
 							key={index}
-							className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+							className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-[#1a2e4a] border border-white/10 p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300"
 						>
 							<Quote className="absolute right-4 sm:right-6 top-4 sm:top-6 h-8 w-8 sm:h-10 sm:w-10 text-indigo-500/10" />
 
@@ -57,7 +57,7 @@ export function TestimonialsSection() {
 								))}
 							</div>
 
-							<p className="mb-5 sm:mb-6 text-sm sm:text-base text-slate-600 leading-relaxed">
+							<p className="mb-5 sm:mb-6 text-sm sm:text-base text-white/70 leading-relaxed">
 								"{testimonial.content}"
 							</p>
 
@@ -68,13 +68,13 @@ export function TestimonialsSection() {
 										"/placeholder.svg?height=48&width=48&query=professional portrait"
 									}
 									alt={testimonial.name}
-									className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover border-2 border-indigo-100"
+									className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover border-2 border-white/20"
 								/>
 								<div>
-									<p className="text-sm sm:text-base font-semibold text-slate-800">
+									<p className="text-sm sm:text-base font-semibold text-white">
 										{testimonial.name}
 									</p>
-									<p className="text-xs sm:text-sm text-slate-500">
+									<p className="text-xs sm:text-sm text-white/50">
 										{testimonial.role}
 									</p>
 								</div>

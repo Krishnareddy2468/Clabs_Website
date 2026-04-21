@@ -434,16 +434,16 @@ export function Hero() {
       )}
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-[#f0f7ff] to-[#e8f4ff] overflow-hidden">
+      <section className="relative bg-[#0d1b2a] overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 md:py-16 lg:py-20">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 xl:gap-16">
             {/* Left Content */}
             <div className="flex-1 text-center lg:text-left space-y-5 sm:space-y-6 w-full lg:max-w-lg">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-white shadow-sm border border-indigo-100">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600/10">
+              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full bg-white/10 border border-white/20">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-400/20">
                   <svg
-                    className="h-3 w-3 text-indigo-600"
+                    className="h-3 w-3 text-indigo-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -456,18 +456,18 @@ export function Hero() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm font-medium text-slate-700">
+                <span className="text-xs sm:text-sm font-medium text-white/80">
                   C LABS STEM ACADEMICS - Classes 3 to 9
                 </span>
               </div>
 
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-slate-900">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-white">
                 Year-Long STEM Academic Excellence
               </h1>
 
               {/* Description */}
-              <p className="text-sm sm:text-base lg:text-lg text-slate-600">
+              <p className="text-sm sm:text-base lg:text-lg text-white/60">
                 Comprehensive year-long academic course with specially designed academic books for each standard from Class 3 to Class 9.
               </p>
 
@@ -497,7 +497,7 @@ export function Hero() {
             {/* Right Content - School Partnership Carousel Card */}
             <div className="flex-1 w-full">
               {isLoading ? (
-                <div className="rounded-2xl sm:rounded-3xl bg-white shadow-2xl flex items-center justify-center h-[350px] sm:h-[500px] lg:h-[600px]">
+                <div className="rounded-2xl sm:rounded-3xl bg-white/5 border border-white/10 shadow-2xl flex items-center justify-center h-[350px] sm:h-[500px] lg:h-[600px]">
                   <div className="text-center p-6">
                     <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
                     <p className="text-gray-500 font-medium">Loading school partnerships...</p>
@@ -521,7 +521,7 @@ export function Hero() {
                       }`}
                     >
                       {/* Banner Image */}
-                      <div className="w-full h-full flex items-center justify-center p-2 sm:p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+                      <div className="w-full h-full flex items-center justify-center p-2 sm:p-6 bg-[#0d1b2a]">
                         <img
                           src={banner.image_url}
                           alt={banner.title}

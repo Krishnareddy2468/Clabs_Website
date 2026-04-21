@@ -29,13 +29,13 @@ const features = [
 
 export function FeaturesSection() {
 	return (
-		<section className="relative py-16 sm:py-24 md:py-28 lg:py-36 overflow-hidden bg-white">
+		<section className="relative py-16 sm:py-24 md:py-28 lg:py-36 overflow-hidden bg-[#0d1b2a]">
 			<div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="mx-auto mb-10 sm:mb-12 md:mb-16 max-w-2xl text-center px-2">
-					<h2 className="mb-3 sm:mb-4 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-slate-800">
+					<h2 className="mb-3 sm:mb-4 text-2xl sm:text-[2rem] md:text-[2.5rem] font-semibold text-white">
 						Why Choose C LABS STEM ACADEMICS?
 					</h2>
-					<p className="text-base sm:text-lg text-slate-600">
+					<p className="text-base sm:text-lg text-white/60">
 						Year-Long Academic Excellence for Classes 3-9
 					</p>
 				</div>
