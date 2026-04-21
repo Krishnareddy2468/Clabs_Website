@@ -42,14 +42,12 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/95 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto flex h-16 sm:h-16 lg:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center">
           <img
             src="/clabs-logo.png"
-            alt="C-Labs Logo"
-            className="h-10 sm:h-12 lg:h-14 w-auto object-contain"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+            alt="C-Labs"
+            className="h-8 sm:h-9 w-auto object-contain"
           />
-          <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#0d1b2a]">C-LABS</span>
         </Link>
 
         {/* Desktop Navigation */}

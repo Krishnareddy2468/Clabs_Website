@@ -11,6 +11,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://clabs.life"),
   title: "C-LABS - Future-Ready STEM Education",
   description:
     "Empowering children with hands-on learning in Robotics, Coding, AI, IoT & Cybersecurity. Grade 1-12 STEM education programs.",
