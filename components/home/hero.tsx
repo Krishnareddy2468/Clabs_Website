@@ -5,6 +5,7 @@ import { ArrowRight, Calendar, MapPin, X, ChevronLeft, ChevronRight, MessageSqua
 import { useEffect, useState, useCallback } from "react"
 import { EventRegistrationModal } from "./event-registration-modal"
 import { EventFeedbackModal } from "./event-feedback-modal"
+import { LiveEventsSlider } from "./live-events-slider"
 
 interface Event {
   id: string
@@ -25,16 +26,17 @@ interface Banner {
   image_url: string
 }
 
-interface CompletedEvent {
+interface GalleryImage {
   id: string
   title: string
   image_url: string
+  category: string
 }
 
 export function Hero() {
   const [events, setEvents] = useState<Event[]>([])
   const [banners, setBanners] = useState<Banner[]>([])
-  const [completedEvents, setCompletedEvents] = useState<CompletedEvent[]>([])
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
   const [showBanner, setShowBanner] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -48,22 +50,33 @@ export function Hero() {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
 
-  // Use completed events for the Recent Workshop slideshow
-  const slideshowImages = completedEvents.filter(img => img.image_url && img.image_url.trim() !== '')
+  // Use gallery images for the Recent Workshop slideshow
+  const slideshowImages = galleryImages.filter(img => img.image_url && img.image_url.trim() !== '')
 
   useEffect(() => {
     fetch("/api/events")
       .then(res => res.json())
       .then(data => {
-        const all = Array.isArray(data) ? data : []
-        setEvents(all)
-        // Use only completed events with images for the Recent Workshop slideshow
-        const completed = all.filter(
-          (e: Event) => e.status === 'completed' && e.image_url && e.image_url.trim() !== ''
-        )
-        setCompletedEvents(completed)
+        setEvents(Array.isArray(data) ? data : [])
       })
       .catch(err => console.error('Failed to load events:', err))
+
+    // Fetch gallery images for the Recent Workshop slideshow
+    fetch("/api/gallery?category=Events")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setGalleryImages(data)
+        } else {
+          fetch("/api/gallery")
+            .then(res => res.json())
+            .then(allData => {
+              setGalleryImages(Array.isArray(allData) ? allData : [])
+            })
+            .catch(err => console.error('Failed to load all gallery images:', err))
+        }
+      })
+      .catch(err => console.error('Failed to load gallery images:', err))
 
     setIsLoading(true)
     fetch("/api/banners")
@@ -282,6 +295,9 @@ export function Hero() {
           </div>
         </div>
       )}
+
+      {/* Upcoming & Ongoing Events Slider */}
+      <LiveEventsSlider />
 
       {/* Premium Hero Slider - Apple/Framer Inspired */}
       {slideshowImages.length > 0 && (
