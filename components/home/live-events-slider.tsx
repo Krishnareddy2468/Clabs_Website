@@ -130,18 +130,20 @@ export function LiveEventsSlider() {
 
               {/* Image — clean, no overlay text */}
               <div className="relative">
-                <div className="relative h-[55vh] min-h-[380px] sm:h-[70vh] sm:min-h-[500px] lg:h-[80vh] lg:min-h-[600px] overflow-hidden bg-black">
+                {/* Mobile: image natural size (no fixed height = no black gap) */}
+                {/* Desktop: fixed tall height */}
+                <div className="relative overflow-hidden bg-[#0d1b2a] sm:h-[70vh] sm:min-h-[500px] lg:h-[80vh] lg:min-h-[600px]">
                   {events.map((event, index) => (
                     <div
                       key={event.id}
-                      className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                      className={`transition-opacity duration-700 ease-out ${
                         index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-                      }`}
+                      } sm:absolute sm:inset-0`}
                     >
                       <img
                         src={event.image_url || ""}
                         alt={event.title}
-                        className="w-full h-full object-contain object-center"
+                        className="w-full h-auto sm:h-full sm:object-contain sm:object-center"
                       />
                     </div>
                   ))}
