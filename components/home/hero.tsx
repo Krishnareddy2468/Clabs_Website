@@ -25,17 +25,16 @@ interface Banner {
   image_url: string
 }
 
-interface GalleryImage {
+interface CompletedEvent {
   id: string
   title: string
   image_url: string
-  category: string
 }
 
 export function Hero() {
   const [events, setEvents] = useState<Event[]>([])
   const [banners, setBanners] = useState<Banner[]>([])
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
+  const [completedEvents, setCompletedEvents] = useState<CompletedEvent[]>([])
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
   const [showBanner, setShowBanner] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -49,36 +48,22 @@ export function Hero() {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
 
-  // Use gallery images from Events category for slideshow
-  const slideshowImages = galleryImages.filter(img => img.image_url && img.image_url.trim() !== '')
+  // Use completed events for the Recent Workshop slideshow
+  const slideshowImages = completedEvents.filter(img => img.image_url && img.image_url.trim() !== '')
 
   useEffect(() => {
     fetch("/api/events")
       .then(res => res.json())
       .then(data => {
-        setEvents(Array.isArray(data) ? data : [])
+        const all = Array.isArray(data) ? data : []
+        setEvents(all)
+        // Use only completed events with images for the Recent Workshop slideshow
+        const completed = all.filter(
+          (e: Event) => e.status === 'completed' && e.image_url && e.image_url.trim() !== ''
+        )
+        setCompletedEvents(completed)
       })
       .catch(err => console.error('Failed to load events:', err))
-
-    // Fetch gallery images from Events category
-    fetch("/api/gallery?category=Events")
-      .then(res => res.json())
-      .then(data => {
-        console.log('Gallery images from Events:', data)
-        if (Array.isArray(data) && data.length > 0) {
-          setGalleryImages(data)
-        } else {
-          // Fallback: fetch all gallery images if no Events category
-          fetch("/api/gallery")
-            .then(res => res.json())
-            .then(allData => {
-              console.log('All gallery images:', allData)
-              setGalleryImages(Array.isArray(allData) ? allData : [])
-            })
-            .catch(err => console.error('Failed to load all gallery images:', err))
-        }
-      })
-      .catch(err => console.error('Failed to load gallery images:', err))
 
     setIsLoading(true)
     fetch("/api/banners")
