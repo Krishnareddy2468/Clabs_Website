@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Menu, X, ChevronRight } from "lucide-react"
+import { Menu, X, ChevronRight, Cpu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -42,12 +42,11 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-white/95 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto flex h-16 sm:h-16 lg:h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center">
-          <img
-            src="/clabs-logo.png"
-            alt="C-Labs"
-            className="h-8 sm:h-9 w-auto object-contain"
-          />
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg">
+            <Cpu className="h-5 w-5 text-white" />
+          </div>
+          <span className="text-xl font-bold tracking-tight text-slate-800">C-LABS</span>
         </Link>
 
         {/* Desktop Navigation */}
