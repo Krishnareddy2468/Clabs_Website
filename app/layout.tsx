@@ -24,14 +24,14 @@ export const metadata: Metadata = {
     "cybersecurity for students",
   ],
   icons: {
-    icon: "/clabs-logo.png",
-    apple: "/clabs-logo.png",
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
   },
   openGraph: {
     title: "C-LABS - Future-Ready STEM Education",
     description:
       "Empowering children with hands-on learning in Robotics, Coding, AI, IoT & Cybersecurity.",
-    images: [{ url: "/clabs-logo.png" }],
+    images: [{ url: "/favicon.svg" }],
   },
 }
 
