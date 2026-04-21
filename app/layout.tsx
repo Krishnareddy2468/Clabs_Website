@@ -22,7 +22,16 @@ export const metadata: Metadata = {
     "IoT education",
     "cybersecurity for students",
   ],
-    generator: 'v0.app'
+  icons: {
+    icon: "/clabs-logo.png",
+    apple: "/clabs-logo.png",
+  },
+  openGraph: {
+    title: "C-LABS - Future-Ready STEM Education",
+    description:
+      "Empowering children with hands-on learning in Robotics, Coding, AI, IoT & Cybersecurity.",
+    images: [{ url: "/clabs-logo.png" }],
+  },
 }
 
 export const viewport: Viewport = {
