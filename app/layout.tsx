@@ -49,6 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.svg" />
         <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
       </head>
       <body className={`${poppins.className} font-sans antialiased`}>
