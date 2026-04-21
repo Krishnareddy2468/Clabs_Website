@@ -210,7 +210,7 @@ export function Hero() {
       case 'completed':
         return '✓ Completed'
       default:
-        return '🎯 Upcoming'
+        return 'Upcoming'
     }
   }
 

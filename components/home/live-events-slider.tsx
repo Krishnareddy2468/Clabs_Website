@@ -86,7 +86,7 @@ export function LiveEventsSlider() {
     upcoming: {
       gradient: "from-blue-500 to-indigo-600",
       dot: "bg-blue-300",
-      label: "🎯 Upcoming",
+      label: "Upcoming",
       ping: false,
     },
   }
@@ -95,7 +95,7 @@ export function LiveEventsSlider() {
 
   return (
     <>
-      <section className="relative py-12 sm:py-16 lg:py-20 overflow-hidden">
+      <section className="relative py-6 sm:py-8 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0d1b2a] via-[#1a2e4a] to-[#0d1b2a]">
           <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-500/15 rounded-full blur-3xl animate-pulse"></div>
@@ -104,17 +104,17 @@ export function LiveEventsSlider() {
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Section Header */}
-          <div className="text-center mb-8 sm:mb-12">
-            <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/80 text-sm font-medium mb-4">
+          <div className="text-center mb-4 sm:mb-6">
+            <span className="inline-block px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white/80 text-xs font-medium mb-2">
               📅 Events
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1">
               Upcoming &amp;{" "}
               <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                 Ongoing Events
               </span>
             </h2>
-            <p className="text-white/60 max-w-2xl mx-auto text-sm sm:text-base">
+            <p className="text-white/60 max-w-2xl mx-auto text-xs sm:text-sm">
               Register now for our latest STEM workshops and programs
             </p>
           </div>
@@ -131,7 +131,7 @@ export function LiveEventsSlider() {
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm z-10 pointer-events-none rounded-2xl sm:rounded-3xl border border-white/10"></div>
 
               {/* Image Container */}
-              <div className="relative aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
+              <div className="relative h-[70vh] min-h-[480px] sm:h-[80vh] sm:min-h-[580px] lg:h-[85vh] lg:min-h-[650px] overflow-hidden">
                 {events.map((event, index) => (
                   <div
                     key={event.id}
@@ -142,7 +142,7 @@ export function LiveEventsSlider() {
                     <img
                       src={event.image_url || ""}
                       alt={event.title}
-                      className="w-full h-full object-cover object-[center_30%] sm:object-center"
+                      className="w-full h-full object-contain object-center bg-black"
                     />
                     {/* Mobile gradient */}
                     <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black via-black/60 to-transparent sm:hidden"></div>
